@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS public.members (
 
 -- Migration support for existing setups
 ALTER TABLE public.members ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.members ADD COLUMN IF NOT EXISTS linkedin_url TEXT;
 
 -- 3. Applications Table (Submitted Invitation Requests)
 CREATE TABLE IF NOT EXISTS public.applications (

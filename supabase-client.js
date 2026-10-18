@@ -257,7 +257,8 @@ export async function getMembers() {
         initials: row.initials || row.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
         avatarUrl: row.avatar_url || row.avatarUrl || '',
         accentGradient: row.accent_gradient || 'linear-gradient(135deg, #2b2b2b, #111111)',
-        since: row.since || '2026'
+        since: row.since || '2026',
+        linkedinUrl: row.linkedin_url || row.linkedinUrl || ''
       }));
     } else {
       return FALLBACK_MEMBERS;
@@ -285,7 +286,8 @@ export async function insertMember(memberData) {
     initials: memberData.initials || memberData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
     avatar_url: memberData.avatarUrl || memberData.avatar_url || null,
     accent_gradient: memberData.accentGradient || 'linear-gradient(135deg, #2e2e2e, #111111)',
-    since: memberData.since || '2026'
+    since: memberData.since || '2026',
+    linkedin_url: memberData.linkedinUrl || memberData.linkedin_url || null
   };
 
   if (client) {
@@ -295,11 +297,12 @@ export async function insertMember(memberData) {
       .select()
       .single();
 
-    // Gracefully handle case where Supabase table doesn't have avatar_url column yet
-    if (error && error.message && error.message.includes('avatar_url')) {
-      console.warn("Retrying member insertion without avatar_url due to schema cache mismatch:", error.message);
+    // Gracefully handle case where Supabase table doesn't have avatar_url or linkedin_url column yet
+    if (error && error.message && (error.message.includes('avatar_url') || error.message.includes('linkedin_url'))) {
+      console.warn("Retrying member insertion with safe payload due to schema cache mismatch:", error.message);
       const safePayload = { ...dbPayload };
-      delete safePayload.avatar_url;
+      if (error.message.includes('avatar_url')) delete safePayload.avatar_url;
+      if (error.message.includes('linkedin_url')) delete safePayload.linkedin_url;
 
       const retryRes = await client
         .from('members')

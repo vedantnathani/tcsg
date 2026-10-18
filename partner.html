@@ -530,6 +530,11 @@
             </div>
           </div>
 
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="induct-linkedin">LinkedIn Profile URL</label>
+            <input type="url" id="induct-linkedin" class="form-input" placeholder="https://www.linkedin.com/in/username">
+          </div>
+
           <!-- Avatar Image Upload Dropzone -->
           <div class="form-group" style="margin-bottom: 1.25rem;">
             <label class="form-label">Portrait Photograph</label>
@@ -1053,6 +1058,7 @@
             const category = document.getElementById('induct-category').value;
             const credsRaw = document.getElementById('induct-creds').value;
             const location = document.getElementById('induct-location').value.trim();
+            const linkedinUrl = document.getElementById('induct-linkedin')?.value.trim() || '';
             const quote = document.getElementById('induct-quote').value.trim();
             const bio = document.getElementById('induct-bio').value.trim();
             const interestsRaw = document.getElementById('induct-interests').value;
@@ -1084,7 +1090,8 @@
               initials,
               avatarUrl,
               accentGradient: 'linear-gradient(135deg, #2b2b2b, #111111)',
-              since: '2026'
+              since: '2026',
+              linkedinUrl
             });
 
             showToast(`Member "${name}" successfully inducted into registry.`);
