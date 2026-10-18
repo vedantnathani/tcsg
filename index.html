@@ -2688,69 +2688,6 @@
                 <span>Request an Invitation</span>
                 <span aria-hidden="true">&rarr;</span>
               </button>
-
-              <!-- Real-Time Submission Diagnostics & Network Inspector -->
-              <div id="submission-debugger-wrap" style="margin-top: 1.25rem;">
-                <div id="submission-status-bar" style="display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--color-warm-grey); border-radius: 2px; font-size: 11px; font-family: var(--font-sans);">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span id="submission-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-                    <span id="submission-status-text" style="color: var(--color-charcoal); font-weight: 500;">Transmission Engine: Initializing...</span>
-                  </div>
-                  <button type="button" id="toggle-submission-debug-btn" style="background: none; border: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-mid-grey); cursor: pointer; text-decoration: underline;">
-                    Submission Debugger
-                  </button>
-                </div>
-
-                <!-- Expandable Live Debugger Panel -->
-                <div id="submission-debug-panel" style="display: none; margin-top: 0.75rem; background: #0A0A0A; color: #E8E6E1; border: 1px solid rgba(196, 167, 125, 0.35); border-radius: 2px; padding: 1.25rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; line-height: 1.6;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem; margin-bottom: 0.85rem;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                      <span style="color: var(--color-gold); font-weight: 600;">[SUBMISSION TELEMETRY &amp; TRACE]</span>
-                    </div>
-                    <div style="display: flex; gap: 6px;">
-                      <button type="button" id="debug-test-ping-btn" style="background: rgba(196,167,125,0.15); border: 1px solid var(--color-gold); color: var(--color-gold); font-size: 10px; padding: 2px 8px; cursor: pointer; border-radius: 2px;">
-                        Probe Supabase
-                      </button>
-                      <button type="button" id="debug-clear-log-btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #888; font-size: 10px; padding: 2px 6px; cursor: pointer; border-radius: 2px;">
-                        Clear
-                      </button>
-                    </div>
-                  </div>
-
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0.85rem; font-size: 11px;">
-                    <div><span style="color: #888;">Cloud Target:</span> <span id="debug-target-url" style="color: #fff; word-break: break-all;">Checking...</span></div>
-                    <div><span style="color: #888;">Anon Key:</span> <span id="debug-key-status" style="color: #fff;">Checking...</span></div>
-                    <div><span style="color: #888;">Local Cache:</span> <span id="debug-local-cache-status" style="color: #10b981;">Active (Dual-write safe)</span></div>
-                    <div><span style="color: #888;">Endpoint:</span> <span id="debug-endpoint-status" style="color: #fff;">POST /rest/v1/applications</span></div>
-                  </div>
-
-                  <div id="debug-error-banner" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; color: #fca5a5; padding: 0.75rem; border-radius: 2px; margin-bottom: 0.85rem;">
-                    <div style="font-weight: 600; color: #ef4444; margin-bottom: 4px;" id="debug-error-title">Database Error Detected</div>
-                    <div id="debug-error-msg" style="margin-bottom: 6px; word-break: break-word;"></div>
-                    <div id="debug-error-hint" style="color: #fde047; font-size: 10px; margin-bottom: 6px;"></div>
-                    <div id="debug-sql-fix-wrap" style="display: none; margin-top: 8px;">
-                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <span style="font-size: 10px; color: #fff; font-weight: 600;">Run this in Supabase SQL Editor:</span>
-                        <button type="button" id="debug-copy-sql-btn" style="background: var(--color-gold); color: #000; border: none; font-size: 10px; padding: 3px 8px; cursor: pointer; font-weight: 600; border-radius: 2px;">Copy SQL</button>
-                      </div>
-                      <pre id="debug-sql-code" style="background: #000; color: #a3e635; padding: 8px; font-size: 10px; max-height: 140px; overflow-y: auto; white-space: pre-wrap; border: 1px solid rgba(255,255,255,0.15); border-radius: 2px;"></pre>
-                    </div>
-                  </div>
-
-                  <div id="debug-success-banner" style="display: none; background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; color: #6ee7b7; padding: 0.75rem; border-radius: 2px; margin-bottom: 0.85rem;">
-                    <div style="font-weight: 600; color: #10b981; margin-bottom: 2px;">Submission Transmitted Successfully (HTTP 201)</div>
-                    <div id="debug-success-details" style="font-size: 10px;">Record written to Supabase public.applications.</div>
-                  </div>
-
-                  <div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                      <span style="color: #888; font-size: 10px; text-transform: uppercase;">Latest Execution Trace</span>
-                      <span id="debug-trace-timestamp" style="color: #555; font-size: 10px;"></span>
-                    </div>
-                    <pre id="debug-trace-json" style="background: #000; color: #d4d4d8; padding: 8px; border: 1px solid rgba(255,255,255,0.08); font-size: 10px; max-height: 140px; overflow-y: auto; white-space: pre-wrap;">Awaiting submission...</pre>
-                  </div>
-                </div>
-              </div>
             </form>
 
             <!-- Success State: Curtain Fall Outcome -->
@@ -2764,9 +2701,6 @@
                 Thank you for your interest in High Finance Guild. Every application is reviewed individually. If there is a fit, we'll be in touch.
               </p>
               <button class="return-top-btn" id="return-top-btn">Return to Home &rarr;</button>
-              <button type="button" id="view-submission-receipt-btn" style="background: none; border: none; margin-top: 1.25rem; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-mid-grey); cursor: pointer; text-decoration: underline;">
-                View Transmission Telemetry Trace &rarr;
-              </button>
             </div>
           </div>
         </div>
@@ -2871,21 +2805,10 @@
   <script type="module">
     import { 
       loadEnvironmentConfig,
-      getSupabaseConfig, 
-      saveSupabaseConfig, 
       getSupabaseClient, 
-      resetSupabaseClient,
       getMembers, 
-      insertMember, 
       deleteMember, 
-      submitApplication, 
-      getApplications,
-      deleteApplication,
-      diagnoseDatabase,
-      syncLocalApplicationsToSupabase,
-      getApplicationsSqlFix,
-      uploadAvatar,
-      DEFAULT_ADMIN_PIN 
+      submitApplication 
     } from './supabase-client.js';
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -3291,112 +3214,12 @@
       });
 
       /* -----------------------------------------------------------------------
-         9. Supabase Invitation Form Submission & Real-Time Debugger Console
+         9. Supabase Invitation Form Submission
          ----------------------------------------------------------------------- */
       const form = document.getElementById('invitation-form');
       const submitBtn = document.getElementById('submit-application-btn');
       const successState = document.getElementById('success-state');
       const returnTopBtn = document.getElementById('return-top-btn');
-      const toggleDebugBtn = document.getElementById('toggle-submission-debug-btn');
-      const debugPanel = document.getElementById('submission-debug-panel');
-      const statusDot = document.getElementById('submission-status-dot');
-      const statusText = document.getElementById('submission-status-text');
-      const debugTargetUrl = document.getElementById('debug-target-url');
-      const debugKeyStatus = document.getElementById('debug-key-status');
-      const debugTraceJson = document.getElementById('debug-trace-json');
-      const debugTraceTime = document.getElementById('debug-trace-timestamp');
-      const debugErrorBanner = document.getElementById('debug-error-banner');
-      const debugErrorTitle = document.getElementById('debug-error-title');
-      const debugErrorMsg = document.getElementById('debug-error-msg');
-      const debugErrorHint = document.getElementById('debug-error-hint');
-      const debugSqlFixWrap = document.getElementById('debug-sql-fix-wrap');
-      const debugSqlCode = document.getElementById('debug-sql-code');
-      const debugCopySqlBtn = document.getElementById('debug-copy-sql-btn');
-      const debugSuccessBanner = document.getElementById('debug-success-banner');
-      const debugTestPingBtn = document.getElementById('debug-test-ping-btn');
-      const debugClearLogBtn = document.getElementById('debug-clear-log-btn');
-      const viewReceiptBtn = document.getElementById('view-submission-receipt-btn');
-
-      // Initialize Submission Debugger State
-      function updateSubmissionDebuggerState() {
-        const cfg = getSupabaseConfig();
-        if (cfg.url && cfg.anonKey) {
-          if (statusDot) statusDot.style.background = '#10b981';
-          if (statusText) statusText.textContent = `Transmission Engine: Connected to Cloud (${cfg.url.substring(0, 28)}...)`;
-          if (debugTargetUrl) debugTargetUrl.textContent = cfg.url;
-          if (debugKeyStatus) debugKeyStatus.textContent = 'Active (Anon Public Key)';
-        } else {
-          if (statusDot) statusDot.style.background = '#f59e0b';
-          if (statusText) statusText.textContent = 'Transmission Engine: Local Storage Safe Mode (No Supabase URL)';
-          if (debugTargetUrl) debugTargetUrl.textContent = 'Not Configured in this browser';
-          if (debugKeyStatus) debugKeyStatus.textContent = 'Missing';
-        }
-      }
-      updateSubmissionDebuggerState();
-
-      // Toggle Debugger Panel
-      if (toggleDebugBtn && debugPanel) {
-        toggleDebugBtn.addEventListener('click', () => {
-          const isHidden = debugPanel.style.display === 'none';
-          debugPanel.style.display = isHidden ? 'block' : 'none';
-          toggleDebugBtn.textContent = isHidden ? 'Hide Debugger' : 'Submission Debugger';
-        });
-      }
-
-      // Probe Endpoint on demand
-      if (debugTestPingBtn) {
-        debugTestPingBtn.addEventListener('click', async () => {
-          debugTestPingBtn.textContent = 'Probing...';
-          try {
-            const report = await diagnoseDatabase();
-            if (debugTraceJson) debugTraceJson.textContent = JSON.stringify(report, null, 2);
-            if (debugTraceTime) debugTraceTime.textContent = new Date().toLocaleTimeString();
-
-            if (report.overallStatus === 'CONFIG_MISSING') {
-              showToast('Supabase credentials not configured in this browser.', true);
-            } else if (report.applicationsCheck.ok) {
-              showToast(`Supabase Probe Success: applications table accessible (${report.applicationsCheck.count} rows).`);
-            } else {
-              showToast(`Supabase Probe Issue: ${report.applicationsCheck.error}`, true);
-            }
-          } catch (e) {
-            showToast(`Probe Exception: ${e.message}`, true);
-          } finally {
-            debugTestPingBtn.textContent = 'Probe Supabase';
-          }
-        });
-      }
-
-      // Clear Log
-      if (debugClearLogBtn && debugTraceJson) {
-        debugClearLogBtn.addEventListener('click', () => {
-          debugTraceJson.textContent = 'Log cleared. Awaiting submission...';
-        });
-      }
-
-      // Copy SQL Fix from debugger
-      if (debugCopySqlBtn) {
-        debugCopySqlBtn.addEventListener('click', () => {
-          const sql = debugSqlCode?.textContent || getApplicationsSqlFix();
-          navigator.clipboard.writeText(sql).then(() => {
-            showToast('SQL fix script copied to clipboard! Run in Supabase SQL Editor.');
-          });
-        });
-      }
-
-      // View Receipt from success screen
-      if (viewReceiptBtn) {
-        viewReceiptBtn.addEventListener('click', () => {
-          if (successState) successState.style.display = 'none';
-          if (form) {
-            form.style.display = 'block';
-            form.style.opacity = '1';
-            form.style.transform = 'none';
-          }
-          if (debugPanel) debugPanel.style.display = 'block';
-          if (toggleDebugBtn) toggleDebugBtn.textContent = 'Hide Debugger';
-        });
-      }
 
       if (form) {
         form.addEventListener('submit', async (e) => {
@@ -3425,10 +3248,6 @@
             submitBtn.disabled = true;
           }
 
-          // Reset debugger banners
-          if (debugErrorBanner) debugErrorBanner.style.display = 'none';
-          if (debugSuccessBanner) debugSuccessBanner.style.display = 'none';
-
           try {
             const res = await submitApplication({
               fullName: nameVal,
@@ -3443,21 +3262,8 @@
               referral: referralVal
             });
 
-            // Always display trace in debugger
-            if (debugTraceJson) debugTraceJson.textContent = JSON.stringify(res, null, 2);
-            if (debugTraceTime) debugTraceTime.textContent = new Date().toLocaleTimeString();
-
-            // Scenario 1: Full Supabase Cloud Success
-            if (res.success && !res.localOnly) {
-              if (statusDot) statusDot.style.background = '#10b981';
-              if (statusText) statusText.textContent = 'Transmission Engine: Success (HTTP 201 Created)';
-              if (debugSuccessBanner) {
-                debugSuccessBanner.style.display = 'block';
-                const succDetail = document.getElementById('debug-success-details');
-                if (succDetail) succDetail.textContent = `Record successfully written to Supabase public.applications table.`;
-              }
-
-              showToast('Application securely transmitted to Supabase Registry.');
+            if (res.success) {
+              showToast('Application securely transmitted.');
 
               // Smooth curtain fall transition
               setTimeout(() => {
@@ -3472,71 +3278,9 @@
                   }
                 }, 500);
               }, 700);
-
-            // Scenario 2: Saved locally because Supabase credentials not set
-            } else if (res.localOnly && res.error?.code === 'CONFIG_MISSING') {
-              if (statusDot) statusDot.style.background = '#f59e0b';
-              if (statusText) statusText.textContent = 'Transmission Engine: Saved Locally (Cloud Unconfigured)';
-              
-              if (debugPanel) debugPanel.style.display = 'block';
-              if (toggleDebugBtn) toggleDebugBtn.textContent = 'Hide Debugger';
-
-              if (debugErrorBanner) {
-                debugErrorBanner.style.display = 'block';
-                debugErrorBanner.style.background = 'rgba(245, 158, 11, 0.12)';
-                debugErrorBanner.style.borderColor = '#f59e0b';
-                debugErrorBanner.style.color = '#fde68a';
-                if (debugErrorTitle) {
-                  debugErrorTitle.style.color = '#f59e0b';
-                  debugErrorTitle.textContent = 'Notice: Cloud Credentials Not Embedded in Codebase (Saved Locally)';
-                }
-                if (debugErrorMsg) debugErrorMsg.textContent = 'This website does not have a Supabase Project URL and Anon Key embedded in supabase-config.js yet.';
-                if (debugErrorHint) debugErrorHint.textContent = 'Your application has been safely preserved in local storage. To connect all public applicants directly to Supabase, the website administrator needs to add the project URL and Anon Public Key to supabase-config.js.';
-              }
-
-              if (debugSqlFixWrap) {
-                debugSqlFixWrap.style.display = 'block';
-                if (debugSqlCode) debugSqlCode.textContent = getApplicationsSqlFix();
-              }
-
-              showToast('Saved to local storage only. Supabase credentials are not configured on this browser.', true);
-
-              if (submitBtn) {
-                submitBtn.innerHTML = `<span>Request an Invitation</span> <span aria-hidden="true">&rarr;</span>`;
-                submitBtn.style.opacity = '1';
-                submitBtn.disabled = false;
-              }
-
-            // Scenario 3: Database error (e.g. RLS policy violation or missing table)
             } else {
-              const err = res.error || { code: 'DATABASE_ERROR', message: 'Transmission rejected by database.' };
-              if (statusDot) statusDot.style.background = '#ef4444';
-              if (statusText) statusText.textContent = `Transmission Engine: Database Error [${err.code}]`;
-
-              // Force open debugger so user can diagnose and fix immediately
-              if (debugPanel) debugPanel.style.display = 'block';
-              if (toggleDebugBtn) toggleDebugBtn.textContent = 'Hide Debugger';
-
-              if (debugErrorBanner) {
-                debugErrorBanner.style.display = 'block';
-                debugErrorBanner.style.background = 'rgba(239, 68, 68, 0.12)';
-                debugErrorBanner.style.borderColor = '#ef4444';
-                debugErrorBanner.style.color = '#fca5a5';
-                if (debugErrorTitle) {
-                  debugErrorTitle.style.color = '#ef4444';
-                  debugErrorTitle.textContent = `Database Error: [${err.code}]`;
-                }
-                if (debugErrorMsg) debugErrorMsg.textContent = err.message;
-                if (debugErrorHint) debugErrorHint.textContent = err.hint || 'Check RLS policies and table schema.';
-              }
-
-              if (err.sqlFix && debugSqlFixWrap && debugSqlCode) {
-                debugSqlFixWrap.style.display = 'block';
-                debugSqlCode.textContent = err.sqlFix;
-              }
-
-              showToast(`Database error [${err.code}]: ${err.message}`, true);
-
+              const err = res.error || { message: 'Submission could not be completed.' };
+              showToast(`Submission notice: ${err.message}`, true);
               if (submitBtn) {
                 submitBtn.innerHTML = `<span>Request an Invitation</span> <span aria-hidden="true">&rarr;</span>`;
                 submitBtn.style.opacity = '1';
