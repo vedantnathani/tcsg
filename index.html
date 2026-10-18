@@ -1,0 +1,3616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>High Finance Guild — An Invitation-Only Circle</title>
+  <meta name="description" content="An invitation-only circle of exceptional minds across finance, strategy, and capital. Selective by design.">
+  <meta name="theme-color" content="#0A0A0A">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230A0A0A'/><circle cx='16' cy='16' r='12' fill='none' stroke='%23FFFFFF' stroke-width='1.5'/><line x1='12' y1='9' x2='12' y2='23' stroke='%23FFFFFF' stroke-width='1.5'/><line x1='20' y1='9' x2='20' y2='23' stroke='%23FFFFFF' stroke-width='1.5'/><line x1='12' y1='16' x2='20' y2='16' stroke='%23FFFFFF' stroke-width='1.5'/></svg>">
+  
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM TOKENS & RESET
+       "The Room" — Neurological Architecture
+       ========================================================================== */
+    :root {
+      --color-black: #0A0A0A;
+      --color-white: #FFFFFF;
+      --color-offwhite: #F5F5F3;
+      --color-warm-grey: #E8E6E1;
+      --color-mid-grey: #888888;
+      --color-charcoal: #1A1A1A;
+      /* Exactly ONE restrained metallic accent used strictly 3 times */
+      --color-gold: #C4A77D;
+
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      
+      --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-door: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: var(--color-white);
+      color: var(--color-black);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--color-black);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Grain Texture Overlay */
+    .paper-grain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Custom Subtle Cursor Tag */
+    #cursor-follower {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(10, 10, 10, 0.4);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-sans);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-black);
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.25s var(--ease-luxe), opacity 0.25s ease;
+      opacity: 0;
+    }
+
+    #cursor-follower.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    /* Accessibility focus */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 2px solid var(--color-black);
+      outline-offset: 2px;
+    }
+
+    /* Common Typography & Microcopy */
+    .plaque-label {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+      display: block;
+      margin-bottom: 1.25rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 0 4rem;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        padding: 0 2rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 0 1.5rem;
+      }
+    }
+
+    /* ==========================================================================
+       INITIAL LOAD SCREEN ("The Wax Seal")
+       ========================================================================== */
+    #loader-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--color-white);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s var(--ease-luxe), visibility 0.8s;
+    }
+
+    #loader-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-seal-svg {
+      width: 90px;
+      height: 90px;
+    }
+
+    .loader-seal-svg circle,
+    .loader-seal-svg path,
+    .loader-seal-svg line {
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      animation: drawStroke 1.5s var(--ease-luxe) forwards;
+    }
+
+    @keyframes drawStroke {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    /* ==========================================================================
+       NAVIGATION
+       ========================================================================== */
+    .site-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 900;
+      padding: 1.75rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.4s var(--ease-luxe), padding 0.4s var(--ease-luxe), border-color 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+
+    .site-nav.scrolled {
+      padding: 1.1rem 4rem;
+      background-color: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom-color: var(--color-warm-grey);
+    }
+
+    /* Inverted nav when scrolling over dark section */
+    .site-nav.nav-dark {
+      background-color: rgba(26, 26, 26, 0.94);
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    .site-nav.nav-dark .brand-name {
+      color: var(--color-white);
+    }
+    .site-nav.nav-dark .brand-seal circle,
+    .site-nav.nav-dark .brand-seal path,
+    .site-nav.nav-dark .brand-seal line {
+      stroke: var(--color-white);
+    }
+    .site-nav.nav-dark .nav-cta {
+      color: var(--color-white);
+    }
+    .site-nav.nav-dark .nav-cta::after {
+      background-color: var(--color-white);
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: var(--color-black);
+    }
+
+    .brand-seal {
+      width: 28px;
+      height: 28px;
+      transition: transform 0.6s var(--ease-luxe);
+    }
+
+    .brand-mark:hover .brand-seal {
+      transform: rotate(45deg);
+    }
+
+    /* Accent usage 1: emblem outline on hover */
+    .brand-mark:hover .seal-accent-ring {
+      stroke: var(--color-gold) !important;
+    }
+
+    .brand-name {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      font-weight: 400;
+      transition: color 0.4s ease;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .nav-item {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--color-black);
+      position: relative;
+      padding-bottom: 2px;
+      transition: color 0.3s ease;
+    }
+
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background-color: var(--color-black);
+      transition: width 0.4s var(--ease-luxe);
+    }
+
+    .nav-item:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--color-black);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      padding-bottom: 3px;
+    }
+
+    .nav-cta::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-black);
+      transition: transform 0.4s var(--ease-luxe);
+      transform-origin: right;
+    }
+
+    .nav-cta:hover::after {
+      transform: scaleX(0);
+      transform-origin: right;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 32px;
+      height: 24px;
+      position: relative;
+      z-index: 1001;
+    }
+
+    .mobile-menu-btn span {
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: var(--color-black);
+      position: absolute;
+      left: 0;
+      transition: transform 0.4s var(--ease-luxe), top 0.4s var(--ease-luxe), background-color 0.4s;
+    }
+
+    .mobile-menu-btn span:nth-child(1) { top: 6px; }
+    .mobile-menu-btn span:nth-child(2) { top: 18px; }
+
+    .site-nav.nav-dark .mobile-menu-btn span {
+      background: var(--color-white);
+    }
+
+    /* Mobile circular reveal overlay */
+    .mobile-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--color-black);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem;
+      clip-path: circle(0% at top right);
+      transition: clip-path 0.7s var(--ease-luxe);
+      pointer-events: none;
+    }
+
+    .mobile-overlay.open {
+      clip-path: circle(150% at top right);
+      pointer-events: auto;
+    }
+
+    .mobile-nav-link {
+      font-family: var(--font-serif);
+      font-size: 2.25rem;
+      color: var(--color-white);
+      text-decoration: none;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s var(--ease-luxe);
+    }
+
+    .mobile-overlay.open .mobile-nav-link {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ==========================================================================
+       HERO — "The Threshold"
+       ========================================================================== */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      padding: 12vh 4rem 4rem 4rem;
+      background-color: var(--color-white);
+      overflow: hidden;
+    }
+
+    /* Ambient slow rotating watermark emblem */
+    .hero-watermark {
+      position: absolute;
+      right: -8%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 620px;
+      height: 620px;
+      opacity: 0.04;
+      pointer-events: none;
+      animation: slowRotate 720s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes slowRotate {
+      from { transform: translateY(-50%) rotate(0deg); }
+      to { transform: translateY(-50%) rotate(360deg); }
+    }
+
+    .hero-body {
+      position: relative;
+      z-index: 2;
+      max-width: 860px;
+      margin-top: 8vh;
+    }
+
+    .hero-headline {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(3.2rem, 7vw, 5.8rem);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      color: var(--color-black);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1s var(--ease-luxe) 0.4s forwards;
+    }
+
+    .hero-headline span.isolated-word {
+      display: block;
+      color: var(--color-black);
+    }
+
+    .hero-divider {
+      width: 120px;
+      height: 1px;
+      background-color: var(--color-warm-grey);
+      margin: 2.75rem 0 2rem 0;
+      opacity: 0;
+      animation: fadeIn 0.8s var(--ease-luxe) 0.8s forwards;
+    }
+
+    .hero-subline {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--color-mid-grey);
+      max-width: 480px;
+      font-weight: 300;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s var(--ease-luxe) 0.9s forwards;
+    }
+
+    .hero-footer {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 3rem;
+      border-top: 1px solid var(--color-warm-grey);
+      opacity: 0;
+      animation: fadeIn 0.8s var(--ease-luxe) 1.1s forwards;
+    }
+
+    .hero-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--color-white);
+      background-color: var(--color-black);
+      padding: 1.1rem 2.2rem;
+      transition: background-color 0.4s var(--ease-luxe), color 0.4s ease, transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-cta-btn:hover {
+      background-color: var(--color-charcoal);
+      transform: translateY(-2px);
+    }
+
+    .scarcity-signal {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+      font-weight: 400;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ==========================================================================
+       THE GUILD — "The Narrative"
+       ========================================================================== */
+    .narrative-section {
+      background-color: var(--color-offwhite);
+      padding: 10rem 0;
+      border-top: 1px solid var(--color-warm-grey);
+      border-bottom: 1px solid var(--color-warm-grey);
+    }
+
+    .narrative-grid {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .narrative-headline {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(2.4rem, 4vw, 3.8rem);
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      color: var(--color-black);
+      max-width: 380px;
+    }
+
+    /* Accent usage 2: the period after network. */
+    .accent-dot {
+      color: var(--color-gold);
+      font-family: var(--font-serif);
+    }
+
+    .narrative-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .narrative-p {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: #2b2b2b;
+    }
+
+    .editorial-pullquote {
+      font-family: var(--font-serif);
+      font-size: 1.65rem;
+      line-height: 1.35;
+      font-style: italic;
+      color: var(--color-black);
+      border-left: 2px solid var(--color-black);
+      padding-left: 2rem;
+      margin: 1.5rem 0;
+    }
+
+    /* Statistics Bar */
+    .stats-bar {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding-top: 5rem;
+      margin-top: 3rem;
+      border-top: 1px solid var(--color-warm-grey);
+      gap: 2rem;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: clamp(3rem, 4.5vw, 4.2rem);
+      font-weight: 300;
+      line-height: 1;
+      color: var(--color-black);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+      font-weight: 500;
+    }
+
+    /* ==========================================================================
+       MEMBERS — "The Gallery"
+       ========================================================================== */
+    .members-section {
+      background-color: var(--color-white);
+      padding: 10rem 0;
+      position: relative;
+    }
+
+    .directory-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 3.5rem;
+    }
+
+    .directory-title {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(2.5rem, 4.5vw, 4rem);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+
+    /* Sticky Search & Filter Bar */
+    .filter-sticky-bar {
+      position: sticky;
+      top: 72px;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1.25rem 0;
+      margin-bottom: 4rem;
+      border-bottom: 1px solid var(--color-warm-grey);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--color-warm-grey);
+      padding-bottom: 0.4rem;
+      width: 280px;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-wrapper:focus-within {
+      border-color: var(--color-black);
+    }
+
+    .search-icon {
+      width: 14px;
+      height: 14px;
+      stroke: var(--color-mid-grey);
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      border: none;
+      background: none;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--color-black);
+      width: 100%;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: var(--color-mid-grey);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--color-mid-grey);
+      cursor: pointer;
+      padding-bottom: 4px;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .filter-tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background-color: var(--color-black);
+      transition: width 0.3s var(--ease-luxe);
+    }
+
+    .filter-tab-btn.active {
+      color: var(--color-black);
+      font-weight: 500;
+    }
+
+    .filter-tab-btn.active::after {
+      width: 100%;
+    }
+
+    /* Magazine Asymmetric Grid */
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.25rem;
+    }
+
+    /* Member Card Design */
+    .member-card {
+      background: var(--color-offwhite);
+      border: 1px solid var(--color-warm-grey);
+      padding: 2.5rem;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 380px;
+      transition: transform 0.5s var(--ease-luxe), box-shadow 0.5s var(--ease-luxe), border-color 0.4s;
+      overflow: hidden;
+    }
+
+    /* Asymmetric rhythm classes */
+    .member-card.featured-card {
+      grid-column: span 2;
+      background: #FAFAF8;
+    }
+
+    /* Top border draw animation on hover */
+    .member-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--color-black);
+      transition: width 0.5s var(--ease-luxe);
+      z-index: 3;
+    }
+
+    /* Watermark micro-emblem at 8% opacity */
+    .card-watermark {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 48px;
+      height: 48px;
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 0.5s var(--ease-luxe), transform 0.5s var(--ease-luxe);
+      pointer-events: none;
+    }
+
+    .member-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.05);
+      border-color: rgba(10, 10, 10, 0.2);
+    }
+
+    .member-card:hover::before {
+      width: 100%;
+    }
+
+    .member-card:hover .card-watermark {
+      opacity: 0.08;
+      transform: scale(1);
+    }
+
+    .member-card:hover .portrait-img {
+      transform: scale(1.05);
+    }
+
+    .card-header-flex {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .portrait-wrap {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--color-warm-grey);
+      flex-shrink: 0;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    .featured-card .portrait-wrap {
+      width: 110px;
+      height: 110px;
+    }
+
+    .portrait-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(1.12);
+      transition: transform 0.5s var(--ease-luxe);
+    }
+
+    /* Editorial portrait fallback canvas/generator */
+    .portrait-avatar-art {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #333333 0%, #111111 100%);
+      color: var(--color-white);
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .member-info {
+      flex: 1;
+    }
+
+    .member-name {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--color-black);
+      margin-bottom: 0.25rem;
+    }
+
+    .member-role {
+      font-size: 13px;
+      color: var(--color-mid-grey);
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+
+    .credentials-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .cred-tag {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid var(--color-warm-grey);
+      color: #333333;
+      background: var(--color-white);
+    }
+
+    .member-body {
+      margin-top: 1rem;
+      flex: 1;
+    }
+
+    .member-featured-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.15rem;
+      line-height: 1.5;
+      color: #262626;
+      margin-bottom: 1.25rem;
+      padding-left: 1rem;
+      border-left: 1px solid var(--color-mid-grey);
+    }
+
+    .member-short-bio {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: #555555;
+      margin-bottom: 1.25rem;
+    }
+
+    .member-meta-bottom {
+      border-top: 1px solid var(--color-warm-grey);
+      padding-top: 1.25rem;
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .member-location {
+      font-size: 12px;
+      color: var(--color-mid-grey);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .loc-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--color-mid-grey);
+    }
+
+    .member-interests {
+      font-size: 12px;
+      color: #444444;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .interest-bullet {
+      display: inline-block;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background-color: var(--color-mid-grey);
+    }
+
+    /* ==========================================================================
+       FULL-SCREEN MEMBER PROFILE MODAL ("The Deep Dive")
+       ========================================================================== */
+    .profile-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.7);
+      backdrop-filter: blur(16px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s var(--ease-luxe);
+    }
+
+    .profile-modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .profile-modal-dialog {
+      width: 90%;
+      max-width: 1040px;
+      max-height: 90vh;
+      background: var(--color-white);
+      display: grid;
+      grid-template-columns: 40% 60%;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 32px 64px rgba(0, 0, 0, 0.24);
+      transform: scale(0.96) translateY(20px);
+      transition: transform 0.4s var(--ease-luxe);
+    }
+
+    .profile-modal-backdrop.active .profile-modal-dialog {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 2rem;
+      right: 2.25rem;
+      background: none;
+      border: none;
+      font-size: 28px;
+      font-weight: 300;
+      cursor: pointer;
+      color: var(--color-black);
+      line-height: 1;
+      padding: 0.5rem;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+    }
+
+    .modal-left-col {
+      background: var(--color-offwhite);
+      padding: 4rem 3rem;
+      border-right: 1px solid var(--color-warm-grey);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .modal-portrait {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      border: 1px solid var(--color-warm-grey);
+    }
+
+    .modal-portrait img, .modal-portrait .portrait-avatar-art {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(1.12);
+    }
+
+    .modal-name {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-role {
+      font-size: 14px;
+      color: var(--color-mid-grey);
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-right-col {
+      padding: 4.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .modal-bio-heading {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      color: var(--color-black);
+    }
+
+    .modal-bio-text {
+      font-size: 15px;
+      line-height: 1.85;
+      color: #333333;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    .modal-tags-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .modal-section-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .modal-tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .modal-tag {
+      font-size: 12px;
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--color-warm-grey);
+      color: #333333;
+    }
+
+    .modal-footer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--color-warm-grey);
+      padding-top: 1.75rem;
+    }
+
+    .member-since-badge {
+      font-size: 12px;
+      color: var(--color-mid-grey);
+      letter-spacing: 0.05em;
+    }
+
+    .member-since-badge span {
+      color: var(--color-gold);
+      font-family: var(--font-serif);
+      font-size: 14px;
+    }
+
+    .modal-connect-link {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-black);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 500;
+    }
+
+    .modal-connect-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ==========================================================================
+       FOUNDERS — "The Origin Story"
+       ========================================================================== */
+    .founders-section {
+      background-color: var(--color-offwhite);
+      padding: 10rem 0;
+      border-top: 1px solid var(--color-warm-grey);
+      border-bottom: 1px solid var(--color-warm-grey);
+    }
+
+    .founders-header {
+      margin-bottom: 5rem;
+      text-align: left;
+    }
+
+    .founders-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 4vw, 3.8rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+    }
+
+    .founders-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3.5rem;
+      margin-bottom: 5rem;
+    }
+
+    .founder-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .founder-portrait-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-width: 220px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-bottom: 2.25rem;
+      border: 1px solid var(--color-warm-grey);
+      background: #E5E3DE;
+    }
+
+    .founder-portrait-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(1.18);
+      transition: transform 0.6s var(--ease-luxe);
+    }
+
+    .founder-card:hover .founder-portrait-container img {
+      transform: scale(1.04);
+    }
+
+    /* Founder Emblem Variant (with compass star point) */
+    .founder-seal-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 34px;
+      height: 34px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.6s var(--ease-luxe);
+      z-index: 2;
+    }
+
+    .founder-card:hover .founder-seal-badge {
+      transform: rotate(90deg);
+    }
+
+    .founder-name {
+      font-family: var(--font-serif);
+      font-size: 1.75rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.35rem;
+    }
+
+    .founder-role {
+      font-size: 13px;
+      color: var(--color-mid-grey);
+      margin-bottom: 1.25rem;
+    }
+
+    .founder-bio {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #3b3b3b;
+      margin-bottom: 1.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .founder-linkedin {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-black);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 500;
+      transition: gap 0.3s ease;
+    }
+
+    .founder-linkedin:hover {
+      gap: 0.75rem;
+    }
+
+    .founders-institution-credit {
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+      padding-top: 2rem;
+      border-top: 1px solid var(--color-warm-grey);
+    }
+
+    /* ==========================================================================
+       MANIFESTO — "The Charter"
+       ========================================================================== */
+    .manifesto-section {
+      background-color: var(--color-charcoal);
+      color: var(--color-white);
+      padding: 12rem 0;
+      position: relative;
+      overflow: hidden;
+      transition: background-color 0.8s ease;
+    }
+
+    .manifesto-inner {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 4rem;
+    }
+
+    .manifesto-header {
+      text-align: center;
+      margin-bottom: 7rem;
+    }
+
+    .manifesto-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      font-weight: 300;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--color-white);
+      max-width: 920px;
+      margin: 0 auto 2.5rem auto;
+    }
+
+    /* Accent usage 3: the word "circle" in Manifesto */
+    .manifesto-gold-word {
+      color: var(--color-gold);
+      font-family: var(--font-serif);
+    }
+
+    .manifesto-divider {
+      width: 60px;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 0 auto;
+    }
+
+    /* Masonry Layout for 5 Principles */
+    .manifesto-masonry {
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+    }
+
+    .principle-item {
+      position: relative;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .principle-item.full-width {
+      width: 100%;
+    }
+
+    .principle-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+
+    .principle-item.center-narrow {
+      width: 65%;
+      margin: 0 auto;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 3rem;
+    }
+
+    .principle-num {
+      font-family: var(--font-serif);
+      font-size: 5.5rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.12);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.04em;
+    }
+
+    .principle-title {
+      font-family: var(--font-serif);
+      font-size: 1.95rem;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      color: var(--color-white);
+      margin-bottom: 1.25rem;
+    }
+
+    .principle-text {
+      font-size: 15px;
+      line-height: 1.78;
+      color: rgba(255, 255, 255, 0.65);
+      font-weight: 300;
+      max-width: 680px;
+    }
+
+    .principle-item.center-narrow .principle-text {
+      margin: 0 auto;
+      max-width: 580px;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* ==========================================================================
+       WHAT MEMBERS FIND — "The Value Proposition"
+       ========================================================================== */
+    .value-section {
+      background-color: var(--color-white);
+      padding: 10rem 0;
+      border-bottom: 1px solid var(--color-warm-grey);
+    }
+
+    .value-header {
+      margin-bottom: 5rem;
+    }
+
+    .value-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 4vw, 3.8rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+    }
+
+    /* Horizontal Accordion */
+    .accordion-container {
+      display: flex;
+      height: 520px;
+      width: 100%;
+      border: 1px solid var(--color-warm-grey);
+      overflow: hidden;
+      background: var(--color-offwhite);
+    }
+
+    .accordion-slice {
+      flex: 1;
+      border-right: 1px solid var(--color-warm-grey);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem 2.5rem;
+      position: relative;
+      cursor: pointer;
+      background: var(--color-offwhite);
+      transition: flex 0.7s var(--ease-door), background-color 0.4s ease;
+      overflow: hidden;
+    }
+
+    .accordion-slice:last-child {
+      border-right: none;
+    }
+
+    .accordion-slice:hover,
+    .accordion-slice.active {
+      flex: 2.2;
+      background: var(--color-white);
+    }
+
+    .slice-num {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: var(--color-mid-grey);
+      line-height: 1;
+    }
+
+    .slice-title-vertical {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      color: var(--color-black);
+      white-space: nowrap;
+      transform-origin: left bottom;
+      transition: transform 0.6s var(--ease-door), opacity 0.4s;
+    }
+
+    .slice-body {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s var(--ease-luxe) 0.15s, transform 0.5s var(--ease-luxe) 0.15s;
+      max-width: 420px;
+      pointer-events: none;
+    }
+
+    .accordion-slice:hover .slice-body,
+    .accordion-slice.active .slice-body {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .slice-body-text {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333333;
+      font-weight: 300;
+      margin-top: 1.5rem;
+    }
+
+    /* Mobile Accordion Stack */
+    @media (max-width: 900px) {
+      .accordion-container {
+        height: auto;
+        flex-direction: column;
+      }
+      .accordion-slice {
+        flex: none !important;
+        border-right: none;
+        border-bottom: 1px solid var(--color-warm-grey);
+        padding: 2.5rem 1.75rem;
+      }
+      .slice-body {
+        opacity: 1 !important;
+        transform: none !important;
+        pointer-events: auto !important;
+      }
+    }
+
+    /* ==========================================================================
+       INVITATION — "The Threshold"
+       ========================================================================== */
+    .invitation-section {
+      background-color: var(--color-offwhite);
+      padding: 10rem 0 12rem 0;
+      position: relative;
+    }
+
+    .invitation-grid {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .invitation-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+      font-weight: 300;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      margin-bottom: 2rem;
+    }
+
+    .invitation-subline {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--color-mid-grey);
+      font-weight: 300;
+      max-width: 420px;
+    }
+
+    /* Form Design with Progressive Disclosure */
+    .form-wrapper {
+      background: var(--color-white);
+      border: 1px solid var(--color-warm-grey);
+      padding: 3.5rem;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.02);
+    }
+
+    .form-step {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .form-step-divider {
+      height: 1px;
+      background: var(--color-warm-grey);
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .form-step-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+      margin-bottom: 0.5rem;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
+    }
+
+    .field-group {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field-group.full-span {
+      grid-column: 1 / -1;
+    }
+
+    .floating-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+      margin-bottom: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .field-group:focus-within .floating-label {
+      color: var(--color-black);
+    }
+
+    .luxe-input, .luxe-textarea, .luxe-select {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--color-black);
+      border: 1px solid var(--color-warm-grey);
+      background: var(--color-white);
+      padding: 0.9rem 1rem;
+      width: 100%;
+      border-radius: 0;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .luxe-input:focus, .luxe-textarea:focus, .luxe-select:focus {
+      outline: none;
+      border-color: var(--color-black);
+    }
+
+    .luxe-textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--color-black);
+      color: var(--color-white);
+      border: 1px solid var(--color-black);
+      padding: 1.25rem 2rem;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      transition: background-color 0.4s var(--ease-luxe), color 0.4s var(--ease-luxe), border-color 0.4s;
+      margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+      background: var(--color-white);
+      color: var(--color-black);
+    }
+
+    /* Success State Curtain Fall */
+    #success-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      animation: fadeIn 0.8s var(--ease-luxe) forwards;
+    }
+
+    .check-svg {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 2rem;
+    }
+
+    .check-svg circle, .check-svg path {
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      animation: drawStroke 0.9s var(--ease-luxe) 0.2s forwards;
+    }
+
+    .success-headline {
+      font-family: var(--font-serif);
+      font-size: 2.25rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 1rem;
+    }
+
+    .success-subline {
+      font-size: 14.5px;
+      color: var(--color-mid-grey);
+      line-height: 1.75;
+      max-width: 440px;
+      margin: 0 auto 2.5rem auto;
+      font-weight: 300;
+    }
+
+    .return-top-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-black);
+      cursor: pointer;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--color-black);
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .site-footer {
+      background-color: var(--color-black);
+      color: var(--color-white);
+      padding: 6rem 0 3rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 5rem;
+      flex-wrap: wrap;
+      gap: 3rem;
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 320px;
+    }
+
+    .footer-seal {
+      width: 36px;
+      height: 36px;
+    }
+
+    .footer-seal circle, .footer-seal path, .footer-seal line {
+      stroke: var(--color-white);
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.7;
+    }
+
+    .footer-links-group {
+      display: flex;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .footer-col-title {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-link {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--color-white);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    /* ==========================================================================
+       RESPONSIVE ADJUSTMENTS
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .narrative-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .members-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .member-card.featured-card {
+        grid-column: span 2;
+      }
+      .founders-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .invitation-grid {
+        grid-template-columns: 1fr;
+        gap: 3.5rem;
+      }
+      .profile-modal-dialog {
+        grid-template-columns: 1fr;
+      }
+      .modal-left-col {
+        border-right: none;
+        border-bottom: 1px solid var(--color-warm-grey);
+        padding: 3rem 2rem;
+      }
+      .modal-right-col {
+        padding: 3rem 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .site-nav {
+        padding: 1.25rem 1.5rem;
+      }
+      .nav-links {
+        display: none;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .hero-section {
+        padding: 18vh 1.5rem 2.5rem 1.5rem;
+      }
+      .hero-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+      }
+      .members-grid {
+        grid-template-columns: 1fr;
+      }
+      .member-card.featured-card {
+        grid-column: span 1;
+      }
+      .founders-grid {
+        grid-template-columns: 1fr;
+      }
+      .principle-two-col {
+        grid-template-columns: 1fr;
+      }
+      .principle-item.center-narrow {
+        width: 100%;
+        text-align: left;
+      }
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+      .form-wrapper {
+        padding: 2rem 1.5rem;
+      }
+    }
+
+    /* Accessibility: Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+    /* ==========================================================================
+       ADMIN CONSOLE & NOTIFICATION SYSTEM
+       ========================================================================== */
+    .footer-admin-link {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-admin-link:hover {
+      color: var(--color-gold);
+    }
+    .admin-indicator-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      display: inline-block;
+    }
+    .admin-indicator-dot.fallback {
+      background: #facc15;
+    }
+
+    /* Admin Delete Button on Member Cards */
+    .card-admin-actions {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 10;
+      display: none;
+      gap: 6px;
+    }
+    body.admin-mode-active .card-admin-actions {
+      display: flex;
+    }
+    .card-delete-btn {
+      background: rgba(10, 10, 10, 0.85);
+      color: #f87171;
+      border: 1px solid rgba(248, 113, 113, 0.4);
+      padding: 4px 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-radius: 2px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+    }
+    .card-delete-btn:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+    }
+
+    /* Admin Modal */
+    .admin-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 10, 10, 0.88);
+      backdrop-filter: blur(12px);
+      z-index: 1200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.35s var(--ease-luxe);
+      padding: 1.5rem;
+    }
+    .admin-modal-backdrop.active {
+      display: flex;
+      opacity: 1;
+    }
+    .admin-modal-dialog {
+      background: var(--color-black);
+      border: 1px solid rgba(196, 167, 125, 0.3);
+      width: 100%;
+      max-width: 780px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      color: var(--color-white);
+      overflow: hidden;
+    }
+    .admin-modal-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .admin-modal-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--color-white);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .admin-status-badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .admin-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0 2rem;
+      gap: 1.5rem;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .admin-tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--color-mid-grey);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 1rem 0;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .admin-tab-btn:hover {
+      color: var(--color-white);
+    }
+    .admin-tab-btn.active {
+      color: var(--color-gold);
+      border-bottom-color: var(--color-gold);
+    }
+    .admin-modal-body {
+      padding: 2rem;
+      overflow-y: auto;
+      max-height: calc(90vh - 140px);
+    }
+    .admin-pane {
+      display: none;
+    }
+    .admin-pane.active {
+      display: block;
+    }
+    .admin-input, .admin-select, .admin-textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--color-white);
+      padding: 0.75rem 1rem;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      border-radius: 2px;
+      transition: border-color 0.25s ease;
+      margin-top: 6px;
+    }
+    .admin-input:focus, .admin-select:focus, .admin-textarea:focus {
+      outline: none;
+      border-color: var(--color-gold);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .admin-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+      display: block;
+      margin-top: 1rem;
+    }
+    .admin-label:first-child {
+      margin-top: 0;
+    }
+    .admin-btn {
+      background: var(--color-gold);
+      color: var(--color-black);
+      border: none;
+      padding: 0.85rem 1.75rem;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-top: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .admin-btn:hover {
+      background: #d8be96;
+      transform: translateY(-1px);
+    }
+    .admin-member-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      transition: background 0.2s ease;
+    }
+    .admin-member-row:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .admin-member-row-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .admin-member-row-name {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--color-white);
+    }
+    .admin-member-row-role {
+      font-size: 12px;
+      color: var(--color-mid-grey);
+    }
+    .admin-row-delete-btn {
+      background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      padding: 4px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s ease;
+    }
+    .admin-row-delete-btn:hover {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    /* Elegant Notification Toast */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1500;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .luxe-toast {
+      background: var(--color-black);
+      border: 1px solid var(--color-gold);
+      color: var(--color-white);
+      padding: 14px 20px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border-radius: 2px;
+      animation: toastIn 0.3s var(--ease-luxe) forwards;
+      pointer-events: auto;
+    }
+    .luxe-toast.toast-error {
+      border-color: #ef4444;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Subtle Paper Grain Filter Overlay -->
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <!-- Subtle Cursor Interactivity Indicator -->
+  <div id="cursor-follower" aria-hidden="true">View</div>
+
+  <!-- Initial Load Wax Seal Screen -->
+  <div id="loader-screen" role="progressbar" aria-label="Authenticating Guild Seal">
+    <svg class="loader-seal-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="45" stroke="#0A0A0A" stroke-width="1.5" />
+      <circle cx="50" cy="50" r="39" stroke="#0A0A0A" stroke-width="0.75" stroke-dasharray="2 3" />
+      <line x1="36" y1="26" x2="36" y2="74" stroke="#0A0A0A" stroke-width="2" />
+      <line x1="64" y1="26" x2="64" y2="74" stroke="#0A0A0A" stroke-width="2" />
+      <line x1="36" y1="50" x2="64" y2="50" stroke="#0A0A0A" stroke-width="2" />
+      <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#0A0A0A" stroke-width="1.75" />
+    </svg>
+  </div>
+
+  <!-- Primary Site Navigation -->
+  <nav class="site-nav" id="main-nav" aria-label="Main Navigation">
+    <a href="#hero" class="brand-mark" aria-label="High Finance Guild Home">
+      <!-- Living Seal SVG Icon -->
+      <svg class="brand-seal" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle class="seal-accent-ring" cx="50" cy="50" r="45" stroke="#0A0A0A" stroke-width="2" />
+        <line x1="36" y1="26" x2="36" y2="74" stroke="#0A0A0A" stroke-width="2.5" />
+        <line x1="64" y1="26" x2="64" y2="74" stroke="#0A0A0A" stroke-width="2.5" />
+        <line x1="36" y1="50" x2="64" y2="50" stroke="#0A0A0A" stroke-width="2.5" />
+        <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#0A0A0A" stroke-width="2" />
+      </svg>
+      <span class="brand-name">HIGH FINANCE GUILD</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="#guild" class="nav-item">The Guild</a>
+      <a href="#members" class="nav-item">Directory</a>
+      <a href="#founders" class="nav-item">Origin</a>
+      <a href="#manifesto" class="nav-item">Manifesto</a>
+      <a href="#values" class="nav-item">The Pillars</a>
+      <a href="#invitation" class="nav-cta">Request an Invitation &rarr;</a>
+    </div>
+
+    <!-- Mobile Hamburger Trigger -->
+    <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Full-Screen Circular Wipe Overlay -->
+  <div class="mobile-overlay" id="mobile-overlay" aria-hidden="true">
+    <a href="#guild" class="mobile-nav-link">The Guild</a>
+    <a href="#members" class="mobile-nav-link">Members</a>
+    <a href="#founders" class="mobile-nav-link">Origin</a>
+    <a href="#manifesto" class="mobile-nav-link">Manifesto</a>
+    <a href="#values" class="mobile-nav-link">The Pillars</a>
+    <a href="#invitation" class="mobile-nav-link" style="color: var(--color-gold);">Request an Invitation &rarr;</a>
+  </div>
+
+  <main>
+    <!-- =======================================================================
+         HERO — "The Threshold"
+         ======================================================================= -->
+    <section class="hero-section" id="hero">
+      <!-- 540px Slow-Rotating Emblem Watermark at 4% Opacity -->
+      <svg class="hero-watermark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="50" cy="50" r="47" stroke="#0A0A0A" stroke-width="0.8" />
+        <circle cx="50" cy="50" r="42" stroke="#0A0A0A" stroke-width="0.4" stroke-dasharray="1 2" />
+        <circle cx="50" cy="50" r="32" stroke="#0A0A0A" stroke-width="0.5" />
+        <line x1="50" y1="2" x2="50" y2="98" stroke="#0A0A0A" stroke-width="0.3" stroke-dasharray="2 3" />
+        <line x1="2" y1="50" x2="98" y2="50" stroke="#0A0A0A" stroke-width="0.3" stroke-dasharray="2 3" />
+        <line x1="36" y1="26" x2="36" y2="74" stroke="#0A0A0A" stroke-width="1.8" />
+        <line x1="64" y1="26" x2="64" y2="74" stroke="#0A0A0A" stroke-width="1.8" />
+        <line x1="36" y1="50" x2="64" y2="50" stroke="#0A0A0A" stroke-width="1.8" />
+        <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#0A0A0A" stroke-width="1.6" />
+      </svg>
+
+      <div class="hero-body">
+        <h1 class="hero-headline">
+          For those<br>
+          building what<br>
+          <span class="isolated-word">comes next.</span>
+        </h1>
+
+        <div class="hero-divider"></div>
+
+        <p class="hero-subline">
+          An invitation-only circle of exceptional minds across finance, strategy and capital.
+        </p>
+      </div>
+
+      <div class="hero-footer">
+        <a href="#invitation" class="hero-cta-btn">
+          <span>Request an Invitation</span>
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+        <div class="scarcity-signal">Selective by design.</div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         THE GUILD — "The Narrative"
+         ======================================================================= -->
+    <section class="narrative-section" id="guild">
+      <div class="container">
+        <div class="narrative-grid">
+          <div>
+            <span class="plaque-label">The Guild</span>
+            <!-- Second usage of the metallic accent: period after 'network.' -->
+            <h2 class="narrative-headline">
+              Not a network<span class="accent-dot">.</span><br>
+              A circle of peers.
+            </h2>
+          </div>
+
+          <div class="narrative-content">
+            <p class="narrative-p">
+              The modern finance landscape is inundated with noise, transactional alliances, and superficial forums. The High Finance Guild was forged around a contrasting conviction: the most consequential breakthroughs in capital, strategic advisory, and institutional growth happen when high-caliber practitioners deliberate behind closed doors.
+            </p>
+
+            <p class="narrative-p">
+              We gather proven leaders—chartered accountants at the vanguard of financial architecture, private equity allocators, M&amp;A strategists, and founding partners who operate with rare discipline and compounding depth.
+            </p>
+
+            <blockquote class="editorial-pullquote">
+              &ldquo;The quality of your circle shapes the quality of your thinking.&rdquo;
+            </blockquote>
+
+            <p class="narrative-p">
+              Here, status is acknowledged without presumption, and intellectual rigor replaces posturing. This is not an audience. It is an intentional assembly where minds sharpen one another.
+            </p>
+          </div>
+
+          <!-- Counter Statistics Bar -->
+          <div class="stats-bar" id="stats-counter-bar">
+            <div class="stat-item">
+              <div class="stat-num" data-target="120" data-suffix="+">0</div>
+              <div class="stat-label">Members</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" data-target="40" data-suffix="+">0</div>
+              <div class="stat-label">Firms Represented</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" data-target="12" data-suffix="">0</div>
+              <div class="stat-label">Cities</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         MEMBERS — "The Gallery"
+         ======================================================================= -->
+    <section class="members-section" id="members">
+      <div class="container">
+        <div class="directory-header">
+          <div>
+            <span class="plaque-label">The Directory</span>
+            <h2 class="directory-title">Members</h2>
+          </div>
+        </div>
+
+        <!-- Sticky Filter & Search Bar -->
+        <div class="filter-sticky-bar">
+          <div class="search-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="21" y1="21" x2="16" y2="16" />
+            </svg>
+            <input type="text" id="member-search" class="search-input" placeholder="Search members..." aria-label="Search members by name or background">
+          </div>
+
+          <ul class="filter-tabs" role="tablist">
+            <li><button class="filter-tab-btn active" data-filter="all">All</button></li>
+            <li><button class="filter-tab-btn" data-filter="ca">Chartered Accountants</button></li>
+            <li><button class="filter-tab-btn" data-filter="finalist">CA Finalists</button></li>
+            <li><button class="filter-tab-btn" data-filter="capital">Capital Allocators</button></li>
+            <li><button class="filter-tab-btn" data-filter="strategy">Strategy &amp; M&amp;A</button></li>
+          </ul>
+        </div>
+
+        <!-- Asymmetric Magazine Grid -->
+        <div class="members-grid" id="members-grid-container">
+          <!-- Member cards generated dynamically with editorial precision -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         FOUNDERS — "The Origin Story"
+         ======================================================================= -->
+    <section class="founders-section" id="founders">
+      <div class="container">
+        <div class="founders-header">
+          <span class="plaque-label">The Origin</span>
+          <h2 class="founders-title">Established by those who believed in the room.</h2>
+        </div>
+
+        <div class="founders-grid">
+          <!-- Founder 1 -->
+          <article class="founder-card" tabindex="0">
+            <div class="founder-portrait-container">
+              <!-- Editorial portrait of Founder -->
+              <div class="portrait-avatar-art" style="background: radial-gradient(circle at 35% 30%, #444, #111);">VN</div>
+              <div class="founder-seal-badge" title="Founding Seal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="9" />
+                  <polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#0A0A0A" />
+                </svg>
+              </div>
+            </div>
+            <h3 class="founder-name">Vedant Nathani</h3>
+            <div class="founder-role">Co-Founder &amp; Managing Steward</div>
+            <p class="founder-bio">
+              Architecting high-trust networks and institutional investment frameworks across alternative asset classes. Focused on building enduring intellectual hubs.
+            </p>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="founder-linkedin">
+              <span>LinkedIn</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </article>
+
+          <!-- Founder 2 -->
+          <article class="founder-card" tabindex="0">
+            <div class="founder-portrait-container">
+              <div class="portrait-avatar-art" style="background: radial-gradient(circle at 65% 30%, #3a3a3a, #0d0d0d);">AR</div>
+              <div class="founder-seal-badge" title="Founding Seal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="9" />
+                  <polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#0A0A0A" />
+                </svg>
+              </div>
+            </div>
+            <h3 class="founder-name">Aarav Roy</h3>
+            <div class="founder-role">Co-Founder &amp; Capital Lead</div>
+            <p class="founder-bio">
+              Chartered Accountant with AIR pedigree. Specializes in cross-border capital structure, debt syndication, and private market liquidity solutions.
+            </p>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="founder-linkedin">
+              <span>LinkedIn</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </article>
+
+          <!-- Founder 3 -->
+          <article class="founder-card" tabindex="0">
+            <div class="founder-portrait-container">
+              <div class="portrait-avatar-art" style="background: radial-gradient(circle at 50% 40%, #4a4a4a, #161616);">SM</div>
+              <div class="founder-seal-badge" title="Founding Seal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="9" />
+                  <polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#0A0A0A" />
+                </svg>
+              </div>
+            </div>
+            <h3 class="founder-name">Siddharth Mehta</h3>
+            <div class="founder-role">Co-Founder &amp; Strategy Fellow</div>
+            <p class="founder-bio">
+              Advising top-tier sovereign funds and private equity sponsors on special situation buyouts and governance transformation throughout India &amp; APAC.
+            </p>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="founder-linkedin">
+              <span>LinkedIn</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </article>
+        </div>
+
+        <div class="founders-institution-credit">
+          The Guild was founded in 2026 by its first members.
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         MANIFESTO — "The Charter"
+         ======================================================================= -->
+    <section class="manifesto-section" id="manifesto">
+      <div class="manifesto-inner">
+        <div class="manifesto-header">
+          <span class="plaque-label" style="color: rgba(255,255,255,0.4);">Manifesto</span>
+          <!-- Third and final usage of metallic accent: 'circle' -->
+          <h2 class="manifesto-headline">
+            We believe the quality of your <span class="manifesto-gold-word">circle</span> shapes the quality of your thinking.
+          </h2>
+          <div class="manifesto-divider"></div>
+        </div>
+
+        <!-- 5 Principles Masonry Layout -->
+        <div class="manifesto-masonry">
+          <!-- Principle 01 (Full width) -->
+          <div class="principle-item full-width">
+            <div class="principle-num">01</div>
+            <h3 class="principle-title">Intellectual Sovereignty Over Social Conformity</h3>
+            <p class="principle-text">
+              Consensus in financial markets is often where alpha goes to die. We convene operators who question prevailing narratives, pressure-test assumptions against first principles, and preserve uncompromising intellectual rigor in every deliberation.
+            </p>
+          </div>
+
+          <!-- Principles 02 & 03 (Two-column) -->
+          <div class="principle-two-col">
+            <div class="principle-item">
+              <div class="principle-num">02</div>
+              <h3 class="principle-title">Relational Longevity</h3>
+              <p class="principle-text">
+                Alliances forged only in times of transaction are inherently fragile. We cultivate enduring professional bonds years before opportunism demands them, building compounding reputational equity.
+              </p>
+            </div>
+            <div class="principle-item">
+              <div class="principle-num">03</div>
+              <h3 class="principle-title">Uncompromising Discretion</h3>
+              <p class="principle-text">
+                The most candid market intelligence requires absolute trust. What is shared within the Guild remains bounded by the room. Discretion is not merely polite; it is our operational currency.
+              </p>
+            </div>
+          </div>
+
+          <!-- Principle 04 (Full width) -->
+          <div class="principle-item full-width">
+            <div class="principle-num">04</div>
+            <h3 class="principle-title">Craftsmanship in Capital</h3>
+            <p class="principle-text">
+              Finance is not purely an extraction mechanism; it is the fundamental steering wheel of human enterprise. We treat the allocation of balance sheets, capital restructuring, and strategic mergers as high institutional crafts requiring devotion and ethics.
+            </p>
+          </div>
+
+          <!-- Principle 05 (Centered closing statement) -->
+          <div class="principle-item center-narrow">
+            <div class="principle-num">05</div>
+            <h3 class="principle-title">Curated Scarcity</h3>
+            <p class="principle-text">
+              Scale dilutes intimacy. The High Finance Guild will never expand beyond our capacity to curate genuine peer relationships. A room where everyone is admitted ceases to be the room.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         WHAT MEMBERS FIND — "The Value Proposition"
+         ======================================================================= -->
+    <section class="value-section" id="values">
+      <div class="container">
+        <div class="value-header">
+          <span class="plaque-label">The Proposition</span>
+          <h2 class="value-title">The value is in the room.</h2>
+        </div>
+
+        <!-- Horizontal Accordion (Heavy Door Physics) -->
+        <div class="accordion-container" id="accordion-root">
+          <!-- Pillar 1 -->
+          <div class="accordion-slice active" tabindex="0">
+            <div>
+              <div class="slice-num">01</div>
+              <h3 class="slice-title-vertical">Perspectives</h3>
+            </div>
+            <div class="slice-body">
+              <p class="slice-body-text">
+                Conversations with people approaching finance from different angles. Step outside vertical silos to evaluate debt, equity, tax governance, and strategic growth through multifaceted lenses.
+              </p>
+            </div>
+          </div>
+
+          <!-- Pillar 2 -->
+          <div class="accordion-slice" tabindex="0">
+            <div>
+              <div class="slice-num">02</div>
+              <h3 class="slice-title-vertical">Relationships</h3>
+            </div>
+            <div class="slice-body">
+              <p class="slice-body-text">
+                Build meaningful professional relationships before opportunity demands them. High-trust partnerships that weather market cycles and compound across decades of executive leadership.
+              </p>
+            </div>
+          </div>
+
+          <!-- Pillar 3 -->
+          <div class="accordion-slice" tabindex="0">
+            <div>
+              <div class="slice-num">03</div>
+              <h3 class="slice-title-vertical">Ideas</h3>
+            </div>
+            <div class="slice-body">
+              <p class="slice-body-text">
+                Discuss markets, businesses, strategy, investing and the forces shaping finance. High-density off-the-record briefs that challenge prevailing orthodoxies and sharpen allocative precision.
+              </p>
+            </div>
+          </div>
+
+          <!-- Pillar 4 -->
+          <div class="accordion-slice" tabindex="0">
+            <div>
+              <div class="slice-num">04</div>
+              <h3 class="slice-title-vertical">Opportunity</h3>
+            </div>
+            <div class="slice-body">
+              <p class="slice-body-text">
+                Discover collaborations, introductions and opportunities through the network. Seamless syndication, co-investments, and board advisory positions surfaced through trusted personal introductions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         INVITATION — "The Threshold"
+         ======================================================================= -->
+    <section class="invitation-section" id="invitation">
+      <div class="container">
+        <div class="invitation-grid">
+          <div>
+            <span class="plaque-label">Admission</span>
+            <h2 class="invitation-headline">
+              Some circles<br>
+              are built by<br>
+              invitation.
+            </h2>
+            <p class="invitation-subline">
+              High Finance Guild is intentionally selective. If you believe you belong in the room, tell us why.
+            </p>
+          </div>
+
+          <div class="form-wrapper">
+            <!-- Active Invitation Application Form -->
+            <form id="invitation-form" novalidate>
+              <!-- Step 1: Identity -->
+              <div class="form-step" id="form-step-1">
+                <span class="form-step-label">Step 01 &mdash; Identity &amp; Role</span>
+                
+                <div class="input-row">
+                  <div class="field-group">
+                    <label for="applicant-name" class="floating-label">Full Name</label>
+                    <input type="text" id="applicant-name" required class="luxe-input" placeholder="e.g. Rohan Singhal">
+                  </div>
+                  <div class="field-group">
+                    <label for="applicant-email" class="floating-label">Email Address</label>
+                    <input type="email" id="applicant-email" required class="luxe-input" placeholder="name@firm.com">
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="field-group">
+                    <label for="applicant-linkedin" class="floating-label">LinkedIn Profile URL</label>
+                    <input type="url" id="applicant-linkedin" required class="luxe-input" placeholder="https://linkedin.com/in/...">
+                  </div>
+                  <div class="field-group">
+                    <label for="applicant-role" class="floating-label">Current Role / Designation</label>
+                    <input type="text" id="applicant-role" required class="luxe-input" placeholder="e.g. Partner, M&amp;A Advisory">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-step-divider"></div>
+
+              <!-- Step 2: Credentials & Background -->
+              <div class="form-step" id="form-step-2">
+                <span class="form-step-label">Step 02 &mdash; Credentials &amp; Firm</span>
+                
+                <div class="input-row">
+                  <div class="field-group">
+                    <label for="applicant-org" class="floating-label">Organization / Fund</label>
+                    <input type="text" id="applicant-org" required class="luxe-input" placeholder="Current Firm or Practice">
+                  </div>
+                  <div class="field-group">
+                    <label for="applicant-qualification" class="floating-label">Primary Qualification</label>
+                    <select id="applicant-qualification" class="luxe-select">
+                      <option value="CA">Chartered Accountant (ICAI)</option>
+                      <option value="CA_Finalist">CA Finalist</option>
+                      <option value="CFA">CFA Charterholder</option>
+                      <option value="MBA_Finance">Tier-1 MBA (Finance)</option>
+                      <option value="Other">Other Institutional Principal</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="input-row">
+                  <div class="field-group">
+                    <label for="applicant-rank" class="floating-label">All India Rank / Honors (Optional)</label>
+                    <input type="text" id="applicant-rank" class="luxe-input" placeholder="e.g. AIR 12, Gold Medalist">
+                  </div>
+                  <div class="field-group">
+                    <label for="applicant-city" class="floating-label">Base City</label>
+                    <input type="text" id="applicant-city" required class="luxe-input" placeholder="Mumbai, London, Singapore...">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-step-divider"></div>
+
+              <!-- Step 3: Intent & Contribution -->
+              <div class="form-step" id="form-step-3">
+                <span class="form-step-label">Step 03 &mdash; Intent &amp; Contribution</span>
+                
+                <div class="field-group full-span">
+                  <label for="applicant-why" class="floating-label">Why do you belong in this room?</label>
+                  <textarea id="applicant-why" required class="luxe-textarea" rows="3" placeholder="What distinct perspective or institutional insight do you bring to fellow members?"></textarea>
+                </div>
+
+                <div class="field-group full-span">
+                  <label for="applicant-referral" class="floating-label">Guild Member Referral (If any)</label>
+                  <input type="text" id="applicant-referral" class="luxe-input" placeholder="Name of existing member who recommended you">
+                </div>
+              </div>
+
+              <button type="submit" class="submit-btn" id="submit-application-btn">
+                <span>Request an Invitation</span>
+                <span aria-hidden="true">&rarr;</span>
+              </button>
+            </form>
+
+            <!-- Success State: Curtain Fall Outcome -->
+            <div id="success-state" role="status" aria-live="polite">
+              <svg class="check-svg" viewBox="0 0 60 60" fill="none">
+                <circle cx="30" cy="30" r="28" stroke="#0A0A0A" stroke-width="1.5" />
+                <path d="M18 31 L26 39 L42 22" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <h3 class="success-headline">Application received.</h3>
+              <p class="success-subline">
+                Thank you for your interest in High Finance Guild. Every application is reviewed individually. If there is a fit, we'll be in touch.
+              </p>
+              <button class="return-top-btn" id="return-top-btn">Return to Home &rarr;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Full-Screen Member Profile Modal Backdrop -->
+  <div class="profile-modal-backdrop" id="member-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="profile-modal-dialog" id="modal-dialog-content">
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="Close profile modal">&times;</button>
+      
+      <div class="modal-left-col">
+        <div class="modal-portrait">
+          <div id="modal-avatar" class="portrait-avatar-art">--</div>
+        </div>
+        <h3 class="modal-name" id="modal-name">Name</h3>
+        <div class="modal-role" id="modal-role">Role</div>
+        <div class="credentials-tags" id="modal-credentials"></div>
+      </div>
+
+      <div class="modal-right-col">
+        <div>
+          <h4 class="modal-bio-heading">Executive Background</h4>
+          <p class="modal-bio-text" id="modal-bio">Bio narrative details...</p>
+
+          <div class="modal-tags-section">
+            <div class="modal-section-label">Domains &amp; Focus Areas</div>
+            <div class="modal-tag-cloud" id="modal-interests"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer-meta">
+          <div class="member-since-badge">
+            Guild member since <span id="modal-since">2026</span>
+          </div>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="modal-connect-link" id="modal-linkedin">
+            <span>Executive Profile &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Console Modal Backdrop -->
+  <div class="admin-modal-backdrop" id="admin-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="admin-modal-dialog">
+      <div class="admin-modal-header">
+        <div class="admin-modal-title">
+          <span>Guild Registrar</span>
+          <span class="admin-status-badge" id="admin-status-badge">
+            <span class="admin-indicator-dot fallback" id="modal-status-dot"></span>
+            <span id="modal-status-text">Fallback Storage</span>
+          </span>
+        </div>
+        <button class="modal-close-btn" id="admin-modal-close-btn" aria-label="Close admin console">&times;</button>
+      </div>
+
+      <!-- Passkey Gate (Visible until unlocked) -->
+      <div id="admin-auth-gate" style="padding: 2.5rem 2rem; text-align: center;">
+        <div style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--color-gold);">
+          Restricted Institutional Access
+        </div>
+        <p style="color: var(--color-mid-grey); font-size: 13px; margin-bottom: 1.5rem;">
+          Please enter the Registrar Passkey to manage peer inductions and deletions. (Default: <code style="color: var(--color-gold);">GUILD2026</code>)
+        </p>
+        <div style="max-width: 320px; margin: 0 auto;">
+          <input type="password" id="admin-passkey-input" class="admin-input" placeholder="Enter Registrar Passkey" style="text-align: center; letter-spacing: 0.2em; font-size: 16px;">
+          <button type="button" class="admin-btn" id="admin-unlock-btn" style="width: 100%; justify-content: center;">
+            Unlock Console &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Admin Workspace (Hidden until unlocked) -->
+      <div id="admin-workspace" style="display: none; flex-direction: column; flex: 1; overflow: hidden;">
+        <div class="admin-tabs">
+          <button class="admin-tab-btn active" data-pane="pane-add-member">Induct Member</button>
+          <button class="admin-tab-btn" data-pane="pane-manage-members">Manage &amp; Delete</button>
+          <button class="admin-tab-btn" data-pane="pane-supabase-config">Supabase Settings</button>
+        </div>
+
+        <div class="admin-modal-body">
+          <!-- Pane 1: Add Member -->
+          <div class="admin-pane active" id="pane-add-member">
+            <form id="admin-add-member-form">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                  <label class="admin-label" for="new-member-name">Full Name *</label>
+                  <input type="text" id="new-member-name" required class="admin-input" placeholder="e.g. Vikram Singhania">
+                </div>
+                <div>
+                  <label class="admin-label" for="new-member-org">Current Firm / Fund *</label>
+                  <input type="text" id="new-member-org" required class="admin-input" placeholder="e.g. ChrysCapital">
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                  <label class="admin-label" for="new-member-role">Designation / Role *</label>
+                  <input type="text" id="new-member-role" required class="admin-input" placeholder="e.g. Managing Director">
+                </div>
+                <div>
+                  <label class="admin-label" for="new-member-category">Category *</label>
+                  <select id="new-member-category" class="admin-select">
+                    <option value="capital">Capital &amp; Private Equity</option>
+                    <option value="ca">Chartered Accountancy</option>
+                    <option value="strategy">Strategy &amp; M&amp;A</option>
+                    <option value="finalist">CA Finalist &amp; Fellows</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                  <label class="admin-label" for="new-member-creds">Credentials (comma separated)</label>
+                  <input type="text" id="new-member-creds" class="admin-input" placeholder="e.g. CA, AIR 06, CFA">
+                </div>
+                <div>
+                  <label class="admin-label" for="new-member-location">Base Location *</label>
+                  <input type="text" id="new-member-location" required class="admin-input" placeholder="e.g. Mumbai">
+                </div>
+              </div>
+
+              <div>
+                <label class="admin-label" for="new-member-quote">Featured Philosophy / Quote</label>
+                <input type="text" id="new-member-quote" class="admin-input" placeholder="e.g. Conviction in downside rigor separates stewards from speculators.">
+              </div>
+
+              <div>
+                <label class="admin-label" for="new-member-bio">Executive Summary / Bio *</label>
+                <textarea id="new-member-bio" required rows="3" class="admin-textarea" placeholder="Detail transactional leadership, sector specializations, and professional trajectory."></textarea>
+              </div>
+
+              <div>
+                <label class="admin-label" for="new-member-interests">Domain Focus Tags (comma separated)</label>
+                <input type="text" id="new-member-interests" class="admin-input" placeholder="e.g. Leveraged Buyouts, Distressed Credit, Infrastructure">
+              </div>
+
+              <div style="margin-top: 1.25rem; display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="new-member-featured" style="accent-color: var(--color-gold); width: 16px; height: 16px;">
+                <label for="new-member-featured" style="font-size: 13px; color: var(--color-white); cursor: pointer;">
+                  Mark as Featured Editorial Card (wide display)
+                </label>
+              </div>
+
+              <button type="submit" class="admin-btn" id="btn-save-member">
+                <span>Induct Member Into Registry</span> &rarr;
+              </button>
+            </form>
+          </div>
+
+          <!-- Pane 2: Manage & Delete Members -->
+          <div class="admin-pane" id="pane-manage-members">
+            <p style="color: var(--color-mid-grey); font-size: 13px; margin-bottom: 1.5rem;">
+              Review active roster. Deletions propagate immediately to the Supabase database.
+            </p>
+            <div id="admin-members-list" style="display: flex; flex-direction: column; gap: 4px;">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Pane 3: Supabase Settings -->
+          <div class="admin-pane" id="pane-supabase-config">
+            <div style="background: rgba(196, 167, 125, 0.08); border-left: 3px solid var(--color-gold); padding: 1rem; margin-bottom: 1.5rem; font-size: 12px; line-height: 1.6; color: var(--color-warm-grey);">
+              <strong>Supabase Setup Instructions:</strong><br>
+              1. Run the database migration script located at <code style="color: var(--color-gold);">supabase/schema.sql</code> in your Supabase SQL Editor.<br>
+              2. (Optional) Run <code style="color: var(--color-gold);">supabase/seed.sql</code> to load founding members.<br>
+              3. Paste your <strong>Project URL</strong> and <strong>Anon Public Key</strong> below to activate live synchronization.
+            </div>
+
+            <form id="admin-config-form">
+              <div>
+                <label class="admin-label" for="cfg-supabase-url">Supabase Project URL</label>
+                <input type="url" id="cfg-supabase-url" class="admin-input" placeholder="https://your-project-id.supabase.co">
+              </div>
+
+              <div>
+                <label class="admin-label" for="cfg-supabase-key">Supabase Anon Public API Key</label>
+                <input type="password" id="cfg-supabase-key" class="admin-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+              </div>
+
+              <div>
+                <label class="admin-label" for="cfg-admin-pin">Custom Registrar Passkey</label>
+                <input type="text" id="cfg-admin-pin" class="admin-input" placeholder="GUILD2026">
+              </div>
+
+              <button type="submit" class="admin-btn">
+                <span>Save Credentials &amp; Reconnect</span> &rarr;
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <svg class="footer-seal" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="45" stroke="#FFFFFF" stroke-width="1.75" />
+            <line x1="36" y1="26" x2="36" y2="74" stroke="#FFFFFF" stroke-width="2" />
+            <line x1="64" y1="26" x2="64" y2="74" stroke="#FFFFFF" stroke-width="2" />
+            <line x1="36" y1="50" x2="64" y2="50" stroke="#FFFFFF" stroke-width="2" />
+            <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#FFFFFF" stroke-width="1.75" />
+          </svg>
+          <div style="font-family: var(--font-serif); font-size: 1.1rem; letter-spacing: 0.05em;">HIGH FINANCE GUILD</div>
+          <p class="footer-copy">
+            A private institution convening leaders in financial strategy, capital allocation, and corporate advisory.
+          </p>
+        </div>
+
+        <div class="footer-links-group">
+          <div class="footer-col">
+            <div class="footer-col-title">Navigation</div>
+            <a href="#guild" class="footer-link">The Guild</a>
+            <a href="#members" class="footer-link">Directory</a>
+            <a href="#founders" class="footer-link">Origin Story</a>
+            <a href="#manifesto" class="footer-link">Manifesto</a>
+            <a href="#values" class="footer-link">The Value</a>
+          </div>
+
+          <div class="footer-col">
+            <div class="footer-col-title">Admission</div>
+            <a href="#invitation" class="footer-link">Selection Criteria</a>
+            <a href="#invitation" class="footer-link">Request an Invitation</a>
+            <a href="#invitation" class="footer-link">Member Sponsorship</a>
+          </div>
+
+          <div class="footer-col">
+            <div class="footer-col-title">Protocol</div>
+            <a href="#" class="footer-link">Chatham House Discretion</a>
+            <a href="#" class="footer-link">Charter of Conduct</a>
+            <a href="#" class="footer-link">Governance 2026</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 High Finance Guild. All rights reserved.</div>
+        <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+          <a href="#admin-console" id="open-admin-btn" class="footer-admin-link">
+            <span class="admin-indicator-dot fallback" id="global-status-dot"></span>
+            <span>Guild Registrar (Admin)</span>
+          </a>
+          <span>Private &amp; Confidential &bull; Selective By Design</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =======================================================================
+       CLIENT LOGIC, MOTION SYSTEM & SUPABASE INTEGRATION
+       ======================================================================= -->
+  <script type="module">
+    import { 
+      getSupabaseConfig, 
+      saveSupabaseConfig, 
+      getSupabaseClient, 
+      getMembers, 
+      insertMember, 
+      deleteMember, 
+      submitApplication, 
+      DEFAULT_ADMIN_PIN 
+    } from './supabase-client.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+
+      /* -----------------------------------------------------------------------
+         0. Notification Toast Helper
+         ----------------------------------------------------------------------- */
+      const toastContainer = document.getElementById('toast-container');
+      function showToast(message, isError = false) {
+        if (!toastContainer) return;
+        const toast = document.createElement('div');
+        toast.className = `luxe-toast ${isError ? 'toast-error' : ''}`;
+        toast.innerHTML = `
+          <span style="color: ${isError ? '#ef4444' : 'var(--color-gold)'}; font-weight: bold;">${isError ? '!' : '✓'}</span>
+          <span>${message}</span>
+        `;
+        toastContainer.appendChild(toast);
+        setTimeout(() => {
+          toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+          setTimeout(() => toast.remove(), 400);
+        }, 4000);
+      }
+
+      /* -----------------------------------------------------------------------
+         1. Wax Seal Initial Load Dismissal
+         ----------------------------------------------------------------------- */
+      const loader = document.getElementById('loader-screen');
+      setTimeout(() => {
+        if (loader) {
+          loader.classList.add('hidden');
+        }
+      }, 1500);
+
+      /* -----------------------------------------------------------------------
+         2. Navigation Scroll & Dark Section Detection
+         ----------------------------------------------------------------------- */
+      const nav = document.getElementById('main-nav');
+      const manifestoSection = document.getElementById('manifesto');
+
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        
+        // Sticky background toggle
+        if (scrollY > 60) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+
+        // Section darkness inversion
+        if (manifestoSection) {
+          const rect = manifestoSection.getBoundingClientRect();
+          const inDarkSection = rect.top <= 80 && rect.bottom >= 80;
+          if (inDarkSection) {
+            nav.classList.add('nav-dark');
+          } else {
+            nav.classList.remove('nav-dark');
+          }
+        }
+      }, { passive: true });
+
+      /* -----------------------------------------------------------------------
+         3. Mobile Navigation Circular Reveal
+         ----------------------------------------------------------------------- */
+      const mobileBtn = document.getElementById('mobile-toggle');
+      const mobileOverlay = document.getElementById('mobile-overlay');
+
+      if (mobileBtn && mobileOverlay) {
+        mobileBtn.addEventListener('click', () => {
+          const isOpen = mobileOverlay.classList.toggle('open');
+          mobileBtn.setAttribute('aria-expanded', isOpen);
+          mobileOverlay.setAttribute('aria-hidden', !isOpen);
+          document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+
+        mobileOverlay.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            mobileOverlay.classList.remove('open');
+            mobileBtn.setAttribute('aria-expanded', 'false');
+            mobileOverlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          });
+        });
+      }
+
+      /* -----------------------------------------------------------------------
+         4. Member Directory Data Model & Supabase Dynamic Rendering
+         ----------------------------------------------------------------------- */
+      let membersData = [];
+      const gridContainer = document.getElementById('members-grid-container');
+      const searchInput = document.getElementById('member-search');
+      const filterBtns = document.querySelectorAll('.filter-tab-btn');
+
+      let currentFilter = 'all';
+      let searchQuery = '';
+      let isAdminActive = false;
+
+      function updateConnectionIndicators() {
+        const client = getSupabaseClient();
+        const globalDot = document.getElementById('global-status-dot');
+        const modalDot = document.getElementById('modal-status-dot');
+        const modalText = document.getElementById('modal-status-text');
+
+        if (client) {
+          if (globalDot) { globalDot.className = 'admin-indicator-dot'; }
+          if (modalDot) { modalDot.className = 'admin-indicator-dot'; }
+          if (modalText) { modalText.textContent = 'Supabase Connected'; }
+        } else {
+          if (globalDot) { globalDot.className = 'admin-indicator-dot fallback'; }
+          if (modalDot) { modalDot.className = 'admin-indicator-dot fallback'; }
+          if (modalText) { modalText.textContent = 'Fallback Storage'; }
+        }
+      }
+
+      async function refreshDirectory() {
+        try {
+          membersData = await getMembers();
+          renderMembers();
+          renderAdminMembersList();
+          updateConnectionIndicators();
+        } catch (err) {
+          console.error('Error refreshing directory:', err);
+        }
+      }
+
+      function renderMembers() {
+        if (!gridContainer) return;
+
+        const filtered = membersData.filter(member => {
+          const matchesCategory = currentFilter === 'all' || member.category === currentFilter;
+          const query = searchQuery.toLowerCase();
+          const matchesSearch = !query || 
+            member.name.toLowerCase().includes(query) ||
+            member.role.toLowerCase().includes(query) ||
+            member.org.toLowerCase().includes(query) ||
+            (member.interests && member.interests.some(i => i.toLowerCase().includes(query))) ||
+            (member.credentials && member.credentials.some(c => c.toLowerCase().includes(query)));
+
+          return matchesCategory && matchesSearch;
+        });
+
+        gridContainer.innerHTML = '';
+
+        if (filtered.length === 0) {
+          gridContainer.innerHTML = `
+            <div style="grid-column: 1 / -1; padding: 4rem 0; text-align: center; color: var(--color-mid-grey); font-family: var(--font-sans); font-size: 14px;">
+              No peers found matching the specified parameters.
+            </div>
+          `;
+          return;
+        }
+
+        filtered.forEach((m) => {
+          const card = document.createElement('article');
+          card.className = `member-card ${m.isFeatured ? 'featured-card' : ''}`;
+          card.setAttribute('tabindex', '0');
+          card.setAttribute('role', 'button');
+          card.setAttribute('aria-label', `View profile of ${m.name}, ${m.role}`);
+          card.dataset.id = m.id;
+
+          // Micro emblem watermark
+          const watermarkSVG = `
+            <svg class="card-watermark" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="45" stroke="#0A0A0A" stroke-width="2" />
+              <line x1="36" y1="26" x2="36" y2="74" stroke="#0A0A0A" stroke-width="2.5" />
+              <line x1="64" y1="26" x2="64" y2="74" stroke="#0A0A0A" stroke-width="2.5" />
+              <line x1="36" y1="50" x2="64" y2="50" stroke="#0A0A0A" stroke-width="2.5" />
+              <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#0A0A0A" stroke-width="2" />
+            </svg>
+          `;
+
+          const credHTML = (m.credentials || []).map(c => `<span class="cred-tag">${c}</span>`).join('');
+          const interestHTML = (m.interests || []).map((it, i) => `<span>${it}</span>${i < m.interests.length - 1 ? '<span class="interest-bullet"></span>' : ''}`).join('');
+
+          card.innerHTML = `
+            <div class="card-admin-actions">
+              <button class="card-delete-btn" data-delete-id="${m.id}" title="Remove member from registry">&times; Delete</button>
+            </div>
+            ${watermarkSVG}
+            <div>
+              <div class="card-header-flex">
+                <div class="portrait-wrap">
+                  <div class="portrait-avatar-art" style="background: ${m.accentGradient};">${m.initials}</div>
+                </div>
+                <div class="member-info">
+                  <h3 class="member-name">${m.name}</h3>
+                  <div class="member-role">${m.role} &bull; ${m.org}</div>
+                  <div class="credentials-tags">${credHTML}</div>
+                </div>
+              </div>
+
+              <div class="member-body">
+                ${m.isFeatured && m.quote ? `<div class="member-featured-quote">&ldquo;${m.quote}&rdquo;</div>` : ''}
+                <p class="member-short-bio">${m.bio || ''}</p>
+              </div>
+            </div>
+
+            <div class="member-meta-bottom">
+              <div class="member-location">
+                <span class="loc-dot"></span>
+                <span>${m.location}</span>
+              </div>
+              <div class="member-interests">
+                ${interestHTML}
+              </div>
+            </div>
+          `;
+
+          // Card click opens deep dive modal
+          card.addEventListener('click', (e) => {
+            if (e.target.closest('.card-delete-btn')) return;
+            openMemberModal(m);
+          });
+
+          card.addEventListener('keydown', (e) => {
+            if (e.target.closest('.card-delete-btn')) return;
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openMemberModal(m);
+            }
+          });
+
+          // Inline delete trigger in admin mode
+          const delBtn = card.querySelector('.card-delete-btn');
+          if (delBtn) {
+            delBtn.addEventListener('click', async (e) => {
+              e.stopPropagation();
+              if (confirm(`Confirm removal of "${m.name}" from the Guild Directory?`)) {
+                try {
+                  await deleteMember(m.id);
+                  showToast(`Member "${m.name}" removed from registry.`);
+                  await refreshDirectory();
+                } catch (err) {
+                  showToast(err.message, true);
+                }
+              }
+            });
+          }
+
+          // Custom cursor trigger
+          card.addEventListener('mouseenter', () => {
+            if (cursorFollower) cursorFollower.classList.add('active');
+          });
+          card.addEventListener('mouseleave', () => {
+            if (cursorFollower) cursorFollower.classList.remove('active');
+          });
+
+          gridContainer.appendChild(card);
+        });
+      }
+
+      // Initial fetch from Supabase
+      await refreshDirectory();
+
+      // Debounced search (150ms)
+      let searchTimeout;
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            searchQuery = e.target.value.trim();
+            renderMembers();
+          }, 150);
+        });
+      }
+
+      // Filter tabs handling
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          renderMembers();
+        });
+      });
+
+      /* -----------------------------------------------------------------------
+         5. Custom View Cursor Indicator
+         ----------------------------------------------------------------------- */
+      const cursorFollower = document.getElementById('cursor-follower');
+      if (cursorFollower) {
+        window.addEventListener('mousemove', (e) => {
+          cursorFollower.style.left = `${e.clientX}px`;
+          cursorFollower.style.top = `${e.clientY}px`;
+        });
+      }
+
+      /* -----------------------------------------------------------------------
+         6. Full-Screen Deep Dive Modal Implementation
+         ----------------------------------------------------------------------- */
+      const modalBackdrop = document.getElementById('member-modal');
+      const modalCloseBtn = document.getElementById('modal-close-btn');
+
+      function openMemberModal(member) {
+        if (!modalBackdrop) return;
+
+        document.getElementById('modal-name').textContent = member.name;
+        document.getElementById('modal-role').textContent = `${member.role} — ${member.org}`;
+        document.getElementById('modal-avatar').textContent = member.initials;
+        document.getElementById('modal-avatar').style.background = member.accentGradient;
+        document.getElementById('modal-bio').textContent = (member.bio || '') + (member.quote ? " " + member.quote : "");
+        document.getElementById('modal-since').textContent = member.since || '2026';
+
+        // Credentials
+        const credContainer = document.getElementById('modal-credentials');
+        credContainer.innerHTML = (member.credentials || []).map(c => `<span class="cred-tag">${c}</span>`).join('');
+
+        // Tags
+        const tagsContainer = document.getElementById('modal-interests');
+        tagsContainer.innerHTML = (member.interests || []).map(i => `<span class="modal-tag">${i}</span>`).join('');
+
+        modalBackdrop.classList.add('active');
+        modalBackdrop.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        if (!modalBackdrop) return;
+        modalBackdrop.classList.remove('active');
+        modalBackdrop.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+      if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', (e) => {
+          if (e.target === modalBackdrop) closeModal();
+        });
+      }
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalBackdrop && modalBackdrop.classList.contains('active')) {
+          closeModal();
+        }
+      });
+
+      /* -----------------------------------------------------------------------
+         7. Statistics Counter Animation on Scroll
+         ----------------------------------------------------------------------- */
+      const statsBar = document.getElementById('stats-counter-bar');
+      let statsAnimated = false;
+
+      if (statsBar && 'IntersectionObserver' in window) {
+        const statsObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !statsAnimated) {
+              statsAnimated = true;
+              const nums = statsBar.querySelectorAll('.stat-num');
+              nums.forEach(numEl => {
+                const target = parseInt(numEl.getAttribute('data-target'), 10);
+                const suffix = numEl.getAttribute('data-suffix') || '';
+                let current = 0;
+                const duration = 1500;
+                const start = performance.now();
+
+                function updateCounter(now) {
+                  const elapsed = now - start;
+                  const progress = Math.min(elapsed / duration, 1);
+                  const easeProgress = 1 - (1 - progress) * (1 - progress);
+                  current = Math.floor(easeProgress * target);
+                  numEl.textContent = current + suffix;
+
+                  if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                  } else {
+                    numEl.textContent = target + suffix;
+                  }
+                }
+                requestAnimationFrame(updateCounter);
+              });
+              statsObserver.unobserve(statsBar);
+            }
+          });
+        }, { threshold: 0.3 });
+
+        statsObserver.observe(statsBar);
+      }
+
+      /* -----------------------------------------------------------------------
+         8. Horizontal Accordion "Heavy Door" Physics
+         ----------------------------------------------------------------------- */
+      const accordionSlices = document.querySelectorAll('.accordion-slice');
+      accordionSlices.forEach(slice => {
+        slice.addEventListener('mouseenter', () => {
+          accordionSlices.forEach(s => s.classList.remove('active'));
+          slice.classList.add('active');
+        });
+        slice.addEventListener('focus', () => {
+          accordionSlices.forEach(s => s.classList.remove('active'));
+          slice.classList.add('active');
+        });
+      });
+
+      /* -----------------------------------------------------------------------
+         9. Supabase Invitation Form Submission
+         ----------------------------------------------------------------------- */
+      const form = document.getElementById('invitation-form');
+      const submitBtn = document.getElementById('submit-application-btn');
+      const successState = document.getElementById('success-state');
+      const returnTopBtn = document.getElementById('return-top-btn');
+
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const nameVal = document.getElementById('applicant-name')?.value.trim();
+          const emailVal = document.getElementById('applicant-email')?.value.trim();
+          const linkedinVal = document.getElementById('applicant-linkedin')?.value.trim();
+          const roleVal = document.getElementById('applicant-role')?.value.trim();
+          const orgVal = document.getElementById('applicant-org')?.value.trim();
+          const qualVal = document.getElementById('applicant-qualification')?.value;
+          const rankVal = document.getElementById('applicant-rank')?.value.trim();
+          const cityVal = document.getElementById('applicant-city')?.value.trim();
+          const whyVal = document.getElementById('applicant-why')?.value.trim();
+          const referralVal = document.getElementById('applicant-referral')?.value.trim();
+
+          if (!nameVal || !emailVal || !roleVal || !orgVal || !cityVal || !whyVal) {
+            showToast('Please complete all required fields.', true);
+            return;
+          }
+
+          // Button feedback
+          if (submitBtn) {
+            submitBtn.innerHTML = `<span>Submitting to Guild Registry...</span>`;
+            submitBtn.style.opacity = '0.7';
+            submitBtn.disabled = true;
+          }
+
+          try {
+            await submitApplication({
+              fullName: nameVal,
+              email: emailVal,
+              linkedinUrl: linkedinVal,
+              role: roleVal,
+              organization: orgVal,
+              qualification: qualVal,
+              honorsRank: rankVal,
+              city: cityVal,
+              whyJoin: whyVal,
+              referral: referralVal
+            });
+
+            showToast('Application securely transmitted to the Registry.');
+
+            // Elegant Curtain fall animation transition
+            setTimeout(() => {
+              form.style.transition = 'opacity 0.5s var(--ease-luxe), transform 0.5s var(--ease-luxe)';
+              form.style.opacity = '0';
+              form.style.transform = 'translateY(-10px)';
+
+              setTimeout(() => {
+                form.style.display = 'none';
+                if (successState) {
+                  successState.style.display = 'flex';
+                }
+              }, 500);
+            }, 600);
+          } catch (err) {
+            console.error('Submission failed:', err);
+            showToast(`Submission notice: ${err.message}`, true);
+            if (submitBtn) {
+              submitBtn.innerHTML = `<span>Request an Invitation</span> <span aria-hidden="true">&rarr;</span>`;
+              submitBtn.style.opacity = '1';
+              submitBtn.disabled = false;
+            }
+          }
+        });
+      }
+
+      if (returnTopBtn) {
+        returnTopBtn.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      /* -----------------------------------------------------------------------
+         10. Admin Console & Registrar Management System
+         ----------------------------------------------------------------------- */
+      const adminModal = document.getElementById('admin-modal');
+      const openAdminBtn = document.getElementById('open-admin-btn');
+      const closeAdminBtn = document.getElementById('admin-modal-close-btn');
+      const unlockBtn = document.getElementById('admin-unlock-btn');
+      const passkeyInput = document.getElementById('admin-passkey-input');
+      const authGate = document.getElementById('admin-auth-gate');
+      const adminWorkspace = document.getElementById('admin-workspace');
+      const adminTabBtns = document.querySelectorAll('.admin-tab-btn');
+      const adminPanes = document.querySelectorAll('.admin-pane');
+      const addMemberForm = document.getElementById('admin-add-member-form');
+      const configForm = document.getElementById('admin-config-form');
+      const membersListContainer = document.getElementById('admin-members-list');
+
+      function openAdminModal() {
+        if (!adminModal) return;
+        adminModal.classList.add('active');
+        adminModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+
+        // Pre-fill config inputs
+        const cfg = getSupabaseConfig();
+        const urlInput = document.getElementById('cfg-supabase-url');
+        const keyInput = document.getElementById('cfg-supabase-key');
+        const pinInput = document.getElementById('cfg-admin-pin');
+        if (urlInput) urlInput.value = cfg.url;
+        if (keyInput) keyInput.value = cfg.anonKey;
+        if (pinInput) pinInput.value = cfg.adminPin;
+      }
+
+      function closeAdminModal() {
+        if (!adminModal) return;
+        adminModal.classList.remove('active');
+        adminModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      if (openAdminBtn) {
+        openAdminBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openAdminModal();
+        });
+      }
+
+      if (closeAdminBtn) closeAdminBtn.addEventListener('click', closeAdminModal);
+      if (adminModal) {
+        adminModal.addEventListener('click', (e) => {
+          if (e.target === adminModal) closeAdminModal();
+        });
+      }
+
+      // Unlock with Passkey
+      function tryUnlockAdmin() {
+        const entered = passkeyInput?.value.trim();
+        const cfg = getSupabaseConfig();
+        if (entered === cfg.adminPin || entered === DEFAULT_ADMIN_PIN) {
+          isAdminActive = true;
+          document.body.classList.add('admin-mode-active');
+          if (authGate) authGate.style.display = 'none';
+          if (adminWorkspace) adminWorkspace.style.display = 'flex';
+          renderAdminMembersList();
+          renderMembers();
+          showToast('Registrar Console Unlocked. Admin mode activated.');
+        } else {
+          showToast('Invalid Registrar Passkey. Default is GUILD2026', true);
+        }
+      }
+
+      if (unlockBtn) unlockBtn.addEventListener('click', tryUnlockAdmin);
+      if (passkeyInput) {
+        passkeyInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            tryUnlockAdmin();
+          }
+        });
+      }
+
+      // Admin Tab Switching
+      adminTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          adminTabBtns.forEach(b => b.classList.remove('active'));
+          adminPanes.forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          const targetPane = document.getElementById(btn.dataset.pane);
+          if (targetPane) targetPane.classList.add('active');
+        });
+      });
+
+      // Render Admin Members List for deletion
+      function renderAdminMembersList() {
+        if (!membersListContainer) return;
+        membersListContainer.innerHTML = '';
+
+        if (membersData.length === 0) {
+          membersListContainer.innerHTML = `<div style="color: var(--color-mid-grey); font-size: 13px; padding: 1rem 0;">No active members found.</div>`;
+          return;
+        }
+
+        membersData.forEach(m => {
+          const row = document.createElement('div');
+          row.className = 'admin-member-row';
+          row.innerHTML = `
+            <div class="admin-member-row-info">
+              <div class="portrait-avatar-art" style="background: ${m.accentGradient}; width: 34px; height: 34px; font-size: 12px;">${m.initials}</div>
+              <div>
+                <div class="admin-member-row-name">${m.name}</div>
+                <div class="admin-member-row-role">${m.role} &bull; ${m.org} (${m.category})</div>
+              </div>
+            </div>
+            <button class="admin-row-delete-btn" data-id="${m.id}">Delete</button>
+          `;
+
+          const rowDelBtn = row.querySelector('.admin-row-delete-btn');
+          rowDelBtn.addEventListener('click', async () => {
+            if (confirm(`Remove member "${m.name}" from Supabase?`)) {
+              try {
+                await deleteMember(m.id);
+                showToast(`Removed "${m.name}" from registry.`);
+                await refreshDirectory();
+              } catch (err) {
+                showToast(err.message, true);
+              }
+            }
+          });
+
+          membersListContainer.appendChild(row);
+        });
+      }
+
+      // Add Member Form
+      if (addMemberForm) {
+        addMemberForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const saveBtn = document.getElementById('btn-save-member');
+          if (saveBtn) saveBtn.innerHTML = `<span>Inducting...</span>`;
+
+          try {
+            const name = document.getElementById('new-member-name').value.trim();
+            const org = document.getElementById('new-member-org').value.trim();
+            const role = document.getElementById('new-member-role').value.trim();
+            const category = document.getElementById('new-member-category').value;
+            const credsRaw = document.getElementById('new-member-creds').value;
+            const location = document.getElementById('new-member-location').value.trim();
+            const quote = document.getElementById('new-member-quote').value.trim();
+            const bio = document.getElementById('new-member-bio').value.trim();
+            const interestsRaw = document.getElementById('new-member-interests').value;
+            const isFeatured = document.getElementById('new-member-featured').checked;
+
+            const credentials = credsRaw ? credsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const interests = interestsRaw ? interestsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            await insertMember({
+              name,
+              role,
+              org,
+              category,
+              credentials,
+              location,
+              quote,
+              bio,
+              interests,
+              isFeatured,
+              initials,
+              accentGradient: 'linear-gradient(135deg, #2b2b2b, #111111)',
+              since: '2026'
+            });
+
+            showToast(`Member "${name}" successfully inducted into registry.`);
+            addMemberForm.reset();
+            await refreshDirectory();
+            closeAdminModal();
+          } catch (err) {
+            showToast(err.message, true);
+          } finally {
+            if (saveBtn) saveBtn.innerHTML = `<span>Induct Member Into Registry</span> &rarr;`;
+          }
+        });
+      }
+
+      // Supabase Settings Form
+      if (configForm) {
+        configForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const url = document.getElementById('cfg-supabase-url').value;
+          const key = document.getElementById('cfg-supabase-key').value;
+          const pin = document.getElementById('cfg-admin-pin').value;
+
+          saveSupabaseConfig(url, key, pin);
+          showToast('Configuration updated. Reconnecting to Supabase...');
+          await refreshDirectory();
+        });
+      }
+
+    });
+  </script>
+</body>
+</html>

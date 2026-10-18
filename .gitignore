@@ -1,0 +1,18 @@
+# Node / Package managers
+node_modules/
+.npm/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Vercel & Deployments
+.vercel/
+
+# Antigravity & IDE
+.system_generated/
