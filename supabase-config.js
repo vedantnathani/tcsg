@@ -10,5 +10,5 @@ export const SUPABASE_CONFIG = {
   // Configured via Vercel Environment Variables (/api/config)
   url: '',
   anonKey: '',
-  adminPin: 'GUILD2026'
+  adminPin: '#Networking@108'
 };

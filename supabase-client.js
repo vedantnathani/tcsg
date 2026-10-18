@@ -11,7 +11,7 @@ const CONFIG_KEY_KEY = 'HF_SUPABASE_ANON_KEY';
 const CONFIG_KEY_PIN = 'HF_ADMIN_PASSKEY';
 
 // Default / fallback passkey for admin controls
-export const DEFAULT_ADMIN_PIN = 'GUILD2026';
+export const DEFAULT_ADMIN_PIN = '#Networking@108';
 
 let remoteConfigLoaded = false;
 

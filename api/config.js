@@ -10,7 +10,7 @@ export default function handler(req, res) {
 
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   const anonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-  const adminPin = process.env.ADMIN_PIN || process.env.SUPABASE_ADMIN_PIN || 'GUILD2026';
+  const adminPin = process.env.ADMIN_PIN || process.env.SUPABASE_ADMIN_PIN || '#Networking@108';
 
   return res.status(200).json({
     url: url.trim(),
