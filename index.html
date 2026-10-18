@@ -796,7 +796,7 @@
 
     /* Front Face: Edge-to-Edge Image Tile */
     .member-tile-front {
-      background: #141414;
+      background: var(--color-offwhite);
       transform: rotateY(0deg);
       -webkit-transform: rotateY(0deg);
     }
@@ -806,16 +806,17 @@
       height: 100%;
       object-fit: cover;
       object-position: center 20%;
-      filter: grayscale(100%) contrast(1.1);
-      transition: transform 0.6s var(--ease-luxe), filter 0.6s ease;
+      filter: none;
+      transition: transform 0.6s var(--ease-luxe);
       display: block;
     }
 
     .member-card:hover .member-tile-img {
       transform: scale(1.04);
-      filter: grayscale(60%) contrast(1.15);
+      filter: none;
     }
 
+    /* Fallback Monogram Canvas — Blends seamlessly with background */
     .member-tile-fallback {
       position: absolute;
       inset: 0;
@@ -826,63 +827,76 @@
       align-items: center;
       justify-content: center;
       gap: 0.75rem;
-      color: var(--color-white);
+      color: #242220;
       text-align: center;
       padding: 1.5rem;
+      background: linear-gradient(150deg, #FAF9F6 0%, #E8E6E0 100%);
     }
 
     .member-fallback-initials {
       font-family: var(--font-serif);
       font-size: 3.5rem;
+      font-weight: 300;
       letter-spacing: 0.05em;
       line-height: 1;
+      color: #242220;
+      opacity: 0.85;
     }
 
     .member-fallback-seal {
       font-size: 10px;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.45);
+      color: #8C8880;
+      font-weight: 500;
     }
 
     .tile-front-badge {
       position: absolute;
       top: 1rem;
       right: 1rem;
-      background: rgba(10, 10, 10, 0.75);
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: var(--color-gold);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      color: #1A1A1A;
       font-size: 9.5px;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       padding: 0.3rem 0.6rem;
       border-radius: 2px;
       pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       z-index: 2;
     }
 
-    /* Back Face: Flip Reveal (Message + LinkedIn Link) */
+    /* Back Face: Flip Reveal (Message + LinkedIn Link) — Blends with warm background */
     .member-tile-back {
       transform: rotateY(180deg);
       -webkit-transform: rotateY(180deg);
-      background: #0D0D0D;
-      color: #EAE8E3;
-      border-color: rgba(196, 167, 125, 0.45);
-      padding: 2.25rem 2rem;
+      background: linear-gradient(160deg, #FFFFFF 0%, #F5F3EE 100%);
+      color: #1A1A1A;
+      border: 1px solid #D9D5CC;
+      padding: 1.65rem 1.4rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
+      box-sizing: border-box;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .member-card:hover .member-tile-back {
+      border-color: var(--color-gold);
+      box-shadow: 0 14px 36px rgba(196, 167, 125, 0.18), 0 4px 12px rgba(0, 0, 0, 0.04);
     }
 
     .tile-back-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
       padding-bottom: 0.75rem;
     }
 
@@ -890,13 +904,13 @@
       font-size: 9.5px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--color-gold);
+      color: #94713E;
       font-weight: 600;
     }
 
     .tile-back-location {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--color-mid-grey);
       letter-spacing: 0.04em;
     }
 
@@ -905,37 +919,37 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      margin: 1.25rem 0;
+      margin: 1rem 0;
     }
 
     .tile-quote-mark {
       font-family: var(--font-serif);
-      font-size: 2.2rem;
+      font-size: 2rem;
       line-height: 1;
       color: var(--color-gold);
-      opacity: 0.5;
+      opacity: 0.65;
       margin-bottom: -0.25rem;
     }
 
     .tile-back-message {
       font-family: var(--font-serif);
       font-style: italic;
-      font-size: 1.15rem;
+      font-size: 0.98rem;
       line-height: 1.6;
-      color: #F7F5F0;
+      color: #222220;
       display: -webkit-box;
       -webkit-line-clamp: 5;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      margin-bottom: 0.65rem;
+      margin-bottom: 0.5rem;
     }
 
     .tile-back-role {
-      font-size: 11.5px;
-      color: var(--color-gold);
-      letter-spacing: 0.06em;
+      font-size: 10.5px;
+      color: #94713E;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: 600;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -943,8 +957,8 @@
     }
 
     .tile-back-footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      padding-top: 0.85rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      padding-top: 0.75rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -954,25 +968,25 @@
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      font-size: 11px;
+      font-size: 10.5px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--color-gold);
+      color: #1A1A1A;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
       padding: 0.45rem 0.85rem;
-      background: rgba(196, 167, 125, 0.12);
-      border: 1px solid rgba(196, 167, 125, 0.35);
+      background: rgba(196, 167, 125, 0.14);
+      border: 1px solid rgba(196, 167, 125, 0.45);
       border-radius: 2px;
-      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+      transition: all 0.3s var(--ease-luxe);
       cursor: pointer;
     }
 
     .tile-linkedin-btn:hover {
-      background: var(--color-gold);
-      color: #0A0A0A;
-      border-color: var(--color-gold);
-      transform: translateX(3px);
+      background: #0A0A0A;
+      color: #FFFFFF;
+      border-color: #0A0A0A;
+      transform: translateY(-1px);
     }
 
     /* Below Tile: ONLY Name and Company */
@@ -3251,7 +3265,7 @@
                 <!-- Front: Full Image -->
                 <div class="member-tile-front">
                   ${m.avatarUrl ? `<img src="${m.avatarUrl}" alt="${m.name}" class="member-tile-img" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
-                  <div class="member-tile-fallback" style="background: ${m.accentGradient || 'linear-gradient(135deg, #2b2b2b, #111111)'}; ${m.avatarUrl ? 'display: none;' : ''}">
+                  <div class="member-tile-fallback" style="background: ${m.accentGradient || 'linear-gradient(150deg, #FAF9F6 0%, #E8E6E0 100%)'}; ${m.avatarUrl ? 'display: none;' : ''}">
                     <span class="member-fallback-initials">${m.initials}</span>
                     <span class="member-fallback-seal">High Finance Guild</span>
                   </div>
@@ -3391,11 +3405,12 @@
         document.getElementById('modal-role').textContent = `${member.role} — ${member.org}`;
         const avatarEl = document.getElementById('modal-avatar');
         if (member.avatarUrl) {
-          avatarEl.innerHTML = `<img src="${member.avatarUrl}" alt="${member.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; filter: grayscale(100%) contrast(1.15);">`;
+          avatarEl.innerHTML = `<img src="${member.avatarUrl}" alt="${member.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
           avatarEl.style.background = 'transparent';
         } else {
           avatarEl.textContent = member.initials;
-          avatarEl.style.background = member.accentGradient;
+          avatarEl.style.background = member.accentGradient || 'linear-gradient(150deg, #FAF9F6 0%, #E8E6E0 100%)';
+          avatarEl.style.color = '#242220';
         }
         document.getElementById('modal-bio').textContent = (member.bio || '') + (member.quote ? " " + member.quote : "");
         document.getElementById('modal-since').textContent = member.since || '2026';
