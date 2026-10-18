@@ -1,19 +1,20 @@
 # Project State: High Finance Guild
 
-## Current Phase: Complete (Milestone 1)
-- Status: Supabase backend, member CRUD, application submissions, and Vercel configuration successfully implemented and committed to local Git.
-- Next Step: Push to GitHub remote using personal access token and deploy to Vercel.
+## Current Phase: Operational & Debug Diagnostics Active
+- Status: Supabase backend, member CRUD, application submissions, and live Submission Telemetry Debugger and Admin Health Inspector implemented and pushed to `main`.
+- Remote: `https://github.com/vedantnathani/tcsg.git`
 
 ## Phase Progress
-- [x] Phase 1: Supabase Schema & SQL Migrations
-- [x] Phase 2: Client Config & Live Member Directory
-- [x] Phase 3: Invitation Application Submission Integration
-- [x] Phase 4: Admin Console for Member Addition & Deletion
-- [x] Phase 5: Git Repository Setup & Vercel Deployment Configuration
+- [x] Phase 1: Supabase Schema & SQL Migrations (`members`, `applications`, `avatars` bucket)
+- [x] Phase 2: Client Config & Live Member Directory with Portraits & Initials Fallbacks
+- [x] Phase 3: Invitation Application Submission Integration with Dual-write Local Fallback
+- [x] Phase 4: Admin Registrar Console (`GUILD2026`) with Drag-and-drop Image Upload & Member Management
+- [x] Phase 5: Candidate Applications Tab in Admin with Instant "Induct as Member" Action
+- [x] Phase 6: Real-Time Submission Debugger & Telemetry Panel on Form & Admin Health Inspector
 
 ## Architecture Summary
 - **Frontend**: Vanilla HTML/CSS/JS with zero build dependencies, preserving peak performance and aesthetics.
-- **Backend / Database**: Supabase with PostgreSQL tables (`members`, `applications`), RLS policies, and seed data.
-- **Integration Layer**: `supabase-client.js` with dynamic fetching, optimistic fallback storage, and real-time status indicators.
-- **Admin Registrar Console**: Passkey-protected UI (`GUILD2026`) for inducting new members, removing members, and updating API keys.
+- **Backend / Database**: Supabase PostgreSQL tables (`members`, `applications`), Row-Level Security (RLS) policies, and storage bucket.
+- **Diagnostics Layer**: Interactive Telemetry Console directly on invitation form showing exact PostgreSQL error codes (`42501`, `42P01`, `42703`), PostgREST hints, and one-click copyable SQL fixes.
+- **Admin Health Inspector**: Live probe testing database connectivity, table accessibility, local backup counts, and one-click cloud synchronization.
 - **Deployment**: `vercel.json` configured for instant zero-configuration static deployment.
