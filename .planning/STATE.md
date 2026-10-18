@@ -11,6 +11,7 @@
 - [x] Phase 4: Admin Registrar Console (`GUILD2026`) with Drag-and-drop Image Upload & Member Management
 - [x] Phase 5: Candidate Applications Tab in Admin with Instant "Induct as Member" Action
 - [x] Phase 6: Real-Time Submission Debugger & Telemetry Panel on Form & Admin Health Inspector
+- [x] Phase 7: Dedicated Unlisted Partner Dashboard at `/partner` (Registrar removed from public website)
 
 ## Architecture Summary
 - **Frontend**: Vanilla HTML/CSS/JS with zero build dependencies, preserving peak performance and aesthetics.
