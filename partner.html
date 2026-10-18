@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>High Finance Guild — Partner &amp; Registrar Console</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230A0A0A'/><circle cx='16' cy='16' r='12' fill='none' stroke='%23C4A77D' stroke-width='1.5'/><line x1='12' y1='9' x2='12' y2='23' stroke='%23C4A77D' stroke-width='1.5'/><line x1='20' y1='9' x2='20' y2='23' stroke='%23C4A77D' stroke-width='1.5'/><line x1='12' y1='16' x2='20' y2='16' stroke='%23C4A77D' stroke-width='1.5'/></svg>">
+  
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --color-black: #0A0A0A;
+      --color-white: #FFFFFF;
+      --color-warm-grey: #E8E6E1;
+      --color-mid-grey: #888888;
+      --color-charcoal: #141414;
+      --color-gold: #C4A77D;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-black);
+      color: var(--color-white);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    .partner-nav {
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(14, 14, 14, 0.95);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .partner-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: var(--color-white);
+    }
+
+    .partner-seal {
+      width: 28px;
+      height: 28px;
+    }
+
+    .partner-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      letter-spacing: 0.04em;
+      color: var(--color-white);
+    }
+
+    .partner-badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: rgba(196, 167, 125, 0.15);
+      border: 1px solid rgba(196, 167, 125, 0.3);
+      color: var(--color-gold);
+    }
+
+    .partner-status-pill {
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-mid-grey);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f59e0b;
+      display: inline-block;
+    }
+
+    .status-dot.online {
+      background: #10b981;
+    }
+
+    /* Passkey Gate Screen */
+    #partner-gate {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .gate-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(196, 167, 125, 0.3);
+      max-width: 440px;
+      width: 100%;
+      padding: 3rem 2.5rem;
+      text-align: center;
+      border-radius: 2px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    .gate-title {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      color: var(--color-white);
+      margin-bottom: 0.5rem;
+    }
+
+    .gate-subline {
+      font-size: 13px;
+      color: var(--color-mid-grey);
+      margin-bottom: 2rem;
+    }
+
+    .luxe-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--color-white);
+      padding: 0.85rem 1rem;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      border-radius: 2px;
+      transition: all 0.25s ease;
+      margin-bottom: 1.25rem;
+      text-align: center;
+      letter-spacing: 0.15em;
+    }
+
+    .luxe-input:focus {
+      outline: none;
+      border-color: var(--color-gold);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .luxe-btn {
+      width: 100%;
+      background: var(--color-gold);
+      color: var(--color-black);
+      border: none;
+      padding: 0.9rem 1.5rem;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .luxe-btn:hover {
+      background: #d8be96;
+      transform: translateY(-1px);
+    }
+
+    /* Main Dashboard Screen */
+    #partner-dashboard {
+      display: none;
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem;
+    }
+
+    /* Tab Controls */
+    .dashboard-tabs {
+      display: flex;
+      gap: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--color-mid-grey);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 1rem 0.5rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--color-white);
+    }
+
+    .tab-btn.active {
+      color: var(--color-gold);
+      border-bottom-color: var(--color-gold);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Form Fields */
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+    }
+
+    .form-input, .form-select, .form-textarea {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--color-white);
+      padding: 0.75rem 1rem;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      border-radius: 2px;
+      transition: border-color 0.25s ease;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--color-gold);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .form-select option {
+      background: #111;
+      color: #fff;
+    }
+
+    /* Dropzone Upload */
+    .avatar-dropzone {
+      border: 1px dashed rgba(196, 167, 125, 0.4);
+      background: rgba(196, 167, 125, 0.03);
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      margin-top: 6px;
+    }
+
+    .avatar-dropzone:hover {
+      border-color: var(--color-gold);
+      background: rgba(196, 167, 125, 0.06);
+    }
+
+    /* Member Row */
+    .member-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 8px;
+      border-radius: 2px;
+    }
+
+    .row-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .delete-btn {
+      background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.45rem 0.9rem;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s ease;
+    }
+
+    .delete-btn:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Tag Cloud */
+    .tag-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--color-warm-grey);
+    }
+
+    /* Toast */
+    #toast-container {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .luxe-toast {
+      background: #141414;
+      color: #fff;
+      border: 1px solid var(--color-gold);
+      padding: 0.85rem 1.25rem;
+      font-size: 12px;
+      border-radius: 2px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .toast-error {
+      border-color: #ef4444;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="partner-nav">
+    <div class="partner-brand">
+      <svg class="partner-seal" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="45" stroke="#C4A77D" stroke-width="2" />
+        <line x1="36" y1="26" x2="36" y2="74" stroke="#C4A77D" stroke-width="2.5" />
+        <line x1="64" y1="26" x2="64" y2="74" stroke="#C4A77D" stroke-width="2.5" />
+        <line x1="36" y1="50" x2="64" y2="50" stroke="#C4A77D" stroke-width="2.5" />
+        <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#C4A77D" stroke-width="2" />
+      </svg>
+      <div>
+        <div class="partner-title">HIGH FINANCE GUILD</div>
+      </div>
+      <span class="partner-badge">Partner Console</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 1.5rem;">
+      <div class="partner-status-pill">
+        <span class="status-dot" id="header-status-dot"></span>
+        <span id="header-status-text">Probing Supabase...</span>
+      </div>
+      <button type="button" id="sign-out-btn" style="background: none; border: 1px solid rgba(255,255,255,0.15); color: var(--color-mid-grey); font-size: 11px; padding: 4px 10px; cursor: pointer; text-transform: uppercase; border-radius: 2px; display: none;">
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <!-- Passkey Gate (Visible until unlocked) -->
+  <main id="partner-gate">
+    <div class="gate-card">
+      <h1 class="gate-title">Restricted Institutional Access</h1>
+      <p class="gate-subline">
+        Enter your Partner / Registrar Passkey to access candidate applications and member governance.
+      </p>
+
+      <form id="gate-form">
+        <input type="password" id="partner-passkey" class="luxe-input" placeholder="Enter Registrar Passkey" required autofocus>
+        <button type="submit" class="luxe-btn">
+          <span>Authenticate Session</span> &rarr;
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Main Partner Dashboard (Hidden until unlocked) -->
+  <main id="partner-dashboard">
+    <!-- Tabs Header -->
+    <nav class="dashboard-tabs">
+      <button class="tab-btn active" data-pane="pane-apps">
+        Candidate Applications 
+        <span id="apps-count-badge" style="background: var(--color-gold); color: #0A0A0A; font-weight: 600; padding: 2px 7px; border-radius: 10px; font-size: 10px; margin-left: 6px; display: none;">0</span>
+      </button>
+      <button class="tab-btn" data-pane="pane-induct">Induct Peer Member</button>
+      <button class="tab-btn" data-pane="pane-roster">Directory Roster &amp; Manage</button>
+      <button class="tab-btn" data-pane="pane-settings">Database &amp; API Settings</button>
+    </nav>
+
+    <!-- Pane 1: Applications -->
+    <section class="tab-pane active" id="pane-apps">
+      <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(196,167,125,0.25); padding: 1.5rem; border-radius: 2px; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1.25rem;">
+          <div>
+            <h2 style="font-size: 16px; font-weight: 500; color: var(--color-white); letter-spacing: 0.04em;">Registry Database Health &amp; Submissions</h2>
+            <p style="font-size: 12px; color: var(--color-mid-grey); margin-top: 2px;">Inspect connectivity to Supabase, check RLS permissions, and review candidate requests.</p>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" id="partner-db-probe-btn" class="delete-btn" style="color: var(--color-gold); border-color: var(--color-gold);">
+              Run Health Check
+            </button>
+            <button type="button" id="partner-sync-local-btn" class="luxe-btn" style="width: auto; padding: 0.45rem 1rem; font-size: 11px; display: none;">
+              Sync Local to Cloud (<span id="partner-sync-count">0</span>)
+            </button>
+            <button type="button" id="partner-copy-sql-btn" class="delete-btn" style="color: #fff; border-color: rgba(255,255,255,0.2);">
+              Copy Schema &amp; RLS SQL
+            </button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 11px;">
+          <div style="background: rgba(0,0,0,0.5); padding: 10px 12px; border-left: 2px solid var(--color-gold);">
+            <div style="color: var(--color-mid-grey); text-transform: uppercase;">Cloud Database</div>
+            <div id="partner-pill-cloud" style="color: #fff; font-weight: 500; margin-top: 4px;">Checking...</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.5); padding: 10px 12px; border-left: 2px solid #10b981;">
+            <div style="color: var(--color-mid-grey); text-transform: uppercase;">Applications Table</div>
+            <div id="partner-pill-table" style="color: #fff; font-weight: 500; margin-top: 4px;">Checking...</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.5); padding: 10px 12px; border-left: 2px solid #f59e0b;">
+            <div style="color: var(--color-mid-grey); text-transform: uppercase;">Local Storage Backup</div>
+            <div id="partner-pill-local" style="color: #fff; font-weight: 500; margin-top: 4px;">Checking...</div>
+          </div>
+        </div>
+
+        <div id="partner-diag-alert" style="display: none; margin-top: 1.25rem; background: rgba(239,68,68,0.1); border: 1px solid #ef4444; padding: 1rem; border-radius: 2px; font-size: 12px; color: #fca5a5;">
+          <div style="font-weight: 600; color: #ef4444; margin-bottom: 4px;">PostgreSQL / PostgREST Notice</div>
+          <div id="partner-diag-msg" style="margin-bottom: 8px;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 14px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-mid-grey);">Candidate Inquiries</h3>
+        <button type="button" id="partner-refresh-apps-btn" class="delete-btn" style="color: var(--color-gold); border-color: rgba(196,167,125,0.4);">
+          Refresh Inquiries
+        </button>
+      </div>
+
+      <div id="partner-apps-container" style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- Dynamic -->
+      </div>
+    </section>
+
+    <!-- Pane 2: Induct Member -->
+    <section class="tab-pane" id="pane-induct">
+      <div style="max-width: 800px;">
+        <form id="partner-add-member-form">
+          <div class="field-grid">
+            <div class="form-group">
+              <label class="form-label" for="induct-name">Full Name *</label>
+              <input type="text" id="induct-name" required class="form-input" placeholder="e.g. Vikram Singhania">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="induct-org">Current Firm / Fund *</label>
+              <input type="text" id="induct-org" required class="form-input" placeholder="e.g. ChrysCapital">
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="form-group">
+              <label class="form-label" for="induct-role">Current Designation / Role *</label>
+              <input type="text" id="induct-role" required class="form-input" placeholder="e.g. Managing Director, Private Equity">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="induct-category">Primary Category</label>
+              <select id="induct-category" class="form-select">
+                <option value="capital">Private Capital &amp; Investment Banking</option>
+                <option value="ca">Chartered Accountancy &amp; Tax</option>
+                <option value="strategy">Corporate Strategy &amp; Family Office</option>
+                <option value="finalist">CA Finalist &amp; Merit Scholar</option>
+                <option value="other">Institutional Principal</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="form-group">
+              <label class="form-label" for="induct-creds">Credentials &amp; Ranks (Comma-separated)</label>
+              <input type="text" id="induct-creds" class="form-input" placeholder="CA, AIR 02, CFA">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="induct-location">Base City *</label>
+              <input type="text" id="induct-location" required class="form-input" placeholder="Mumbai, London, Singapore...">
+            </div>
+          </div>
+
+          <!-- Avatar Image Upload Dropzone -->
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Portrait Photograph</label>
+            <input type="file" id="induct-avatar-file" accept="image/*" style="display: none;">
+            
+            <div id="partner-avatar-dropzone" class="avatar-dropzone">
+              <div id="dropzone-content">
+                <div style="font-size: 24px; color: var(--color-gold); margin-bottom: 6px;">&#128247;</div>
+                <div style="font-size: 13px; color: var(--color-white); font-weight: 500;">Click or drag to upload portrait</div>
+                <div style="font-size: 11px; color: var(--color-mid-grey); margin-top: 4px;">Compressed to high-resolution JPEG and synced to Supabase</div>
+              </div>
+              <div id="dropzone-preview-wrap" style="display: none; align-items: center; justify-content: center; gap: 16px;">
+                <img id="dropzone-preview-img" src="" alt="Preview" style="width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-gold);">
+                <div style="text-align: left;">
+                  <div id="dropzone-file-name" style="font-size: 12px; color: #fff; font-weight: 500;"></div>
+                  <button type="button" id="dropzone-remove-btn" style="background: none; border: none; color: #ef4444; font-size: 11px; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 2px;">Remove image</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 6px; text-align: right;">
+              <button type="button" id="toggle-url-btn" style="background: none; border: none; font-size: 11px; color: var(--color-gold); cursor: pointer; text-decoration: underline;">
+                or paste an image link directly
+              </button>
+            </div>
+
+            <div id="url-container" style="display: none; margin-top: 8px;">
+              <input type="url" id="induct-avatar-url" class="form-input" placeholder="https://images.unsplash.com/photo-...">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="induct-quote">Featured Executive Perspective / Quote</label>
+            <input type="text" id="induct-quote" class="form-input" placeholder="e.g. True downside protection lies in governance...">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="induct-bio">Executive Narrative &amp; Mandate *</label>
+            <textarea id="induct-bio" required class="form-textarea" rows="3" placeholder="Brief executive background and advisory scope..."></textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="induct-interests">Focus Areas &amp; Specializations (Comma-separated)</label>
+            <input type="text" id="induct-interests" class="form-input" placeholder="M&amp;A, Restructuring, Private Credit">
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1.5rem;">
+            <input type="checkbox" id="induct-featured" style="accent-color: var(--color-gold);">
+            <label for="induct-featured" style="font-size: 12px; color: var(--color-mid-grey); cursor: pointer;">
+              Display as Featured Founding Peer on Homepage Hero
+            </label>
+          </div>
+
+          <button type="submit" class="luxe-btn" id="btn-save-induct">
+            <span>Induct Member Into Registry</span> &rarr;
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Pane 3: Directory Roster -->
+    <section class="tab-pane" id="pane-roster">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <div>
+          <h2 style="font-size: 16px; font-weight: 500; color: var(--color-white);">Active Peer Directory</h2>
+          <p style="font-size: 12px; color: var(--color-mid-grey);">Members currently listed in the public directory.</p>
+        </div>
+        <button type="button" id="partner-refresh-members-btn" class="delete-btn" style="color: var(--color-gold); border-color: rgba(196,167,125,0.4);">
+          Refresh Roster
+        </button>
+      </div>
+
+      <div id="partner-members-container" style="display: flex; flex-direction: column; gap: 8px;">
+        <!-- Dynamic -->
+      </div>
+    </section>
+
+    <!-- Pane 4: Settings -->
+    <section class="tab-pane" id="pane-settings">
+      <div style="max-width: 600px;">
+        <div style="background: rgba(196, 167, 125, 0.08); border-left: 3px solid var(--color-gold); padding: 1rem; margin-bottom: 1.5rem; font-size: 12px; line-height: 1.6; color: var(--color-warm-grey);">
+          <strong>Environment Variables / Supabase Connection:</strong><br>
+          For Vercel production deployments, values are loaded securely via <code style="color: var(--color-gold);">/api/config</code> from your Vercel Project Environment Variables.<br>
+          You can also manually override credentials for this browser session below.
+        </div>
+
+        <form id="partner-config-form">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="cfg-url">Supabase Project URL</label>
+            <input type="url" id="cfg-url" class="form-input" placeholder="https://your-project-id.supabase.co">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="cfg-key">Supabase Anon Public API Key</label>
+            <input type="password" id="cfg-key" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label class="form-label" for="cfg-pin">Custom Partner Passkey</label>
+            <input type="text" id="cfg-pin" class="form-input" placeholder="GUILD2026">
+          </div>
+
+          <button type="submit" class="luxe-btn">
+            <span>Save Configuration &amp; Reconnect</span> &rarr;
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Partner Client Script -->
+  <script type="module">
+    import {
+      loadEnvironmentConfig,
+      getSupabaseConfig,
+      saveSupabaseConfig,
+      getSupabaseClient,
+      getMembers,
+      insertMember,
+      deleteMember,
+      getApplications,
+      deleteApplication,
+      diagnoseDatabase,
+      syncLocalApplicationsToSupabase,
+      getApplicationsSqlFix,
+      uploadAvatar,
+      DEFAULT_ADMIN_PIN
+    } from './supabase-client.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Toast helper
+      const toastContainer = document.getElementById('toast-container');
+      function showToast(message, isError = false) {
+        if (!toastContainer) return;
+        const toast = document.createElement('div');
+        toast.className = `luxe-toast ${isError ? 'toast-error' : ''}`;
+        toast.innerHTML = `
+          <span style="color: ${isError ? '#ef4444' : 'var(--color-gold)'}; font-weight: bold;">${isError ? '!' : '✓'}</span>
+          <span>${message}</span>
+        `;
+        toastContainer.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+          setTimeout(() => toast.remove(), 400);
+        }, 4000);
+      }
+
+      // 2. Load Environment Config from /api/config
+      await loadEnvironmentConfig();
+
+      // Header status indicator
+      const headerDot = document.getElementById('header-status-dot');
+      const headerText = document.getElementById('header-status-text');
+      function updateHeaderStatus() {
+        const cfg = getSupabaseConfig();
+        if (cfg.url && cfg.anonKey) {
+          if (headerDot) headerDot.classList.add('online');
+          if (headerText) headerText.textContent = `Supabase Online (${cfg.url.substring(0, 24)}...)`;
+        } else {
+          if (headerDot) headerDot.classList.remove('online');
+          if (headerText) headerText.textContent = 'Local / Unconfigured';
+        }
+      }
+      updateHeaderStatus();
+
+      // 3. Authentication & Gate Management
+      const gate = document.getElementById('partner-gate');
+      const dashboard = document.getElementById('partner-dashboard');
+      const gateForm = document.getElementById('gate-form');
+      const passkeyInput = document.getElementById('partner-passkey');
+      const signOutBtn = document.getElementById('sign-out-btn');
+
+      function unlockDashboard() {
+        sessionStorage.setItem('HF_PARTNER_LOGGED_IN', 'true');
+        if (gate) gate.style.display = 'none';
+        if (dashboard) dashboard.style.display = 'block';
+        if (signOutBtn) signOutBtn.style.display = 'inline-block';
+        loadApplicationsView();
+        loadMembersView();
+      }
+
+      if (sessionStorage.getItem('HF_PARTNER_LOGGED_IN') === 'true') {
+        unlockDashboard();
+      }
+
+      if (gateForm) {
+        gateForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const entered = passkeyInput?.value.trim();
+          const cfg = getSupabaseConfig();
+          if (entered === cfg.adminPin || entered === DEFAULT_ADMIN_PIN || entered === '#Networking@108') {
+            showToast('Partner Session Authenticated.');
+            unlockDashboard();
+          } else {
+            showToast('Invalid Passkey. Please verify your credentials.', true);
+          }
+        });
+      }
+
+      if (signOutBtn) {
+        signOutBtn.addEventListener('click', () => {
+          sessionStorage.removeItem('HF_PARTNER_LOGGED_IN');
+          window.location.reload();
+        });
+      }
+
+      // 4. Tab Navigation
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabPanes.forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          const target = document.getElementById(btn.dataset.pane);
+          if (target) target.classList.add('active');
+
+          if (btn.dataset.pane === 'pane-apps') loadApplicationsView();
+          if (btn.dataset.pane === 'pane-roster') loadMembersView();
+          if (btn.dataset.pane === 'pane-settings') loadSettingsView();
+        });
+      });
+
+      // 5. Pane 1: Applications Viewer
+      const appsContainer = document.getElementById('partner-apps-container');
+      const appsBadge = document.getElementById('apps-count-badge');
+      const probeBtn = document.getElementById('partner-db-probe-btn');
+      const syncBtn = document.getElementById('partner-sync-local-btn');
+      const syncCount = document.getElementById('partner-sync-count');
+      const copySqlBtn = document.getElementById('partner-copy-sql-btn');
+      const pillCloud = document.getElementById('partner-pill-cloud');
+      const pillTable = document.getElementById('partner-pill-table');
+      const pillLocal = document.getElementById('partner-pill-local');
+      const diagAlert = document.getElementById('partner-diag-alert');
+      const diagMsg = document.getElementById('partner-diag-msg');
+      const refreshAppsBtn = document.getElementById('partner-refresh-apps-btn');
+
+      async function loadApplicationsView() {
+        if (!appsContainer) return;
+        appsContainer.innerHTML = '<div style="color: var(--color-mid-grey); font-size: 13px; padding: 1.5rem 0;">Querying candidate applications...</div>';
+
+        try {
+          const apps = await getApplications();
+          if (appsBadge) {
+            appsBadge.textContent = apps.length;
+            appsBadge.style.display = apps.length > 0 ? 'inline-block' : 'none';
+          }
+
+          if (pillCloud) {
+            pillCloud.innerHTML = apps.supabaseError 
+              ? `<span style="color: #ef4444;">${apps.supabaseError.code || 'Notice'}</span>` 
+              : `<span style="color: #10b981;">Connected</span>`;
+          }
+
+          if (pillTable) {
+            pillTable.innerHTML = apps.supabaseError
+              ? `<span style="color: #ef4444;">Unavailable</span>`
+              : `<span style="color: #10b981;">${apps.supabaseCount} row(s) in Cloud</span>`;
+          }
+
+          if (pillLocal) {
+            pillLocal.innerHTML = `<span>${apps.localCount || 0} cached locally</span>`;
+          }
+
+          if (syncBtn) {
+            if (apps.localCount > 0 && !apps.supabaseError) {
+              syncBtn.style.display = 'inline-flex';
+              if (syncCount) syncCount.textContent = apps.localCount;
+            } else {
+              syncBtn.style.display = 'none';
+            }
+          }
+
+          if (diagAlert && diagMsg) {
+            if (apps.supabaseError) {
+              diagAlert.style.display = 'block';
+              diagMsg.innerHTML = `
+                <strong>[${apps.supabaseError.code}]</strong> ${apps.supabaseError.message}<br>
+                ${apps.supabaseError.hint ? `<em>Hint: ${apps.supabaseError.hint}</em><br>` : ''}
+                Showing ${apps.length} candidate applications loaded from local storage fallback.
+              `;
+            } else {
+              diagAlert.style.display = 'none';
+            }
+          }
+
+          appsContainer.innerHTML = '';
+          if (apps.length === 0) {
+            appsContainer.innerHTML = `
+              <div style="text-align: center; padding: 3rem 1rem; color: var(--color-mid-grey); border: 1px dashed rgba(255,255,255,0.1); border-radius: 2px;">
+                <div style="font-size: 14px; color: var(--color-white); margin-bottom: 4px;">No Pending Applications</div>
+                <div style="font-size: 12px;">Submitted candidate inquiries will appear here in real time.</div>
+              </div>
+            `;
+            return;
+          }
+
+          apps.forEach(app => {
+            const card = document.createElement('div');
+            card.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(196, 167, 125, 0.25); padding: 1.5rem; border-radius: 2px;';
+            const dateStr = app.createdAt ? new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
+            const isLocal = app.source === 'local' || (app.id && String(app.id).startsWith('local_'));
+
+            card.innerHTML = `
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="font-size: 16px; font-weight: 500; color: var(--color-white);">${app.fullName}</div>
+                    ${isLocal 
+                      ? `<span class="tag-badge" style="background: rgba(245,158,11,0.15); border: 1px solid #f59e0b; color: #f59e0b;">Local Backup</span>`
+                      : `<span class="tag-badge" style="background: rgba(196,167,125,0.15); border: 1px solid var(--color-gold); color: var(--color-gold);">Supabase Cloud</span>`
+                    }
+                  </div>
+                  <div style="font-size: 13px; color: var(--color-gold); margin-top: 2px;">${app.role} &bull; ${app.organization}</div>
+                  <div style="font-size: 12px; color: var(--color-mid-grey); margin-top: 4px;">
+                    <span>${app.city}</span> &bull; 
+                    <a href="mailto:${app.email}" style="color: var(--color-white); text-decoration: underline;">${app.email}</a>
+                    ${app.linkedinUrl ? ` &bull; <a href="${app.linkedinUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--color-gold); text-decoration: underline;">LinkedIn Profile &rarr;</a>` : ''}
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <span style="font-size: 11px; color: var(--color-mid-grey);">${dateStr}</span>
+                  <div style="margin-top: 6px;">
+                    <span class="tag-badge" style="border: 1px solid var(--color-gold); color: var(--color-gold);">${app.qualification || 'Candidate'}</span>
+                    ${app.honorsRank ? `<span class="tag-badge">${app.honorsRank}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: rgba(0,0,0,0.3); border-left: 2px solid var(--color-gold); padding: 0.85rem 1.25rem; margin: 1rem 0; font-size: 13px; font-style: italic; color: var(--color-warm-grey); line-height: 1.6;">
+                &ldquo;${app.whyJoin}&rdquo;
+              </div>
+
+              ${app.referral ? `<div style="font-size: 12px; color: var(--color-mid-grey); margin-bottom: 1rem;">Member Referral: <strong style="color: var(--color-white);">${app.referral}</strong></div>` : ''}
+
+              <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06);">
+                <button type="button" class="luxe-btn induct-app-btn" style="width: auto; padding: 0.45rem 1rem; font-size: 11px;">
+                  Induct As Member &rarr;
+                </button>
+                <button type="button" class="delete-btn dismiss-app-btn">
+                  Dismiss
+                </button>
+              </div>
+            `;
+
+            // Pre-fill Induct Tab
+            const inductBtn = card.querySelector('.induct-app-btn');
+            inductBtn.addEventListener('click', () => {
+              tabBtns.forEach(b => b.classList.remove('active'));
+              tabPanes.forEach(p => p.classList.remove('active'));
+              document.querySelector('[data-pane="pane-induct"]')?.classList.add('active');
+              document.getElementById('pane-induct')?.classList.add('active');
+
+              document.getElementById('induct-name').value = app.fullName;
+              document.getElementById('induct-org').value = app.organization;
+              document.getElementById('induct-role').value = app.role;
+              document.getElementById('induct-location').value = app.city;
+              document.getElementById('induct-bio').value = `${app.role} at ${app.organization}. ${app.whyJoin}`;
+              document.getElementById('induct-creds').value = [app.qualification, app.honorsRank].filter(Boolean).join(', ');
+              showToast(`Prefilled details for ${app.fullName}. Upload a portrait photograph to complete induction.`);
+            });
+
+            // Dismiss Application
+            const dismissBtn = card.querySelector('.dismiss-app-btn');
+            dismissBtn.addEventListener('click', async () => {
+              if (confirm(`Dismiss application from ${app.fullName}?`)) {
+                await deleteApplication(app.id);
+                showToast(`Application from ${app.fullName} dismissed.`);
+                loadApplicationsView();
+              }
+            });
+
+            appsContainer.appendChild(card);
+          });
+        } catch (e) {
+          appsContainer.innerHTML = `<div style="color: #ef4444; font-size: 13px;">Error loading applications: ${e.message}</div>`;
+        }
+      }
+
+      if (refreshAppsBtn) refreshAppsBtn.addEventListener('click', loadApplicationsView);
+
+      // Probe Database
+      if (probeBtn) {
+        probeBtn.addEventListener('click', async () => {
+          probeBtn.textContent = 'Probing...';
+          try {
+            const report = await diagnoseDatabase();
+            if (report.overallStatus === 'CONFIG_MISSING') {
+              showToast('Supabase URL/Key missing. Configure in Database Settings.', true);
+            } else if (report.applicationsCheck.ok) {
+              showToast(`Health Check Passed! applications table has ${report.applicationsCheck.count} rows.`);
+            } else {
+              showToast(`Health Issue: ${report.applicationsCheck.error}`, true);
+            }
+            await loadApplicationsView();
+          } catch (err) {
+            showToast(`Probe error: ${err.message}`, true);
+          } finally {
+            probeBtn.textContent = 'Run Health Check';
+          }
+        });
+      }
+
+      // Sync Local
+      if (syncBtn) {
+        syncBtn.addEventListener('click', async () => {
+          syncBtn.innerHTML = `<span>Syncing...</span>`;
+          syncBtn.disabled = true;
+          try {
+            const res = await syncLocalApplicationsToSupabase();
+            showToast(`Successfully synced ${res.syncedCount} application(s) to Supabase Cloud!`);
+            await loadApplicationsView();
+          } catch (err) {
+            showToast(`Sync failed: ${err.message}`, true);
+          } finally {
+            syncBtn.innerHTML = `Sync Local to Cloud (<span id="partner-sync-count">0</span>)`;
+            syncBtn.disabled = false;
+          }
+        });
+      }
+
+      // Copy SQL
+      if (copySqlBtn) {
+        copySqlBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(getApplicationsSqlFix()).then(() => {
+            showToast('Applications & RLS SQL script copied to clipboard!');
+          });
+        });
+      }
+
+      // 6. Pane 2: Induct Member & Image Upload
+      let selectedAvatarFile = null;
+      const avatarDropzone = document.getElementById('partner-avatar-dropzone');
+      const avatarFileInput = document.getElementById('induct-avatar-file');
+      const dropzoneContent = document.getElementById('dropzone-content');
+      const dropzonePreviewWrap = document.getElementById('dropzone-preview-wrap');
+      const dropzonePreviewImg = document.getElementById('dropzone-preview-img');
+      const dropzoneFileName = document.getElementById('dropzone-file-name');
+      const dropzoneRemoveBtn = document.getElementById('dropzone-remove-btn');
+      const toggleUrlBtn = document.getElementById('toggle-url-btn');
+      const urlContainer = document.getElementById('url-container');
+      const addMemberForm = document.getElementById('partner-add-member-form');
+
+      if (toggleUrlBtn && urlContainer) {
+        toggleUrlBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const isHidden = urlContainer.style.display === 'none';
+          urlContainer.style.display = isHidden ? 'block' : 'none';
+          toggleUrlBtn.textContent = isHidden ? 'hide direct link input' : 'or paste an image link directly';
+        });
+      }
+
+      function handleFileSelected(file) {
+        if (!file || !file.type.startsWith('image/')) {
+          showToast('Please select an image file (JPEG, PNG, WebP).', true);
+          return;
+        }
+        selectedAvatarFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (dropzonePreviewImg) dropzonePreviewImg.src = e.target.result;
+          if (dropzoneFileName) dropzoneFileName.textContent = file.name;
+          if (dropzoneContent) dropzoneContent.style.display = 'none';
+          if (dropzonePreviewWrap) dropzonePreviewWrap.style.display = 'flex';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function resetDropzone() {
+        selectedAvatarFile = null;
+        if (avatarFileInput) avatarFileInput.value = '';
+        if (dropzonePreviewImg) dropzonePreviewImg.src = '';
+        if (dropzoneContent) dropzoneContent.style.display = 'block';
+        if (dropzonePreviewWrap) dropzonePreviewWrap.style.display = 'none';
+        const urlField = document.getElementById('induct-avatar-url');
+        if (urlField) urlField.value = '';
+      }
+
+      if (avatarDropzone && avatarFileInput) {
+        avatarDropzone.addEventListener('click', (e) => {
+          if (e.target !== dropzoneRemoveBtn) avatarFileInput.click();
+        });
+        avatarFileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) handleFileSelected(e.target.files[0]);
+        });
+        avatarDropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          avatarDropzone.style.borderColor = 'var(--color-gold)';
+        });
+        avatarDropzone.addEventListener('dragleave', () => {
+          avatarDropzone.style.borderColor = 'rgba(196, 167, 125, 0.4)';
+        });
+        avatarDropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          avatarDropzone.style.borderColor = 'rgba(196, 167, 125, 0.4)';
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFileSelected(e.dataTransfer.files[0]);
+        });
+      }
+
+      if (dropzoneRemoveBtn) {
+        dropzoneRemoveBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          resetDropzone();
+        });
+      }
+
+      if (addMemberForm) {
+        addMemberForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const saveBtn = document.getElementById('btn-save-induct');
+          if (saveBtn) saveBtn.innerHTML = `<span>Processing &amp; Inducting...</span>`;
+
+          try {
+            const name = document.getElementById('induct-name').value.trim();
+            const org = document.getElementById('induct-org').value.trim();
+            const role = document.getElementById('induct-role').value.trim();
+            const category = document.getElementById('induct-category').value;
+            const credsRaw = document.getElementById('induct-creds').value;
+            const location = document.getElementById('induct-location').value.trim();
+            const quote = document.getElementById('induct-quote').value.trim();
+            const bio = document.getElementById('induct-bio').value.trim();
+            const interestsRaw = document.getElementById('induct-interests').value;
+            const isFeatured = document.getElementById('induct-featured').checked;
+
+            let avatarUrl = '';
+            if (selectedAvatarFile) {
+              if (saveBtn) saveBtn.innerHTML = `<span>Optimizing portrait...</span>`;
+              avatarUrl = await uploadAvatar(selectedAvatarFile);
+            } else {
+              avatarUrl = document.getElementById('induct-avatar-url')?.value.trim() || '';
+            }
+
+            const credentials = credsRaw ? credsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const interests = interestsRaw ? interestsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            await insertMember({
+              name,
+              role,
+              org,
+              category,
+              credentials,
+              location,
+              quote,
+              bio,
+              interests,
+              isFeatured,
+              initials,
+              avatarUrl,
+              accentGradient: 'linear-gradient(135deg, #2b2b2b, #111111)',
+              since: '2026'
+            });
+
+            showToast(`Member "${name}" successfully inducted into registry.`);
+            addMemberForm.reset();
+            resetDropzone();
+            loadMembersView();
+
+            // Switch to Roster
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabPanes.forEach(p => p.classList.remove('active'));
+            document.querySelector('[data-pane="pane-roster"]')?.classList.add('active');
+            document.getElementById('pane-roster')?.classList.add('active');
+          } catch (err) {
+            showToast(err.message, true);
+          } finally {
+            if (saveBtn) saveBtn.innerHTML = `<span>Induct Member Into Registry</span> &rarr;`;
+          }
+        });
+      }
+
+      // 7. Pane 3: Directory Roster Viewer
+      const membersContainer = document.getElementById('partner-members-container');
+      const refreshMembersBtn = document.getElementById('partner-refresh-members-btn');
+
+      async function loadMembersView() {
+        if (!membersContainer) return;
+        membersContainer.innerHTML = '<div style="color: var(--color-mid-grey); font-size: 13px; padding: 1rem 0;">Loading peer directory...</div>';
+
+        try {
+          const members = await getMembers();
+          membersContainer.innerHTML = '';
+
+          if (members.length === 0) {
+            membersContainer.innerHTML = `<div style="color: var(--color-mid-grey); font-size: 13px;">No active members found.</div>`;
+            return;
+          }
+
+          members.forEach(m => {
+            const row = document.createElement('div');
+            row.className = 'member-row';
+            row.innerHTML = `
+              <div class="row-info">
+                ${m.avatarUrl 
+                  ? `<img src="${m.avatarUrl}" alt="${m.name}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; filter: grayscale(100%); border: 1px solid rgba(196,167,125,0.3);">`
+                  : `<div style="background: ${m.accentGradient || '#222'}; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: #fff;">${m.initials}</div>`
+                }
+                <div>
+                  <div style="font-size: 14px; font-weight: 500; color: #fff;">${m.name} ${m.isFeatured ? '<span class="tag-badge" style="color: var(--color-gold); border: 1px solid var(--color-gold); font-size: 9px;">Featured</span>' : ''}</div>
+                  <div style="font-size: 12px; color: var(--color-gold);">${m.role} &bull; ${m.org} (${m.category})</div>
+                  <div style="font-size: 11px; color: var(--color-mid-grey);">${m.location} &bull; Joined ${m.since || '2026'}</div>
+                </div>
+              </div>
+              <button class="delete-btn delete-member-btn" data-id="${m.id}" data-name="${m.name}">
+                Delete Peer
+              </button>
+            `;
+
+            const delBtn = row.querySelector('.delete-member-btn');
+            delBtn.addEventListener('click', async () => {
+              if (confirm(`Remove member "${m.name}" from Supabase?`)) {
+                try {
+                  await deleteMember(m.id);
+                  showToast(`Removed "${m.name}" from registry.`);
+                  loadMembersView();
+                } catch (err) {
+                  showToast(err.message, true);
+                }
+              }
+            });
+
+            membersContainer.appendChild(row);
+          });
+        } catch (e) {
+          membersContainer.innerHTML = `<div style="color: #ef4444; font-size: 13px;">Error loading roster: ${e.message}</div>`;
+        }
+      }
+
+      if (refreshMembersBtn) refreshMembersBtn.addEventListener('click', loadMembersView);
+
+      // 8. Pane 4: Settings
+      const configForm = document.getElementById('partner-config-form');
+      function loadSettingsView() {
+        const cfg = getSupabaseConfig();
+        const urlInput = document.getElementById('cfg-url');
+        const keyInput = document.getElementById('cfg-key');
+        const pinInput = document.getElementById('cfg-pin');
+        if (urlInput) urlInput.value = cfg.url;
+        if (keyInput) keyInput.value = cfg.anonKey;
+        if (pinInput) pinInput.value = cfg.adminPin;
+      }
+
+      if (configForm) {
+        configForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const url = document.getElementById('cfg-url').value;
+          const key = document.getElementById('cfg-key').value;
+          const pin = document.getElementById('cfg-pin').value;
+          saveSupabaseConfig(url, key, pin);
+          updateHeaderStatus();
+          showToast('Configuration updated for this session.');
+        });
+      }
+
+    });
+  </script>
+</body>
+</html>
