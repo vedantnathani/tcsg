@@ -838,7 +838,7 @@
 
           apps.forEach(app => {
             const card = document.createElement('div');
-            card.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(196, 167, 125, 0.25); padding: 1.5rem; border-radius: 2px;';
+            card.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(196, 167, 125, 0.25); padding: 1.5rem; border-radius: 2px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;';
             const dateStr = app.createdAt ? new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
             const isLocal = app.source === 'local' || (app.id && String(app.id).startsWith('local_'));
 
@@ -868,13 +868,13 @@
                 </div>
               </div>
 
-              <div style="background: rgba(0,0,0,0.3); border-left: 2px solid var(--color-gold); padding: 0.85rem 1.25rem; margin: 1rem 0; font-size: 13px; font-style: italic; color: var(--color-warm-grey); line-height: 1.6;">
+              <div style="background: rgba(0,0,0,0.3); border-left: 2px solid var(--color-gold); padding: 0.85rem 1.25rem; margin: 1rem 0; font-size: 13px; font-style: italic; color: var(--color-warm-grey); line-height: 1.6; flex: 1;">
                 &ldquo;${app.whyJoin}&rdquo;
               </div>
 
               ${app.referral ? `<div style="font-size: 12px; color: var(--color-mid-grey); margin-bottom: 1rem;">Member Referral: <strong style="color: var(--color-white);">${app.referral}</strong></div>` : ''}
 
-              <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06);">
+              <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); margin-top: auto;">
                 <button type="button" class="luxe-btn induct-app-btn" style="width: auto; padding: 0.45rem 1rem; font-size: 11px;">
                   Induct As Member &rarr;
                 </button>

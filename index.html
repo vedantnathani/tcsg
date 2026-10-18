@@ -729,31 +729,33 @@
       width: 100%;
     }
 
-    /* Magazine Asymmetric Grid */
+    /* Uniform Member Directory Grid */
     .members-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2.25rem;
+      gap: 2rem;
+      align-items: stretch;
     }
 
-    /* Member Card Design */
+    /* Member Card Design - Equal Length & Dimensions */
     .member-card {
       background: var(--color-offwhite);
       border: 1px solid var(--color-warm-grey);
-      padding: 2.5rem;
+      padding: 2.25rem 2rem;
       cursor: pointer;
       position: relative;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 380px;
+      height: 100%;
+      min-height: 480px;
       transition: transform 0.5s var(--ease-luxe), box-shadow 0.5s var(--ease-luxe), border-color 0.4s;
       overflow: hidden;
     }
 
-    /* Asymmetric rhythm classes */
+    /* Uniform single column for all member cards */
     .member-card.featured-card {
-      grid-column: span 2;
+      grid-column: span 1;
       background: #FAFAF8;
     }
 
@@ -805,13 +807,13 @@
     .card-header-flex {
       display: flex;
       align-items: flex-start;
-      gap: 1.5rem;
-      margin-bottom: 1.75rem;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
     }
 
     .portrait-wrap {
-      width: 80px;
-      height: 80px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
       overflow: hidden;
       background: var(--color-warm-grey);
@@ -821,8 +823,8 @@
     }
 
     .featured-card .portrait-wrap {
-      width: 110px;
-      height: 110px;
+      width: 72px;
+      height: 72px;
     }
 
     .portrait-img {
@@ -849,15 +851,19 @@
 
     .member-info {
       flex: 1;
+      min-width: 0;
     }
 
     .member-name {
       font-family: var(--font-serif);
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       font-weight: 400;
       letter-spacing: -0.01em;
       color: var(--color-black);
       margin-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .member-role {
@@ -865,12 +871,18 @@
       color: var(--color-mid-grey);
       line-height: 1.4;
       margin-bottom: 0.75rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 36px;
     }
 
     .credentials-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
+      min-height: 24px;
     }
 
     .cred-tag {
@@ -884,33 +896,49 @@
       background: var(--color-white);
     }
 
-    .member-body {
-      margin-top: 1rem;
+    .member-top-section {
+      display: flex;
+      flex-direction: column;
       flex: 1;
+    }
+
+    .member-body {
+      margin-top: 0.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .member-featured-quote {
       font-family: var(--font-serif);
       font-style: italic;
-      font-size: 1.15rem;
-      line-height: 1.5;
+      font-size: 1.05rem;
+      line-height: 1.45;
       color: #262626;
-      margin-bottom: 1.25rem;
-      padding-left: 1rem;
-      border-left: 1px solid var(--color-mid-grey);
+      margin-bottom: 0.85rem;
+      padding-left: 0.85rem;
+      border-left: 2px solid var(--color-mid-grey);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .member-short-bio {
       font-size: 13.5px;
-      line-height: 1.65;
+      line-height: 1.6;
       color: #555555;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .member-meta-bottom {
       border-top: 1px solid var(--color-warm-grey);
       padding-top: 1.25rem;
-      margin-top: 1rem;
+      margin-top: auto;
       display: flex;
       flex-direction: column;
       gap: 0.6rem;
@@ -932,12 +960,15 @@
     }
 
     .member-interests {
-      font-size: 12px;
+      font-size: 11px;
       color: #444444;
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: center;
       gap: 0.4rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .interest-bullet {
@@ -1160,6 +1191,8 @@
     .founder-card {
       display: flex;
       flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
     }
 
     .founder-portrait-container {
@@ -1226,6 +1259,7 @@
       line-height: 1.7;
       color: #3b3b3b;
       margin-bottom: 1.5rem;
+      flex: 1;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -1242,6 +1276,7 @@
       align-items: center;
       gap: 0.4rem;
       font-weight: 500;
+      margin-top: auto;
       transition: gap 0.3s ease;
     }
 
@@ -1782,7 +1817,7 @@
         grid-template-columns: repeat(2, 1fr);
       }
       .member-card.featured-card {
-        grid-column: span 2;
+        grid-column: span 1;
       }
       .founders-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -3034,7 +3069,7 @@
               <button class="card-delete-btn" data-delete-id="${m.id}" title="Remove member from registry">&times; Delete</button>
             </div>
             ${watermarkSVG}
-            <div>
+            <div class="member-top-section">
               <div class="card-header-flex">
                 <div class="portrait-wrap">
                   ${m.avatarUrl ? `<img src="${m.avatarUrl}" alt="${m.name}" class="portrait-img" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
