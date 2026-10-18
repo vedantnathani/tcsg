@@ -3,6 +3,8 @@
  * Handles Live Member Directory, Application Submissions, and Admin Operations.
  */
 
+import { SUPABASE_CONFIG } from './supabase-config.js';
+
 // Default configuration with localStorage overrides for seamless developer / user setup
 const CONFIG_KEY_URL = 'HF_SUPABASE_URL';
 const CONFIG_KEY_KEY = 'HF_SUPABASE_ANON_KEY';
@@ -12,9 +14,9 @@ const CONFIG_KEY_PIN = 'HF_ADMIN_PASSKEY';
 export const DEFAULT_ADMIN_PIN = 'GUILD2026';
 
 export function getSupabaseConfig() {
-  const url = localStorage.getItem(CONFIG_KEY_URL) || window.ENV_SUPABASE_URL || '';
-  const anonKey = localStorage.getItem(CONFIG_KEY_KEY) || window.ENV_SUPABASE_ANON_KEY || '';
-  const adminPin = localStorage.getItem(CONFIG_KEY_PIN) || window.ENV_ADMIN_PIN || DEFAULT_ADMIN_PIN;
+  const url = localStorage.getItem(CONFIG_KEY_URL) || window.ENV_SUPABASE_URL || SUPABASE_CONFIG.url || '';
+  const anonKey = localStorage.getItem(CONFIG_KEY_KEY) || window.ENV_SUPABASE_ANON_KEY || SUPABASE_CONFIG.anonKey || '';
+  const adminPin = localStorage.getItem(CONFIG_KEY_PIN) || window.ENV_ADMIN_PIN || SUPABASE_CONFIG.adminPin || DEFAULT_ADMIN_PIN;
 
   return { url: url.trim(), anonKey: anonKey.trim(), adminPin };
 }
@@ -440,9 +442,9 @@ export async function submitApplication(appData) {
   if (!client) {
     trace.error = {
       code: 'CONFIG_MISSING',
-      message: 'Supabase URL or Anon Public Key is not configured on this browser.',
-      details: 'No SUPABASE_URL found in localStorage or window.ENV_SUPABASE_URL.',
-      hint: 'Your application has been safely saved to Local Storage on this device. To connect to Supabase Cloud, enter credentials in the Admin Console (GUILD2026) -> Supabase Settings.',
+      message: 'Supabase URL or Anon Public Key is not configured in supabase-config.js.',
+      details: 'Public applicants connect to Supabase through the public credentials in supabase-config.js.',
+      hint: 'Your application has been safely preserved in Local Storage. To enable public applicants on any browser to submit directly to your database, add your Supabase Project URL and Anon Public Key to supabase-config.js.',
       sqlFix: null
     };
     return { success: false, localOnly: true, trace, error: trace.error };

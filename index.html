@@ -3709,10 +3709,10 @@
                 debugErrorBanner.style.color = '#fde68a';
                 if (debugErrorTitle) {
                   debugErrorTitle.style.color = '#f59e0b';
-                  debugErrorTitle.textContent = 'Notice: Stored Locally in Browser (Supabase Not Configured)';
+                  debugErrorTitle.textContent = 'Notice: Cloud Credentials Not Embedded in Codebase (Saved Locally)';
                 }
-                if (debugErrorMsg) debugErrorMsg.textContent = res.error.message;
-                if (debugErrorHint) debugErrorHint.textContent = `${res.error.hint} Open Admin Console (GUILD2026) -> Supabase Settings to activate cloud sync.`;
+                if (debugErrorMsg) debugErrorMsg.textContent = 'This website does not have a Supabase Project URL and Anon Key embedded in supabase-config.js yet.';
+                if (debugErrorHint) debugErrorHint.textContent = 'Your application has been safely preserved in local storage. To connect all public applicants directly to Supabase, the website administrator needs to add the project URL and Anon Public Key to supabase-config.js.';
               }
 
               if (debugSqlFixWrap) {
