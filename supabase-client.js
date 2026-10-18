@@ -23,11 +23,15 @@ export async function loadEnvironmentConfig() {
     if (res.ok) {
       const data = await res.json();
       if (data.url && data.anonKey) {
-        window.ENV_SUPABASE_URL = data.url;
-        window.ENV_SUPABASE_ANON_KEY = data.anonKey;
-        if (data.adminPin) window.ENV_ADMIN_PIN = data.adminPin;
-        supabaseInstance = null; // Re-bind client with live credentials
-        console.log('[TCSG Config] Connected to Supabase via Vercel Environment Variables:', data.url);
+        if (!data.url.startsWith('http://') && !data.url.startsWith('https://')) {
+          console.error('[TCSG Config Error] Invalid SUPABASE_URL in Vercel Environment Variables. Expected a URL starting with "https://", but received:', data.url);
+        } else {
+          window.ENV_SUPABASE_URL = data.url;
+          window.ENV_SUPABASE_ANON_KEY = data.anonKey;
+          if (data.adminPin) window.ENV_ADMIN_PIN = data.adminPin;
+          supabaseInstance = null; // Re-bind client with live credentials
+          console.log('[TCSG Config] Connected to Supabase via Vercel Environment Variables:', data.url);
+        }
       } else {
         console.warn('[TCSG Config] /api/config responded but SUPABASE_URL or SUPABASE_ANON_KEY is missing from environment variables:', data);
       }
@@ -210,7 +214,7 @@ export function getSupabaseClient() {
   if (supabaseInstance) return supabaseInstance;
 
   const { url, anonKey } = getSupabaseConfig();
-  if (url && anonKey && window.supabase) {
+  if (url && anonKey && (url.startsWith('http://') || url.startsWith('https://')) && window.supabase) {
     try {
       supabaseInstance = window.supabase.createClient(url, anonKey);
       return supabaseInstance;

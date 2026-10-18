@@ -3206,7 +3206,6 @@
         try {
           membersData = await getMembers();
           renderMembers();
-          renderAdminMembersList();
           updateConnectionIndicators();
         } catch (err) {
           console.error('Error refreshing directory:', err);
