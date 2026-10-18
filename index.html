@@ -2348,7 +2348,7 @@
           <article class="founder-card" tabindex="0">
             <div class="founder-portrait-container">
               <!-- Editorial portrait of Founder -->
-              <div class="portrait-avatar-art" style="background: radial-gradient(circle at 35% 30%, #444, #111);">VN</div>
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="Vedant Nathani" class="portrait-img" loading="lazy">
               <div class="founder-seal-badge" title="Founding Seal">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
                   <circle cx="12" cy="12" r="9" />
@@ -2370,7 +2370,7 @@
           <!-- Founder 2 -->
           <article class="founder-card" tabindex="0">
             <div class="founder-portrait-container">
-              <div class="portrait-avatar-art" style="background: radial-gradient(circle at 65% 30%, #3a3a3a, #0d0d0d);">AR</div>
+              <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" alt="Aarav Roy" class="portrait-img" loading="lazy">
               <div class="founder-seal-badge" title="Founding Seal">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
                   <circle cx="12" cy="12" r="9" />
@@ -2392,7 +2392,7 @@
           <!-- Founder 3 -->
           <article class="founder-card" tabindex="0">
             <div class="founder-portrait-container">
-              <div class="portrait-avatar-art" style="background: radial-gradient(circle at 50% 40%, #4a4a4a, #161616);">SM</div>
+              <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" alt="Siddharth Mehta" class="portrait-img" loading="lazy">
               <div class="founder-seal-badge" title="Founding Seal">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
                   <circle cx="12" cy="12" r="9" />
@@ -2805,6 +2805,11 @@
                 <input type="text" id="new-member-interests" class="admin-input" placeholder="e.g. Leveraged Buyouts, Distressed Credit, Infrastructure">
               </div>
 
+              <div>
+                <label class="admin-label" for="new-member-avatar">Portrait Photograph URL (Optional)</label>
+                <input type="url" id="new-member-avatar" class="admin-input" placeholder="https://images.unsplash.com/photo-...">
+              </div>
+
               <div style="margin-top: 1.25rem; display: flex; align-items: center; gap: 8px;">
                 <input type="checkbox" id="new-member-featured" style="accent-color: var(--color-gold); width: 16px; height: 16px;">
                 <label for="new-member-featured" style="font-size: 13px; color: var(--color-white); cursor: pointer;">
@@ -3120,7 +3125,8 @@
             <div>
               <div class="card-header-flex">
                 <div class="portrait-wrap">
-                  <div class="portrait-avatar-art" style="background: ${m.accentGradient};">${m.initials}</div>
+                  ${m.avatarUrl ? `<img src="${m.avatarUrl}" alt="${m.name}" class="portrait-img" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
+                  <div class="portrait-avatar-art" style="background: ${m.accentGradient}; ${m.avatarUrl ? 'display: none;' : ''}">${m.initials}</div>
                 </div>
                 <div class="member-info">
                   <h3 class="member-name">${m.name}</h3>
@@ -3236,8 +3242,14 @@
 
         document.getElementById('modal-name').textContent = member.name;
         document.getElementById('modal-role').textContent = `${member.role} — ${member.org}`;
-        document.getElementById('modal-avatar').textContent = member.initials;
-        document.getElementById('modal-avatar').style.background = member.accentGradient;
+        const avatarEl = document.getElementById('modal-avatar');
+        if (member.avatarUrl) {
+          avatarEl.innerHTML = `<img src="${member.avatarUrl}" alt="${member.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; filter: grayscale(100%) contrast(1.15);">`;
+          avatarEl.style.background = 'transparent';
+        } else {
+          avatarEl.textContent = member.initials;
+          avatarEl.style.background = member.accentGradient;
+        }
         document.getElementById('modal-bio').textContent = (member.bio || '') + (member.quote ? " " + member.quote : "");
         document.getElementById('modal-since').textContent = member.since || '2026';
 
@@ -3519,7 +3531,7 @@
           row.className = 'admin-member-row';
           row.innerHTML = `
             <div class="admin-member-row-info">
-              <div class="portrait-avatar-art" style="background: ${m.accentGradient}; width: 34px; height: 34px; font-size: 12px;">${m.initials}</div>
+              ${m.avatarUrl ? `<img src="${m.avatarUrl}" alt="${m.name}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; filter: grayscale(100%);">` : `<div class="portrait-avatar-art" style="background: ${m.accentGradient}; width: 34px; height: 34px; font-size: 12px;">${m.initials}</div>`}
               <div>
                 <div class="admin-member-row-name">${m.name}</div>
                 <div class="admin-member-row-role">${m.role} &bull; ${m.org} (${m.category})</div>
@@ -3563,6 +3575,7 @@
             const bio = document.getElementById('new-member-bio').value.trim();
             const interestsRaw = document.getElementById('new-member-interests').value;
             const isFeatured = document.getElementById('new-member-featured').checked;
+            const avatarUrl = document.getElementById('new-member-avatar')?.value.trim() || '';
 
             const credentials = credsRaw ? credsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
             const interests = interestsRaw ? interestsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
@@ -3580,6 +3593,7 @@
               interests,
               isFeatured,
               initials,
+              avatarUrl,
               accentGradient: 'linear-gradient(135deg, #2b2b2b, #111111)',
               since: '2026'
             });

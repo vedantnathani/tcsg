@@ -2,8 +2,11 @@
 -- HIGH FINANCE GUILD — SEED DATA SCRIPT
 -- ==============================================================================
 
+-- Ensure avatar_url column exists
+ALTER TABLE public.members ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+
 INSERT INTO public.members (
-    name, role, org, category, credentials, location, quote, bio, interests, is_featured, initials, accent_gradient, since
+    name, role, org, category, credentials, location, quote, bio, interests, is_featured, initials, avatar_url, accent_gradient, since
 ) VALUES
 (
     'Aditya Birla',
@@ -17,6 +20,7 @@ INSERT INTO public.members (
     ARRAY['Distressed Assets', 'Private Credit', 'Cross-Border M&A'],
     TRUE,
     'AB',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80',
     'linear-gradient(135deg, #2b2b2b, #111111)',
     '2026'
 ),
@@ -32,6 +36,7 @@ INSERT INTO public.members (
     ARRAY['Corporate Restructuring', 'Tax Structuring', 'Sovereign Wealth'],
     FALSE,
     'PV',
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80',
     'linear-gradient(135deg, #3d3d3d, #141414)',
     '2026'
 ),
@@ -47,6 +52,7 @@ INSERT INTO public.members (
     ARRAY['Consumer Platforms', 'Control Buyouts', 'Value Creation'],
     FALSE,
     'KM',
+    'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80',
     'linear-gradient(135deg, #333333, #181818)',
     '2026'
 ),
@@ -62,6 +68,7 @@ INSERT INTO public.members (
     ARRAY['Strategic M&A', 'Infrastructure Capital', 'Public Markets'],
     FALSE,
     'NS',
+    'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=500&q=80',
     'linear-gradient(135deg, #404040, #101010)',
     '2026'
 ),
@@ -77,6 +84,7 @@ INSERT INTO public.members (
     ARRAY['Bond Syndication', 'FX Governance', 'Treasury Risk'],
     FALSE,
     'RM',
+    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=500&q=80',
     'linear-gradient(135deg, #383838, #161616)',
     '2026'
 ),
@@ -92,6 +100,7 @@ INSERT INTO public.members (
     ARRAY['Infrastructure Bonds', 'Strategic Capital', 'Corporate Governance'],
     TRUE,
     'AD',
+    'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=500&q=80',
     'linear-gradient(135deg, #2f2f2f, #0d0d0d)',
     '2026'
 ),
@@ -107,6 +116,7 @@ INSERT INTO public.members (
     ARRAY['Growth Equity', 'Fintech', 'Unit Economics'],
     FALSE,
     'DK',
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80',
     'linear-gradient(135deg, #363636, #111111)',
     '2026'
 ),
@@ -122,6 +132,7 @@ INSERT INTO public.members (
     ARRAY['Family Office', 'Cross-Border Wealth', 'Governance'],
     FALSE,
     'IS',
+    'https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?auto=format&fit=crop&w=500&q=80',
     'linear-gradient(135deg, #303030, #131313)',
     '2026'
 );

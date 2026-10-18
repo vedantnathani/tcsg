@@ -19,10 +19,14 @@ CREATE TABLE IF NOT EXISTS public.members (
     interests TEXT[] NOT NULL DEFAULT '{}',
     is_featured BOOLEAN NOT NULL DEFAULT FALSE,
     initials TEXT NOT NULL,
+    avatar_url TEXT,
     accent_gradient TEXT DEFAULT 'linear-gradient(135deg, #2b2b2b, #111111)',
     since TEXT DEFAULT '2026',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Migration support for existing setups
+ALTER TABLE public.members ADD COLUMN IF NOT EXISTS avatar_url TEXT;
 
 -- 3. Applications Table (Submitted Invitation Requests)
 CREATE TABLE IF NOT EXISTS public.applications (
