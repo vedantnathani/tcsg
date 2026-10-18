@@ -733,250 +733,279 @@
     .members-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
+      gap: 3.5rem 2.5rem;
       align-items: stretch;
     }
 
-    /* Member Card Design - Equal Length & Dimensions */
+    /* Member Card Container */
     .member-card {
-      background: var(--color-offwhite);
-      border: 1px solid var(--color-warm-grey);
-      padding: 2.25rem 2rem;
+      background: transparent;
+      border: none;
+      padding: 0;
       cursor: pointer;
       position: relative;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       height: 100%;
-      min-height: 480px;
-      transition: transform 0.5s var(--ease-luxe), box-shadow 0.5s var(--ease-luxe), border-color 0.4s;
-      overflow: hidden;
+      outline: none;
     }
 
-    /* Uniform single column for all member cards */
     .member-card.featured-card {
       grid-column: span 1;
-      background: #FAFAF8;
     }
 
-    /* Top border draw animation on hover */
-    .member-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background-color: var(--color-black);
-      transition: width 0.5s var(--ease-luxe);
-      z-index: 3;
-    }
-
-    /* Watermark micro-emblem at 8% opacity */
-    .card-watermark {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      width: 48px;
-      height: 48px;
-      opacity: 0;
-      transform: scale(0.85);
-      transition: opacity 0.5s var(--ease-luxe), transform 0.5s var(--ease-luxe);
-      pointer-events: none;
-    }
-
-    .member-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.05);
-      border-color: rgba(10, 10, 10, 0.2);
-    }
-
-    .member-card:hover::before {
-      width: 100%;
-    }
-
-    .member-card:hover .card-watermark {
-      opacity: 0.08;
-      transform: scale(1);
-    }
-
-    .member-card:hover .portrait-img {
-      transform: scale(1.05);
-    }
-
-    .card-header-flex {
-      display: flex;
-      align-items: flex-start;
-      gap: 1.25rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .portrait-wrap {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      overflow: hidden;
-      background: var(--color-warm-grey);
-      flex-shrink: 0;
-      border: 1px solid rgba(0, 0, 0, 0.08);
+    /* 3D Perspective Tile Flipper */
+    .member-tile {
       position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      perspective: 1200px;
+      -webkit-perspective: 1200px;
+      border-radius: 2px;
+      overflow: visible;
     }
 
-    .featured-card .portrait-wrap {
-      width: 72px;
-      height: 72px;
+    .member-tile-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transition: transform 0.75s cubic-bezier(0.2, 0.85, 0.32, 1);
     }
 
-    .portrait-img {
+    .member-card:hover .member-tile-inner,
+    .member-card:focus-visible .member-tile-inner,
+    .member-card.is-flipped .member-tile-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* Front & Back Tile Faces */
+    .member-tile-front,
+    .member-tile-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 2px;
+      border: 1px solid var(--color-warm-grey);
+      overflow: hidden;
+    }
+
+    /* Front Face: Edge-to-Edge Image Tile */
+    .member-tile-front {
+      background: #141414;
+      transform: rotateY(0deg);
+      -webkit-transform: rotateY(0deg);
+    }
+
+    .member-tile-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: grayscale(100%) contrast(1.12);
-      transition: transform 0.5s var(--ease-luxe);
+      object-position: center 20%;
+      filter: grayscale(100%) contrast(1.1);
+      transition: transform 0.6s var(--ease-luxe), filter 0.6s ease;
+      display: block;
     }
 
-    /* Editorial portrait fallback canvas/generator */
-    .portrait-avatar-art {
+    .member-card:hover .member-tile-img {
+      transform: scale(1.04);
+      filter: grayscale(60%) contrast(1.15);
+    }
+
+    .member-tile-fallback {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #333333 0%, #111111 100%);
+      gap: 0.75rem;
       color: var(--color-white);
+      text-align: center;
+      padding: 1.5rem;
+    }
+
+    .member-fallback-initials {
       font-family: var(--font-serif);
-      font-size: 1.5rem;
+      font-size: 3.5rem;
       letter-spacing: 0.05em;
+      line-height: 1;
     }
 
-    .member-info {
+    .member-fallback-seal {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .tile-front-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(10, 10, 10, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--color-gold);
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.6rem;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Back Face: Flip Reveal (Message + LinkedIn Link) */
+    .member-tile-back {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+      background: #0D0D0D;
+      color: #EAE8E3;
+      border-color: rgba(196, 167, 125, 0.45);
+      padding: 2.25rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
+    }
+
+    .tile-back-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 0.75rem;
+    }
+
+    .tile-back-guild {
+      font-size: 9.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      font-weight: 600;
+    }
+
+    .tile-back-location {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.04em;
+    }
+
+    .tile-back-body {
       flex: 1;
-      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 1.25rem 0;
     }
 
-    .member-name {
+    .tile-quote-mark {
       font-family: var(--font-serif);
-      font-size: 1.35rem;
+      font-size: 2.2rem;
+      line-height: 1;
+      color: var(--color-gold);
+      opacity: 0.5;
+      margin-bottom: -0.25rem;
+    }
+
+    .tile-back-message {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #F7F5F0;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 0.65rem;
+    }
+
+    .tile-back-role {
+      font-size: 11.5px;
+      color: var(--color-gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 500;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .tile-back-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tile-linkedin-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-gold);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.45rem 0.85rem;
+      background: rgba(196, 167, 125, 0.12);
+      border: 1px solid rgba(196, 167, 125, 0.35);
+      border-radius: 2px;
+      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .tile-linkedin-btn:hover {
+      background: var(--color-gold);
+      color: #0A0A0A;
+      border-color: var(--color-gold);
+      transform: translateX(3px);
+    }
+
+    /* Below Tile: ONLY Name and Company */
+    .member-tile-caption {
+      padding-top: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      text-align: left;
+    }
+
+    .member-tile-name {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
       font-weight: 400;
       letter-spacing: -0.01em;
       color: var(--color-black);
-      margin-bottom: 0.25rem;
+      line-height: 1.25;
+      margin: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .member-role {
-      font-size: 13px;
+    .member-tile-company {
+      font-size: 13.5px;
       color: var(--color-mid-grey);
       line-height: 1.4;
-      margin-bottom: 0.75rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      min-height: 36px;
-    }
-
-    .credentials-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      min-height: 24px;
-    }
-
-    .cred-tag {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.2rem 0.5rem;
-      border: 1px solid var(--color-warm-grey);
-      color: #333333;
-      background: var(--color-white);
-    }
-
-    .member-top-section {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-
-    .member-body {
-      margin-top: 0.75rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .member-featured-quote {
-      font-family: var(--font-serif);
-      font-style: italic;
-      font-size: 1.05rem;
-      line-height: 1.45;
-      color: #262626;
-      margin-bottom: 0.85rem;
-      padding-left: 0.85rem;
-      border-left: 2px solid var(--color-mid-grey);
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .member-short-bio {
-      font-size: 13.5px;
-      line-height: 1.6;
-      color: #555555;
-      margin-bottom: 1rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .member-meta-bottom {
-      border-top: 1px solid var(--color-warm-grey);
-      padding-top: 1.25rem;
-      margin-top: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .member-location {
-      font-size: 12px;
-      color: var(--color-mid-grey);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .loc-dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--color-mid-grey);
-    }
-
-    .member-interests {
-      font-size: 11px;
-      color: #444444;
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 0.4rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .interest-bullet {
-      display: inline-block;
-      width: 2px;
-      height: 2px;
-      border-radius: 50%;
-      background-color: var(--color-mid-grey);
     }
 
     /* ==========================================================================
@@ -1189,34 +1218,73 @@
     }
 
     .founder-card {
+      background: transparent;
+      border: none;
+      padding: 0;
       display: flex;
       flex-direction: column;
       height: 100%;
-      justify-content: space-between;
+      cursor: pointer;
+      outline: none;
     }
 
-    .founder-portrait-container {
+    .founder-tile {
       position: relative;
       width: 100%;
-      aspect-ratio: 1 / 1;
-      max-width: 220px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin-bottom: 2.25rem;
-      border: 1px solid var(--color-warm-grey);
-      background: #E5E3DE;
+      aspect-ratio: 4 / 5;
+      perspective: 1200px;
+      -webkit-perspective: 1200px;
+      border-radius: 2px;
+      overflow: visible;
     }
 
-    .founder-portrait-container img {
+    .founder-tile-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transition: transform 0.75s cubic-bezier(0.2, 0.85, 0.32, 1);
+    }
+
+    .founder-card:hover .founder-tile-inner,
+    .founder-card:focus-visible .founder-tile-inner,
+    .founder-card.is-flipped .founder-tile-inner {
+      transform: rotateY(180deg);
+    }
+
+    .founder-tile-front,
+    .founder-tile-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 2px;
+      border: 1px solid var(--color-warm-grey);
+      overflow: hidden;
+    }
+
+    .founder-tile-front {
+      background: #141414;
+      transform: rotateY(0deg);
+      -webkit-transform: rotateY(0deg);
+    }
+
+    .founder-tile-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: grayscale(100%) contrast(1.18);
-      transition: transform 0.6s var(--ease-luxe);
+      object-position: center 20%;
+      filter: grayscale(100%) contrast(1.15);
+      transition: transform 0.6s var(--ease-luxe), filter 0.6s ease;
+      display: block;
     }
 
-    .founder-card:hover .founder-portrait-container img {
+    .founder-card:hover .founder-tile-img {
       transform: scale(1.04);
+      filter: grayscale(60%) contrast(1.18);
     }
 
     /* Founder Emblem Variant (with compass star point) */
@@ -1231,7 +1299,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       transition: transform 0.6s var(--ease-luxe);
       z-index: 2;
     }
@@ -1240,48 +1308,49 @@
       transform: rotate(90deg);
     }
 
+    .founder-tile-back {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+      background: #0D0D0D;
+      color: #EAE8E3;
+      border-color: rgba(196, 167, 125, 0.45);
+      padding: 2.25rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
+    }
+
+    .founder-tile-caption {
+      padding-top: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      text-align: left;
+    }
+
     .founder-name {
       font-family: var(--font-serif);
-      font-size: 1.75rem;
+      font-size: 1.55rem;
       font-weight: 400;
       letter-spacing: -0.01em;
-      margin-bottom: 0.35rem;
-    }
-
-    .founder-role {
-      font-size: 13px;
-      color: var(--color-mid-grey);
-      margin-bottom: 1.25rem;
-    }
-
-    .founder-bio {
-      font-size: 14px;
-      line-height: 1.7;
-      color: #3b3b3b;
-      margin-bottom: 1.5rem;
-      flex: 1;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .founder-linkedin {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
       color: var(--color-black);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-weight: 500;
-      margin-top: auto;
-      transition: gap 0.3s ease;
+      line-height: 1.25;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .founder-linkedin:hover {
-      gap: 0.75rem;
+    .founder-company {
+      font-size: 13.5px;
+      color: var(--color-mid-grey);
+      line-height: 1.4;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .founders-institution-credit {
@@ -2381,69 +2450,131 @@
         <div class="founders-grid">
           <!-- Founder 1 -->
           <article class="founder-card" tabindex="0">
-            <div class="founder-portrait-container">
-              <!-- Editorial portrait of Founder -->
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="Vedant Nathani" class="portrait-img" loading="lazy">
-              <div class="founder-seal-badge" title="Founding Seal">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
-                  <circle cx="12" cy="12" r="9" />
-                  <polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#0A0A0A" />
-                </svg>
+            <div class="founder-tile">
+              <div class="founder-tile-inner">
+                <!-- Front: Full Image + Founding Seal Badge -->
+                <div class="founder-tile-front">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="Vedant Nathani" class="founder-tile-img" loading="lazy">
+                  <div class="founder-seal-badge" title="Founding Seal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
+                      <circle cx="12" cy="12" r="9" />
+                      <polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#0A0A0A" />
+                    </svg>
+                  </div>
+                </div>
+                <!-- Back: Founder Message & LinkedIn Link -->
+                <div class="founder-tile-back">
+                  <div class="tile-back-header">
+                    <span class="tile-back-guild">Founding Partner</span>
+                    <span class="tile-back-location">Mumbai</span>
+                  </div>
+                  <div class="tile-back-body">
+                    <div class="tile-quote-mark">&ldquo;</div>
+                    <p class="tile-back-message">Architecting high-trust networks and institutional investment frameworks across alternative asset classes. Focused on building enduring intellectual hubs.</p>
+                    <div class="tile-back-role">Managing Steward</div>
+                  </div>
+                  <div class="tile-back-footer">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="tile-linkedin-btn" onclick="event.stopPropagation()">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                      <span>LinkedIn Profile &rarr;</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-            <h3 class="founder-name">Vedant Nathani</h3>
-            <div class="founder-role">Co-Founder &amp; Managing Steward</div>
-            <p class="founder-bio">
-              Architecting high-trust networks and institutional investment frameworks across alternative asset classes. Focused on building enduring intellectual hubs.
-            </p>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="founder-linkedin">
-              <span>LinkedIn</span>
-              <span aria-hidden="true">&rarr;</span>
-            </a>
+            <!-- Below Tile: Only Name and Company -->
+            <div class="founder-tile-caption">
+              <h3 class="founder-name">Vedant Nathani</h3>
+              <div class="founder-company">High Finance Guild &bull; Managing Steward</div>
+            </div>
           </article>
 
           <!-- Founder 2 -->
           <article class="founder-card" tabindex="0">
-            <div class="founder-portrait-container">
-              <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" alt="Aarav Roy" class="portrait-img" loading="lazy">
-              <div class="founder-seal-badge" title="Founding Seal">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
-                  <circle cx="12" cy="12" r="9" />
-                  <polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#0A0A0A" />
-                </svg>
+            <div class="founder-tile">
+              <div class="founder-tile-inner">
+                <!-- Front: Full Image + Founding Seal Badge -->
+                <div class="founder-tile-front">
+                  <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" alt="Aarav Roy" class="founder-tile-img" loading="lazy">
+                  <div class="founder-seal-badge" title="Founding Seal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
+                      <circle cx="12" cy="12" r="9" />
+                      <polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#0A0A0A" />
+                    </svg>
+                  </div>
+                </div>
+                <!-- Back: Founder Message & LinkedIn Link -->
+                <div class="founder-tile-back">
+                  <div class="tile-back-header">
+                    <span class="tile-back-guild">Founding Partner</span>
+                    <span class="tile-back-location">Mumbai</span>
+                  </div>
+                  <div class="tile-back-body">
+                    <div class="tile-quote-mark">&ldquo;</div>
+                    <p class="tile-back-message">Chartered Accountant with AIR pedigree. Specializes in cross-border capital structure, debt syndication, and private market liquidity solutions.</p>
+                    <div class="tile-back-role">Capital Lead</div>
+                  </div>
+                  <div class="tile-back-footer">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="tile-linkedin-btn" onclick="event.stopPropagation()">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                      <span>LinkedIn Profile &rarr;</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-            <h3 class="founder-name">Aarav Roy</h3>
-            <div class="founder-role">Co-Founder &amp; Capital Lead</div>
-            <p class="founder-bio">
-              Chartered Accountant with AIR pedigree. Specializes in cross-border capital structure, debt syndication, and private market liquidity solutions.
-            </p>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="founder-linkedin">
-              <span>LinkedIn</span>
-              <span aria-hidden="true">&rarr;</span>
-            </a>
+            <!-- Below Tile: Only Name and Company -->
+            <div class="founder-tile-caption">
+              <h3 class="founder-name">Aarav Roy</h3>
+              <div class="founder-company">High Finance Guild &bull; Capital Lead</div>
+            </div>
           </article>
 
           <!-- Founder 3 -->
           <article class="founder-card" tabindex="0">
-            <div class="founder-portrait-container">
-              <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" alt="Siddharth Mehta" class="portrait-img" loading="lazy">
-              <div class="founder-seal-badge" title="Founding Seal">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
-                  <circle cx="12" cy="12" r="9" />
-                  <polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#0A0A0A" />
-                </svg>
+            <div class="founder-tile">
+              <div class="founder-tile-inner">
+                <!-- Front: Full Image + Founding Seal Badge -->
+                <div class="founder-tile-front">
+                  <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" alt="Siddharth Mehta" class="founder-tile-img" loading="lazy">
+                  <div class="founder-seal-badge" title="Founding Seal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.5">
+                      <circle cx="12" cy="12" r="9" />
+                      <polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#0A0A0A" />
+                    </svg>
+                  </div>
+                </div>
+                <!-- Back: Founder Message & LinkedIn Link -->
+                <div class="founder-tile-back">
+                  <div class="tile-back-header">
+                    <span class="tile-back-guild">Founding Partner</span>
+                    <span class="tile-back-location">Mumbai</span>
+                  </div>
+                  <div class="tile-back-body">
+                    <div class="tile-quote-mark">&ldquo;</div>
+                    <p class="tile-back-message">Advising top-tier sovereign funds and private equity sponsors on special situation buyouts and governance transformation throughout India &amp; APAC.</p>
+                    <div class="tile-back-role">Strategy Fellow</div>
+                  </div>
+                  <div class="tile-back-footer">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="tile-linkedin-btn" onclick="event.stopPropagation()">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                      <span>LinkedIn Profile &rarr;</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-            <h3 class="founder-name">Siddharth Mehta</h3>
-            <div class="founder-role">Co-Founder &amp; Strategy Fellow</div>
-            <p class="founder-bio">
-              Advising top-tier sovereign funds and private equity sponsors on special situation buyouts and governance transformation throughout India &amp; APAC.
-            </p>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="founder-linkedin">
-              <span>LinkedIn</span>
-              <span aria-hidden="true">&rarr;</span>
-            </a>
+            <!-- Below Tile: Only Name and Company -->
+            <div class="founder-tile-caption">
+              <h3 class="founder-name">Siddharth Mehta</h3>
+              <div class="founder-company">High Finance Guild &bull; Strategy Fellow</div>
+            </div>
           </article>
         </div>
 
@@ -2973,63 +3104,77 @@
           card.setAttribute('aria-label', `View profile of ${m.name}, ${m.role}`);
           card.dataset.id = m.id;
 
-          // Micro emblem watermark
-          const watermarkSVG = `
-            <svg class="card-watermark" viewBox="0 0 100 100" fill="none">
-              <circle cx="50" cy="50" r="45" stroke="#0A0A0A" stroke-width="2" />
-              <line x1="36" y1="26" x2="36" y2="74" stroke="#0A0A0A" stroke-width="2.5" />
-              <line x1="64" y1="26" x2="64" y2="74" stroke="#0A0A0A" stroke-width="2.5" />
-              <line x1="36" y1="50" x2="64" y2="50" stroke="#0A0A0A" stroke-width="2.5" />
-              <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#0A0A0A" stroke-width="2" />
-            </svg>
-          `;
-
-          const credHTML = (m.credentials || []).map(c => `<span class="cred-tag">${c}</span>`).join('');
-          const interestHTML = (m.interests || []).map((it, i) => `<span>${it}</span>${i < m.interests.length - 1 ? '<span class="interest-bullet"></span>' : ''}`).join('');
+          const linkedinUrl = m.linkedinUrl || m.linkedin_url || 'https://www.linkedin.com';
+          const messageText = m.quote || m.bio || 'Excellence in alternative capital governance and statutory architecture.';
+          const badgeText = (m.credentials && m.credentials.length > 0) ? m.credentials[0] : (m.since ? `EST. ${m.since}` : 'GUILD');
 
           card.innerHTML = `
             <div class="card-admin-actions">
               <button class="card-delete-btn" data-delete-id="${m.id}" title="Remove member from registry">&times; Delete</button>
             </div>
-            ${watermarkSVG}
-            <div class="member-top-section">
-              <div class="card-header-flex">
-                <div class="portrait-wrap">
-                  ${m.avatarUrl ? `<img src="${m.avatarUrl}" alt="${m.name}" class="portrait-img" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
-                  <div class="portrait-avatar-art" style="background: ${m.accentGradient}; ${m.avatarUrl ? 'display: none;' : ''}">${m.initials}</div>
+            
+            <!-- 3D Perspective Flipping Photo Tile -->
+            <div class="member-tile">
+              <div class="member-tile-inner">
+                <!-- Front: Full Image -->
+                <div class="member-tile-front">
+                  ${m.avatarUrl ? `<img src="${m.avatarUrl}" alt="${m.name}" class="member-tile-img" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
+                  <div class="member-tile-fallback" style="background: ${m.accentGradient || 'linear-gradient(135deg, #2b2b2b, #111111)'}; ${m.avatarUrl ? 'display: none;' : ''}">
+                    <span class="member-fallback-initials">${m.initials}</span>
+                    <span class="member-fallback-seal">High Finance Guild</span>
+                  </div>
+                  <div class="tile-front-badge">${badgeText}</div>
                 </div>
-                <div class="member-info">
-                  <h3 class="member-name">${m.name}</h3>
-                  <div class="member-role">${m.role} &bull; ${m.org}</div>
-                  <div class="credentials-tags">${credHTML}</div>
-                </div>
-              </div>
 
-              <div class="member-body">
-                ${m.isFeatured && m.quote ? `<div class="member-featured-quote">&ldquo;${m.quote}&rdquo;</div>` : ''}
-                <p class="member-short-bio">${m.bio || ''}</p>
+                <!-- Back: Message & LinkedIn Link -->
+                <div class="member-tile-back">
+                  <div class="tile-back-header">
+                    <span class="tile-back-guild">High Finance Guild</span>
+                    <span class="tile-back-location">${m.location || 'Fellow'}</span>
+                  </div>
+                  
+                  <div class="tile-back-body">
+                    <div class="tile-quote-mark">&ldquo;</div>
+                    <p class="tile-back-message">${messageText}</p>
+                    <div class="tile-back-role">${m.role || 'Member'}</div>
+                  </div>
+
+                  <div class="tile-back-footer">
+                    <a href="${linkedinUrl}" target="_blank" rel="noopener noreferrer" class="tile-linkedin-btn" onclick="event.stopPropagation()">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                      <span>LinkedIn Profile &rarr;</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="member-meta-bottom">
-              <div class="member-location">
-                <span class="loc-dot"></span>
-                <span>${m.location}</span>
-              </div>
-              <div class="member-interests">
-                ${interestHTML}
-              </div>
+            <!-- Below Tile: ONLY Name and Company -->
+            <div class="member-tile-caption">
+              <h3 class="member-tile-name">${m.name}</h3>
+              <div class="member-tile-company">${m.org}</div>
             </div>
           `;
 
-          // Card click opens deep dive modal
+          // Card click opens deep dive modal unless clicking LinkedIn or delete button
           card.addEventListener('click', (e) => {
-            if (e.target.closest('.card-delete-btn')) return;
+            if (e.target.closest('.card-delete-btn') || e.target.closest('.tile-linkedin-btn')) return;
+            if (window.matchMedia('(hover: none)').matches) {
+              if (!card.classList.contains('is-flipped')) {
+                document.querySelectorAll('.member-card.is-flipped').forEach(c => {
+                  if (c !== card) c.classList.remove('is-flipped');
+                });
+                card.classList.add('is-flipped');
+                return;
+              }
+            }
             openMemberModal(m);
           });
 
           card.addEventListener('keydown', (e) => {
-            if (e.target.closest('.card-delete-btn')) return;
+            if (e.target.closest('.card-delete-btn') || e.target.closest('.tile-linkedin-btn')) return;
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               openMemberModal(m);

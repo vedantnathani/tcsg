@@ -66,9 +66,10 @@ export const FALLBACK_MEMBERS = [
     interests: ['Distressed Assets', 'Private Credit', 'Cross-Border M&A'],
     isFeatured: true,
     initials: 'AB',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
     accentGradient: 'linear-gradient(135deg, #2b2b2b, #111111)',
-    since: '2026'
+    since: '2026',
+    linkedinUrl: 'https://www.linkedin.com'
   },
   {
     id: 'm2',
@@ -83,9 +84,10 @@ export const FALLBACK_MEMBERS = [
     interests: ['Corporate Restructuring', 'Tax Structuring', 'Sovereign Wealth'],
     isFeatured: false,
     initials: 'PV',
-    avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80',
+    avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
     accentGradient: 'linear-gradient(135deg, #3d3d3d, #141414)',
-    since: '2026'
+    since: '2026',
+    linkedinUrl: 'https://www.linkedin.com'
   },
   {
     id: 'm3',
@@ -100,9 +102,10 @@ export const FALLBACK_MEMBERS = [
     interests: ['Consumer Platforms', 'Control Buyouts', 'Value Creation'],
     isFeatured: false,
     initials: 'KM',
-    avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80',
+    avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80',
     accentGradient: 'linear-gradient(135deg, #333333, #181818)',
-    since: '2026'
+    since: '2026',
+    linkedinUrl: 'https://www.linkedin.com'
   },
   {
     id: 'm4',
@@ -117,9 +120,10 @@ export const FALLBACK_MEMBERS = [
     interests: ['Strategic M&A', 'Infrastructure Capital', 'Public Markets'],
     isFeatured: false,
     initials: 'NS',
-    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=500&q=80',
+    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80',
     accentGradient: 'linear-gradient(135deg, #404040, #101010)',
-    since: '2026'
+    since: '2026',
+    linkedinUrl: 'https://www.linkedin.com'
   },
   {
     id: 'm5',
@@ -134,9 +138,10 @@ export const FALLBACK_MEMBERS = [
     interests: ['Bond Syndication', 'FX Governance', 'Treasury Risk'],
     isFeatured: false,
     initials: 'RM',
-    avatarUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=500&q=80',
+    avatarUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80',
     accentGradient: 'linear-gradient(135deg, #383838, #161616)',
-    since: '2026'
+    since: '2026',
+    linkedinUrl: 'https://www.linkedin.com'
   },
   {
     id: 'm6',
@@ -151,9 +156,10 @@ export const FALLBACK_MEMBERS = [
     interests: ['Infrastructure Bonds', 'Strategic Capital', 'Corporate Governance'],
     isFeatured: true,
     initials: 'AD',
-    avatarUrl: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=500&q=80',
+    avatarUrl: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80',
     accentGradient: 'linear-gradient(135deg, #2f2f2f, #0d0d0d)',
-    since: '2026'
+    since: '2026',
+    linkedinUrl: 'https://www.linkedin.com'
   },
   {
     id: 'm7',
@@ -168,9 +174,10 @@ export const FALLBACK_MEMBERS = [
     interests: ['Growth Equity', 'Fintech', 'Unit Economics'],
     isFeatured: false,
     initials: 'DK',
-    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80',
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
     accentGradient: 'linear-gradient(135deg, #363636, #111111)',
-    since: '2026'
+    since: '2026',
+    linkedinUrl: 'https://www.linkedin.com'
   },
   {
     id: 'm8',
@@ -185,9 +192,10 @@ export const FALLBACK_MEMBERS = [
     interests: ['Family Office', 'Cross-Border Wealth', 'Governance'],
     isFeatured: false,
     initials: 'IS',
-    avatarUrl: 'https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?auto=format&fit=crop&w=500&q=80',
+    avatarUrl: 'https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?auto=format&fit=crop&w=600&q=80',
     accentGradient: 'linear-gradient(135deg, #303030, #131313)',
-    since: '2026'
+    since: '2026',
+    linkedinUrl: 'https://www.linkedin.com'
   }
 ];
 
