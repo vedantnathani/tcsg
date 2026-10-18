@@ -19,7 +19,7 @@ let remoteConfigLoaded = false;
 export async function loadEnvironmentConfig() {
   if (remoteConfigLoaded) return;
   try {
-    const res = await fetch('/api/config');
+    const res = await fetch('/api/config?t=' + Date.now(), { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
       if (data.url && data.anonKey) {
@@ -27,10 +27,15 @@ export async function loadEnvironmentConfig() {
         window.ENV_SUPABASE_ANON_KEY = data.anonKey;
         if (data.adminPin) window.ENV_ADMIN_PIN = data.adminPin;
         supabaseInstance = null; // Re-bind client with live credentials
+        console.log('[TCSG Config] Connected to Supabase via Vercel Environment Variables:', data.url);
+      } else {
+        console.warn('[TCSG Config] /api/config responded but SUPABASE_URL or SUPABASE_ANON_KEY is missing from environment variables:', data);
       }
+    } else {
+      console.warn(`[TCSG Config] /api/config returned HTTP status ${res.status}`);
     }
   } catch (err) {
-    // Offline or static preview mode fallback
+    console.warn('[TCSG Config] Could not contact /api/config (running locally or offline):', err.message);
   } finally {
     remoteConfigLoaded = true;
   }
