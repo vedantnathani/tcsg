@@ -2806,8 +2806,39 @@
               </div>
 
               <div>
-                <label class="admin-label" for="new-member-avatar">Portrait Photograph URL (Optional)</label>
-                <input type="url" id="new-member-avatar" class="admin-input" placeholder="https://images.unsplash.com/photo-...">
+                <label class="admin-label">Portrait Photograph</label>
+                
+                <!-- File Upload Dropzone -->
+                <div id="avatar-dropzone" style="border: 1px dashed rgba(196, 167, 125, 0.4); background: rgba(255, 255, 255, 0.02); padding: 1.25rem; text-align: center; border-radius: 2px; cursor: pointer; transition: all 0.25s ease; margin-top: 6px;">
+                  <input type="file" id="new-member-avatar-file" accept="image/png, image/jpeg, image/webp" style="display: none;">
+                  <div id="dropzone-content" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-gold)" stroke-width="1.5">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <div style="font-size: 13px; color: var(--color-white);">
+                      <span style="color: var(--color-gold); font-weight: 500;">Click to select file</span> or drag image here
+                    </div>
+                    <div style="font-size: 11px; color: var(--color-mid-grey);">JPEG, PNG, WebP from your device</div>
+                  </div>
+                  <!-- Preview container (hidden initially) -->
+                  <div id="dropzone-preview-wrap" style="display: none; align-items: center; justify-content: center; gap: 14px;">
+                    <img id="dropzone-preview-img" src="" alt="Selected portrait preview" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 1px solid var(--color-gold); filter: grayscale(100%);">
+                    <div style="text-align: left;">
+                      <div id="dropzone-file-name" style="font-size: 12px; color: var(--color-white); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">filename.jpg</div>
+                      <button type="button" id="dropzone-remove-btn" style="background: none; border: none; color: #ef4444; font-size: 11px; cursor: pointer; padding: 0; margin-top: 4px; text-decoration: underline;">Change photograph</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Secondary Link Option Accordion -->
+                <div style="margin-top: 8px;">
+                  <a href="#" id="toggle-url-input-btn" style="font-size: 11px; color: var(--color-mid-grey); text-decoration: underline;">or paste an image link directly</a>
+                  <div id="url-input-container" style="display: none; margin-top: 6px;">
+                    <input type="url" id="new-member-avatar" class="admin-input" placeholder="https://example.com/portrait.jpg">
+                  </div>
+                </div>
               </div>
 
               <div style="margin-top: 1.25rem; display: flex; align-items: center; gap: 8px;">
@@ -2940,6 +2971,7 @@
       insertMember, 
       deleteMember, 
       submitApplication, 
+      uploadAvatar,
       DEFAULT_ADMIN_PIN 
     } from './supabase-client.js';
 
@@ -3557,12 +3589,100 @@
         });
       }
 
+      // Avatar File Dropzone Handling
+      let selectedAvatarFile = null;
+      const avatarDropzone = document.getElementById('avatar-dropzone');
+      const avatarFileInput = document.getElementById('new-member-avatar-file');
+      const dropzoneContent = document.getElementById('dropzone-content');
+      const dropzonePreviewWrap = document.getElementById('dropzone-preview-wrap');
+      const dropzonePreviewImg = document.getElementById('dropzone-preview-img');
+      const dropzoneFileName = document.getElementById('dropzone-file-name');
+      const dropzoneRemoveBtn = document.getElementById('dropzone-remove-btn');
+      const toggleUrlBtn = document.getElementById('toggle-url-input-btn');
+      const urlInputContainer = document.getElementById('url-input-container');
+
+      if (toggleUrlBtn && urlInputContainer) {
+        toggleUrlBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const isHidden = urlInputContainer.style.display === 'none';
+          urlInputContainer.style.display = isHidden ? 'block' : 'none';
+          toggleUrlBtn.textContent = isHidden ? 'hide direct link input' : 'or paste an image link directly';
+        });
+      }
+
+      function handleFileSelected(file) {
+        if (!file || !file.type.startsWith('image/')) {
+          showToast('Please select a valid image file (JPEG, PNG, WebP).', true);
+          return;
+        }
+        selectedAvatarFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (dropzonePreviewImg) dropzonePreviewImg.src = e.target.result;
+          if (dropzoneFileName) dropzoneFileName.textContent = file.name;
+          if (dropzoneContent) dropzoneContent.style.display = 'none';
+          if (dropzonePreviewWrap) dropzonePreviewWrap.style.display = 'flex';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function resetAvatarDropzone() {
+        selectedAvatarFile = null;
+        if (avatarFileInput) avatarFileInput.value = '';
+        if (dropzonePreviewImg) dropzonePreviewImg.src = '';
+        if (dropzoneContent) dropzoneContent.style.display = 'flex';
+        if (dropzonePreviewWrap) dropzonePreviewWrap.style.display = 'none';
+        const urlField = document.getElementById('new-member-avatar');
+        if (urlField) urlField.value = '';
+      }
+
+      if (avatarDropzone && avatarFileInput) {
+        avatarDropzone.addEventListener('click', (e) => {
+          if (e.target !== dropzoneRemoveBtn) {
+            avatarFileInput.click();
+          }
+        });
+
+        avatarFileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) {
+            handleFileSelected(e.target.files[0]);
+          }
+        });
+
+        avatarDropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          avatarDropzone.style.borderColor = 'var(--color-gold)';
+          avatarDropzone.style.background = 'rgba(196, 167, 125, 0.08)';
+        });
+
+        avatarDropzone.addEventListener('dragleave', () => {
+          avatarDropzone.style.borderColor = 'rgba(196, 167, 125, 0.4)';
+          avatarDropzone.style.background = 'rgba(255, 255, 255, 0.02)';
+        });
+
+        avatarDropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          avatarDropzone.style.borderColor = 'rgba(196, 167, 125, 0.4)';
+          avatarDropzone.style.background = 'rgba(255, 255, 255, 0.02)';
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleFileSelected(e.dataTransfer.files[0]);
+          }
+        });
+      }
+
+      if (dropzoneRemoveBtn) {
+        dropzoneRemoveBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          resetAvatarDropzone();
+        });
+      }
+
       // Add Member Form
       if (addMemberForm) {
         addMemberForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           const saveBtn = document.getElementById('btn-save-member');
-          if (saveBtn) saveBtn.innerHTML = `<span>Inducting...</span>`;
+          if (saveBtn) saveBtn.innerHTML = `<span>Processing &amp; Inducting...</span>`;
 
           try {
             const name = document.getElementById('new-member-name').value.trim();
@@ -3575,7 +3695,15 @@
             const bio = document.getElementById('new-member-bio').value.trim();
             const interestsRaw = document.getElementById('new-member-interests').value;
             const isFeatured = document.getElementById('new-member-featured').checked;
-            const avatarUrl = document.getElementById('new-member-avatar')?.value.trim() || '';
+
+            // Resolve Avatar Image from file upload or direct URL
+            let avatarUrl = '';
+            if (selectedAvatarFile) {
+              if (saveBtn) saveBtn.innerHTML = `<span>Optimizing portrait...</span>`;
+              avatarUrl = await uploadAvatar(selectedAvatarFile);
+            } else {
+              avatarUrl = document.getElementById('new-member-avatar')?.value.trim() || '';
+            }
 
             const credentials = credsRaw ? credsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
             const interests = interestsRaw ? interestsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
@@ -3600,6 +3728,7 @@
 
             showToast(`Member "${name}" successfully inducted into registry.`);
             addMemberForm.reset();
+            resetAvatarDropzone();
             await refreshDirectory();
             closeAdminModal();
           } catch (err) {

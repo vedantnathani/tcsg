@@ -92,3 +92,34 @@ CREATE POLICY "Allow viewing applications"
     ON public.applications
     FOR SELECT
     USING (true);
+
+-- ==============================================================================
+-- STORAGE BUCKET CONFIGURATION (Optional for Cloud Storage)
+-- ==============================================================================
+
+-- Create public avatars bucket if it doesn't already exist
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage policies for avatars
+CREATE POLICY "Public can view avatars"
+    ON storage.objects
+    FOR SELECT
+    USING (bucket_id = 'avatars');
+
+CREATE POLICY "Allow uploading to avatars"
+    ON storage.objects
+    FOR INSERT
+    WITH CHECK (bucket_id = 'avatars');
+
+CREATE POLICY "Allow updating avatars"
+    ON storage.objects
+    FOR UPDATE
+    USING (bucket_id = 'avatars');
+
+CREATE POLICY "Allow deleting avatars"
+    ON storage.objects
+    FOR DELETE
+    USING (bucket_id = 'avatars');
+
