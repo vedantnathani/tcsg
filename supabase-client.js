@@ -13,6 +13,29 @@ const CONFIG_KEY_PIN = 'HF_ADMIN_PASSKEY';
 // Default / fallback passkey for admin controls
 export const DEFAULT_ADMIN_PIN = 'GUILD2026';
 
+let remoteConfigLoaded = false;
+
+// Dynamically load Supabase credentials from Vercel Environment Variables via /api/config
+export async function loadEnvironmentConfig() {
+  if (remoteConfigLoaded) return;
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.url && data.anonKey) {
+        window.ENV_SUPABASE_URL = data.url;
+        window.ENV_SUPABASE_ANON_KEY = data.anonKey;
+        if (data.adminPin) window.ENV_ADMIN_PIN = data.adminPin;
+        supabaseInstance = null; // Re-bind client with live credentials
+      }
+    }
+  } catch (err) {
+    // Offline or static preview mode fallback
+  } finally {
+    remoteConfigLoaded = true;
+  }
+}
+
 export function getSupabaseConfig() {
   const url = localStorage.getItem(CONFIG_KEY_URL) || window.ENV_SUPABASE_URL || SUPABASE_CONFIG.url || '';
   const anonKey = localStorage.getItem(CONFIG_KEY_KEY) || window.ENV_SUPABASE_ANON_KEY || SUPABASE_CONFIG.anonKey || '';

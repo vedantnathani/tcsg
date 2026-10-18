@@ -7,12 +7,8 @@
  */
 
 export const SUPABASE_CONFIG = {
-  // Your Supabase Project URL (e.g. 'https://xyzcompany.supabase.co')
+  // Configured via Vercel Environment Variables (/api/config)
   url: '',
-
-  // Your Supabase Anon Public Key (e.g. 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...')
   anonKey: '',
-
-  // Registrar Admin Passkey
   adminPin: 'GUILD2026'
 };

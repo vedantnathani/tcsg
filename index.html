@@ -3094,6 +3094,7 @@
        ======================================================================= -->
   <script type="module">
     import { 
+      loadEnvironmentConfig,
       getSupabaseConfig, 
       saveSupabaseConfig, 
       getSupabaseClient, 
@@ -3112,6 +3113,8 @@
     } from './supabase-client.js';
 
     document.addEventListener('DOMContentLoaded', async () => {
+      // Load environment variables from /api/config if deployed on Vercel
+      await loadEnvironmentConfig();
 
       /* -----------------------------------------------------------------------
          0. Notification Toast Helper
