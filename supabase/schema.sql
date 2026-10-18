@@ -1,5 +1,5 @@
 -- ==============================================================================
--- HIGH FINANCE GUILD — SUPABASE DATABASE SCHEMA
+-- THE CAPITAL & STRATEGY GUILD — SUPABASE DATABASE SCHEMA
 -- ==============================================================================
 
 -- 1. Enable pgcrypto for UUID generation if needed

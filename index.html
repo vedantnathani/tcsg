@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>High Finance Guild — An Invitation-Only Circle</title>
-  <meta name="description" content="An invitation-only circle of exceptional minds across finance, strategy, and capital. Selective by design.">
+  <title>The Capital &amp; Strategy Guild — An Invitation-Only Circle</title>
+  <meta name="description" content="The Capital &amp; Strategy Guild. Connect ✦ Create ✦ Compound. An invitation-only circle of exceptional minds across finance, strategy, and capital. Selective by design.">
   <meta name="theme-color" content="#0A0A0A">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230A0A0A'/><circle cx='16' cy='16' r='12' fill='none' stroke='%23FFFFFF' stroke-width='1.5'/><line x1='12' y1='9' x2='12' y2='23' stroke='%23FFFFFF' stroke-width='1.5'/><line x1='20' y1='9' x2='20' y2='23' stroke='%23FFFFFF' stroke-width='1.5'/><line x1='12' y1='16' x2='20' y2='16' stroke='%23FFFFFF' stroke-width='1.5'/></svg>">
+  <link rel="icon" type="image/png" href="assets/logo/tcsg-monogram-dark.png">
   
   <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -162,23 +162,32 @@
       pointer-events: none;
     }
 
-    .loader-seal-svg {
-      width: 90px;
-      height: 90px;
+    .loader-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
     }
 
-    .loader-seal-svg circle,
-    .loader-seal-svg path,
-    .loader-seal-svg line {
-      stroke-dasharray: 400;
-      stroke-dashoffset: 400;
-      animation: drawStroke 1.5s var(--ease-luxe) forwards;
+    .loader-seal-img {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      animation: loaderPulse 1.4s var(--ease-luxe) infinite alternate;
     }
 
-    @keyframes drawStroke {
-      to {
-        stroke-dashoffset: 0;
-      }
+    .loader-caption {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-black);
+      opacity: 0.85;
+    }
+
+    @keyframes loaderPulse {
+      from { transform: scale(0.94); opacity: 0.65; }
+      to { transform: scale(1.05); opacity: 1; }
     }
 
     /* ==========================================================================
@@ -213,10 +222,14 @@
     .site-nav.nav-dark .brand-name {
       color: var(--color-white);
     }
-    .site-nav.nav-dark .brand-seal circle,
-    .site-nav.nav-dark .brand-seal path,
-    .site-nav.nav-dark .brand-seal line {
-      stroke: var(--color-white);
+    .brand-seal-dark {
+      display: none;
+    }
+    .site-nav.nav-dark .brand-seal-light {
+      display: none;
+    }
+    .site-nav.nav-dark .brand-seal-dark {
+      display: inline-block;
     }
     .site-nav.nav-dark .nav-cta {
       color: var(--color-white);
@@ -228,7 +241,7 @@
     .brand-mark {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.85rem;
       text-decoration: none;
       color: var(--color-black);
     }
@@ -236,23 +249,22 @@
     .brand-seal {
       width: 28px;
       height: 28px;
-      transition: transform 0.6s var(--ease-luxe);
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      transition: transform 0.4s var(--ease-luxe);
     }
 
     .brand-mark:hover .brand-seal {
-      transform: rotate(45deg);
-    }
-
-    /* Accent usage 1: emblem outline on hover */
-    .brand-mark:hover .seal-accent-ring {
-      stroke: var(--color-gold) !important;
+      transform: scale(1.08);
     }
 
     .brand-name {
       font-family: var(--font-serif);
-      font-size: 1.15rem;
+      font-size: clamp(0.95rem, 1.8vw, 1.15rem);
       letter-spacing: 0.08em;
       font-weight: 400;
+      white-space: nowrap;
       transition: color 0.4s ease;
     }
 
@@ -400,23 +412,18 @@
       overflow: hidden;
     }
 
-    /* Ambient slow rotating watermark emblem */
+    /* Ambient watermark monogram */
     .hero-watermark {
       position: absolute;
-      right: -8%;
+      right: -4%;
       top: 50%;
       transform: translateY(-50%);
-      width: 620px;
-      height: 620px;
-      opacity: 0.04;
+      width: 580px;
+      height: 580px;
+      object-fit: contain;
+      opacity: 0.045;
       pointer-events: none;
-      animation: slowRotate 720s linear infinite;
       z-index: 1;
-    }
-
-    @keyframes slowRotate {
-      from { transform: translateY(-50%) rotate(0deg); }
-      to { transform: translateY(-50%) rotate(360deg); }
     }
 
     .hero-body {
@@ -1929,17 +1936,27 @@
     .footer-brand {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      max-width: 320px;
+      gap: 0.5rem;
+      max-width: 340px;
     }
 
-    .footer-seal {
-      width: 36px;
-      height: 36px;
+    .footer-logo-img {
+      height: 48px;
+      width: auto;
+      max-width: 270px;
+      object-fit: contain;
+      object-position: left center;
+      margin-bottom: 0.25rem;
+      display: block;
     }
 
-    .footer-seal circle, .footer-seal path, .footer-seal line {
-      stroke: var(--color-white);
+    .footer-motto {
+      font-family: var(--font-sans);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 0.5rem;
     }
 
     .footer-copy {
@@ -2375,28 +2392,18 @@
 
   <!-- Initial Load Wax Seal Screen -->
   <div id="loader-screen" role="progressbar" aria-label="Authenticating Guild Seal">
-    <svg class="loader-seal-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="45" stroke="#0A0A0A" stroke-width="1.5" />
-      <circle cx="50" cy="50" r="39" stroke="#0A0A0A" stroke-width="0.75" stroke-dasharray="2 3" />
-      <line x1="36" y1="26" x2="36" y2="74" stroke="#0A0A0A" stroke-width="2" />
-      <line x1="64" y1="26" x2="64" y2="74" stroke="#0A0A0A" stroke-width="2" />
-      <line x1="36" y1="50" x2="64" y2="50" stroke="#0A0A0A" stroke-width="2" />
-      <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#0A0A0A" stroke-width="1.75" />
-    </svg>
+    <div class="loader-wrap">
+      <img src="assets/logo/tcsg-monogram-dark.png" class="loader-seal-img" alt="The Capital &amp; Strategy Guild">
+      <div class="loader-caption">THE CAPITAL &amp; STRATEGY GUILD</div>
+    </div>
   </div>
 
   <!-- Primary Site Navigation -->
   <nav class="site-nav" id="main-nav" aria-label="Main Navigation">
-    <a href="#hero" class="brand-mark" aria-label="High Finance Guild Home">
-      <!-- Living Seal SVG Icon -->
-      <svg class="brand-seal" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle class="seal-accent-ring" cx="50" cy="50" r="45" stroke="#0A0A0A" stroke-width="2" />
-        <line x1="36" y1="26" x2="36" y2="74" stroke="#0A0A0A" stroke-width="2.5" />
-        <line x1="64" y1="26" x2="64" y2="74" stroke="#0A0A0A" stroke-width="2.5" />
-        <line x1="36" y1="50" x2="64" y2="50" stroke="#0A0A0A" stroke-width="2.5" />
-        <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#0A0A0A" stroke-width="2" />
-      </svg>
-      <span class="brand-name">HIGH FINANCE GUILD</span>
+    <a href="#hero" class="brand-mark" aria-label="The Capital &amp; Strategy Guild Home">
+      <img src="assets/logo/tcsg-monogram-dark.png" alt="TCSG Monogram" class="brand-seal brand-seal-light">
+      <img src="assets/logo/tcsg-monogram-white.png" alt="TCSG Monogram" class="brand-seal brand-seal-dark">
+      <span class="brand-name">THE CAPITAL &amp; STRATEGY GUILD</span>
     </a>
 
     <div class="nav-links">
@@ -2430,20 +2437,17 @@
          HERO — "The Threshold"
          ======================================================================= -->
     <section class="hero-section" id="hero">
-      <!-- 540px Slow-Rotating Emblem Watermark at 4% Opacity -->
-      <svg class="hero-watermark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <circle cx="50" cy="50" r="47" stroke="#0A0A0A" stroke-width="0.8" />
-        <circle cx="50" cy="50" r="42" stroke="#0A0A0A" stroke-width="0.4" stroke-dasharray="1 2" />
-        <circle cx="50" cy="50" r="32" stroke="#0A0A0A" stroke-width="0.5" />
-        <line x1="50" y1="2" x2="50" y2="98" stroke="#0A0A0A" stroke-width="0.3" stroke-dasharray="2 3" />
-        <line x1="2" y1="50" x2="98" y2="50" stroke="#0A0A0A" stroke-width="0.3" stroke-dasharray="2 3" />
-        <line x1="36" y1="26" x2="36" y2="74" stroke="#0A0A0A" stroke-width="1.8" />
-        <line x1="64" y1="26" x2="64" y2="74" stroke="#0A0A0A" stroke-width="1.8" />
-        <line x1="36" y1="50" x2="64" y2="50" stroke="#0A0A0A" stroke-width="1.8" />
-        <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#0A0A0A" stroke-width="1.6" />
-      </svg>
+      <!-- Monogram Watermark Emblem -->
+      <img src="assets/logo/tcsg-monogram-dark.png" class="hero-watermark" alt="" aria-hidden="true">
 
       <div class="hero-body">
+        <div class="hero-motto" style="font-family: var(--font-sans); font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.65rem;">
+          <span>CONNECT</span>
+          <span style="font-size: 0.55rem; opacity: 0.55;">✦</span>
+          <span>CREATE</span>
+          <span style="font-size: 0.55rem; opacity: 0.55;">✦</span>
+          <span>COMPOUND</span>
+        </div>
         <h1 class="hero-headline">
           For those<br>
           building what<br>
@@ -2483,7 +2487,7 @@
 
           <div class="narrative-content">
             <p class="narrative-p">
-              The modern finance landscape is inundated with noise, transactional alliances, and superficial forums. The High Finance Guild was forged around a contrasting conviction: the most consequential breakthroughs in capital, strategic advisory, and institutional growth happen when high-caliber practitioners deliberate behind closed doors.
+              The modern finance landscape is inundated with noise, transactional alliances, and superficial forums. The Capital &amp; Strategy Guild was forged around a contrasting conviction: the most consequential breakthroughs in capital, strategic advisory, and institutional growth happen when high-caliber practitioners deliberate behind closed doors.
             </p>
 
             <p class="narrative-p">
@@ -2653,7 +2657,7 @@
                 <div class="founder-tile-front">
                   <div class="founder-tile-fallback">
                     <div class="founder-fallback-initials">FP</div>
-                    <div class="founder-fallback-seal">High Finance Guild</div>
+                    <div class="founder-fallback-seal">The Capital &amp; Strategy Guild</div>
                   </div>
                   <img src="assets/founders/founder-3.jpg" alt="Founding Partner" class="founder-tile-img" loading="lazy" onerror="this.style.display='none';">
                   <div class="founder-seal-badge" title="Founding Seal">
@@ -2680,7 +2684,7 @@
             <!-- Below Tile: Only Name and Company -->
             <div class="founder-tile-caption">
               <h3 class="founder-name">Founding Partner</h3>
-              <div class="founder-company">High Finance Guild</div>
+              <div class="founder-company">The Capital &amp; Strategy Guild</div>
             </div>
           </article>
 
@@ -2692,7 +2696,7 @@
                 <div class="founder-tile-front">
                   <div class="founder-tile-fallback">
                     <div class="founder-fallback-initials">FP</div>
-                    <div class="founder-fallback-seal">High Finance Guild</div>
+                    <div class="founder-fallback-seal">The Capital &amp; Strategy Guild</div>
                   </div>
                   <img src="assets/founders/founder-4.jpg" alt="Founding Partner" class="founder-tile-img" loading="lazy" onerror="this.style.display='none';">
                   <div class="founder-seal-badge" title="Founding Seal">
@@ -2719,7 +2723,7 @@
             <!-- Below Tile: Only Name and Company -->
             <div class="founder-tile-caption">
               <h3 class="founder-name">Founding Partner</h3>
-              <div class="founder-company">High Finance Guild</div>
+              <div class="founder-company">The Capital &amp; Strategy Guild</div>
             </div>
           </article>
         </div>
@@ -2787,7 +2791,7 @@
             <div class="principle-num">05</div>
             <h3 class="principle-title">Curated Scarcity</h3>
             <p class="principle-text">
-              Scale dilutes intimacy. The High Finance Guild will never expand beyond our capacity to curate genuine peer relationships. A room where everyone is admitted ceases to be the room.
+              Scale dilutes intimacy. The Capital &amp; Strategy Guild will never expand beyond our capacity to curate genuine peer relationships. A room where everyone is admitted ceases to be the room.
             </p>
           </div>
         </div>
@@ -2875,7 +2879,7 @@
               invitation.
             </h2>
             <p class="invitation-subline">
-              High Finance Guild is intentionally selective. If you believe you belong in the room, tell us why.
+              The Capital &amp; Strategy Guild is intentionally selective. If you believe you belong in the room, tell us why.
             </p>
           </div>
 
@@ -2975,7 +2979,7 @@
               </svg>
               <h3 class="success-headline">Application received.</h3>
               <p class="success-subline">
-                Thank you for your interest in High Finance Guild. Every application is reviewed individually. If there is a fit, we'll be in touch.
+                Thank you for your interest in The Capital &amp; Strategy Guild. Every application is reviewed individually. If there is a fit, we'll be in touch.
               </p>
               <button class="return-top-btn" id="return-top-btn">Return to Home &rarr;</button>
             </div>
@@ -3030,14 +3034,8 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <svg class="footer-seal" viewBox="0 0 100 100" fill="none">
-            <circle cx="50" cy="50" r="45" stroke="#FFFFFF" stroke-width="1.75" />
-            <line x1="36" y1="26" x2="36" y2="74" stroke="#FFFFFF" stroke-width="2" />
-            <line x1="64" y1="26" x2="64" y2="74" stroke="#FFFFFF" stroke-width="2" />
-            <line x1="36" y1="50" x2="64" y2="50" stroke="#FFFFFF" stroke-width="2" />
-            <path d="M 64 36 A 14 14 0 0 0 50 50 A 14 14 0 0 0 64 64 L 64 54" stroke="#FFFFFF" stroke-width="1.75" />
-          </svg>
-          <div style="font-family: var(--font-serif); font-size: 1.1rem; letter-spacing: 0.05em;">HIGH FINANCE GUILD</div>
+          <img src="assets/logo/tcsg-logo-white.png" alt="The Capital &amp; Strategy Guild" class="footer-logo-img">
+          <div class="footer-motto">CONNECT ✦ CREATE ✦ COMPOUND</div>
           <p class="footer-copy">
             A private institution convening leaders in financial strategy, capital allocation, and corporate advisory.
           </p>
@@ -3070,8 +3068,8 @@
       </div>
 
       <div class="footer-bottom">
-        <div>&copy; 2026 High Finance Guild. All rights reserved.</div>
-        <div>Private &amp; Confidential &bull; Selective By Design</div>
+        <div>&copy; 2026 The Capital &amp; Strategy Guild. All rights reserved.</div>
+        <div>CONNECT &bull; CREATE &bull; COMPOUND &bull; Selective By Design</div>
       </div>
     </div>
   </footer>
@@ -3267,7 +3265,7 @@
                   ${m.avatarUrl ? `<img src="${m.avatarUrl}" alt="${m.name}" class="member-tile-img" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
                   <div class="member-tile-fallback" style="background: ${m.accentGradient || 'linear-gradient(150deg, #FAF9F6 0%, #E8E6E0 100%)'}; ${m.avatarUrl ? 'display: none;' : ''}">
                     <span class="member-fallback-initials">${m.initials}</span>
-                    <span class="member-fallback-seal">High Finance Guild</span>
+                    <span class="member-fallback-seal">The Capital &amp; Strategy Guild</span>
                   </div>
                   <div class="tile-front-badge">${badgeText}</div>
                 </div>
@@ -3275,7 +3273,7 @@
                 <!-- Back: Message & LinkedIn Link -->
                 <div class="member-tile-back">
                   <div class="tile-back-header">
-                    <span class="tile-back-guild">High Finance Guild</span>
+                    <span class="tile-back-guild">The Capital &amp; Strategy Guild</span>
                     <span class="tile-back-location">${m.location || 'Fellow'}</span>
                   </div>
                   

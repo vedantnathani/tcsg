@@ -1,5 +1,5 @@
 -- ==============================================================================
--- HIGH FINANCE GUILD — SEED DATA SCRIPT
+-- THE CAPITAL & STRATEGY GUILD — SEED DATA SCRIPT
 -- ==============================================================================
 
 -- Ensure avatar_url column exists

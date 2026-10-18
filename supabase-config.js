@@ -1,5 +1,5 @@
 /**
- * HIGH FINANCE GUILD — SUPABASE PRODUCTION CREDENTIALS
+ * THE CAPITAL & STRATEGY GUILD — SUPABASE PRODUCTION CREDENTIALS
  * 
  * Paste your Supabase Project URL and Anon Public Key below.
  * In Supabase, the "anon" public key is designed to be public for client browsers

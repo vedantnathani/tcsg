@@ -1,5 +1,5 @@
 /**
- * HIGH FINANCE GUILD — SUPABASE INTEGRATION CLIENT
+ * THE CAPITAL & STRATEGY GUILD — SUPABASE INTEGRATION CLIENT
  * Handles Live Member Directory, Application Submissions, and Admin Operations.
  */
 
@@ -363,7 +363,7 @@ export function resetSupabaseClient() {
 // SQL Fix script for instant copy-pasting into Supabase SQL Editor
 export function getApplicationsSqlFix() {
   return `-- ==============================================================================
--- HIGH FINANCE GUILD — APPLICATIONS TABLE & RLS FIX SCRIPT
+-- THE CAPITAL & STRATEGY GUILD — APPLICATIONS TABLE & RLS FIX SCRIPT
 -- Paste and run this directly in your Supabase SQL Editor
 -- ==============================================================================
 
