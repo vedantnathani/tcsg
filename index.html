@@ -3217,14 +3217,18 @@
         if (!gridContainer) return;
 
         const filtered = membersData.filter(member => {
-          const matchesCategory = currentFilter === 'all' || member.category === currentFilter;
-          const query = searchQuery.toLowerCase();
+          const memberCat = (member.category || 'all').toLowerCase();
+          const matchesCategory = currentFilter === 'all' || memberCat === currentFilter;
+          const query = (searchQuery || '').toLowerCase().trim();
+          const name = (member.name || '').toLowerCase();
+          const role = (member.role || '').toLowerCase();
+          const org = (member.org || '').toLowerCase();
           const matchesSearch = !query || 
-            member.name.toLowerCase().includes(query) ||
-            member.role.toLowerCase().includes(query) ||
-            member.org.toLowerCase().includes(query) ||
-            (member.interests && member.interests.some(i => i.toLowerCase().includes(query))) ||
-            (member.credentials && member.credentials.some(c => c.toLowerCase().includes(query)));
+            name.includes(query) ||
+            role.includes(query) ||
+            org.includes(query) ||
+            (Array.isArray(member.interests) && member.interests.some(i => (i || '').toLowerCase().includes(query))) ||
+            (Array.isArray(member.credentials) && member.credentials.some(c => (c || '').toLowerCase().includes(query)));
 
           return matchesCategory && matchesSearch;
         });

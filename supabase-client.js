@@ -241,30 +241,54 @@ export async function getMembers() {
     }
 
     if (data && data.length > 0) {
-      // Map database row schema to UI model
-      return data.map(row => ({
-        id: row.id,
-        name: row.name,
-        role: row.role,
-        org: row.org,
-        category: row.category,
-        credentials: Array.isArray(row.credentials) ? row.credentials : (row.credentials ? [row.credentials] : []),
-        location: row.location,
-        quote: row.quote || '',
-        bio: row.bio || '',
-        interests: Array.isArray(row.interests) ? row.interests : (row.interests ? [row.interests] : []),
-        isFeatured: Boolean(row.is_featured),
-        initials: row.initials || row.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
-        avatarUrl: row.avatar_url || row.avatarUrl || '',
-        accentGradient: row.accent_gradient || 'linear-gradient(135deg, #2b2b2b, #111111)',
-        since: row.since || '2026',
-        linkedinUrl: row.linkedin_url || row.linkedinUrl || ''
-      }));
+      console.log(`[TCSG Supabase] Successfully fetched ${data.length} member(s) from Supabase:`, data);
+      // Map database row schema to UI model with full fallback resilience
+      return data.map(row => {
+        const name = (row.name || row.full_name || 'Member').trim();
+        const role = (row.role || row.designation || 'Partner').trim();
+        const org = (row.org || row.organization || row.company || 'Institution').trim();
+        const category = (row.category || 'capital').toLowerCase();
+        const initials = row.initials || name.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'M';
+        const credentials = Array.isArray(row.credentials) 
+          ? row.credentials 
+          : (typeof row.credentials === 'string' ? row.credentials.split(',').map(c => c.trim()).filter(Boolean) : []);
+        const interests = Array.isArray(row.interests) 
+          ? row.interests 
+          : (typeof row.interests === 'string' ? row.interests.split(',').map(i => i.trim()).filter(Boolean) : []);
+        const location = (row.location || row.city || 'Mumbai').trim();
+        const quote = (row.quote || row.quote_text || '').trim();
+        const bio = (row.bio || row.narrative || '').trim();
+        const isFeatured = Boolean(row.is_featured || row.isFeatured);
+        const avatarUrl = row.avatar_url || row.avatarUrl || row.photo_url || '';
+        const accentGradient = row.accent_gradient || row.accentGradient || 'linear-gradient(135deg, #2b2b2b, #111111)';
+        const since = String(row.since || (row.created_at ? new Date(row.created_at).getFullYear() : '2026'));
+        const linkedinUrl = row.linkedin_url || row.linkedinUrl || row.linkedin || '';
+
+        return {
+          id: row.id || ('m_' + Math.random().toString(36).substring(2, 7)),
+          name,
+          role,
+          org,
+          category,
+          credentials,
+          location,
+          quote,
+          bio,
+          interests,
+          isFeatured,
+          initials,
+          avatarUrl,
+          accentGradient,
+          since,
+          linkedinUrl
+        };
+      });
     } else {
+      console.warn('[TCSG Supabase] Query returned 0 rows. Using fallback directory.');
       return FALLBACK_MEMBERS;
     }
   } catch (err) {
-    console.error('Exception fetching members:', err);
+    console.error('[TCSG Supabase] Exception fetching members:', err);
     return FALLBACK_MEMBERS;
   }
 }
