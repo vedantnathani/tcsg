@@ -59,39 +59,66 @@ ALTER TABLE public.members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.applications ENABLE ROW LEVEL SECURITY;
 
 -- Members: Public read allowed (anyone can view the directory)
+DROP POLICY IF EXISTS "Public can view members" ON public.members;
 CREATE POLICY "Public can view members"
     ON public.members
     FOR SELECT
+    TO public, anon, authenticated
     USING (true);
 
--- Members: Anon / authenticated insert & delete (guarded via admin passkey or service role)
--- For client-side admin passkey workflow with anon key:
+DROP POLICY IF EXISTS "Allow anon insert for members with verification" ON public.members;
 CREATE POLICY "Allow anon insert for members with verification"
     ON public.members
     FOR INSERT
+    TO public, anon, authenticated
     WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Allow anon delete for members with verification" ON public.members;
 CREATE POLICY "Allow anon delete for members with verification"
     ON public.members
     FOR DELETE
+    TO public, anon, authenticated
     USING (true);
 
+DROP POLICY IF EXISTS "Allow anon update for members with verification" ON public.members;
 CREATE POLICY "Allow anon update for members with verification"
     ON public.members
     FOR UPDATE
+    TO public, anon, authenticated
     USING (true);
 
 -- Applications: Anyone can submit an invitation application
+DROP POLICY IF EXISTS "Public can submit applications" ON public.applications;
 CREATE POLICY "Public can submit applications"
     ON public.applications
     FOR INSERT
+    TO public, anon, authenticated
     WITH CHECK (true);
 
--- Applications: Read restricted (only select allowed for review)
+-- Applications: Select, Update, Delete allowed for admin registry
+DROP POLICY IF EXISTS "Allow viewing applications" ON public.applications;
 CREATE POLICY "Allow viewing applications"
     ON public.applications
     FOR SELECT
+    TO public, anon, authenticated
     USING (true);
+
+DROP POLICY IF EXISTS "Allow deleting applications" ON public.applications;
+CREATE POLICY "Allow deleting applications"
+    ON public.applications
+    FOR DELETE
+    TO public, anon, authenticated
+    USING (true);
+
+DROP POLICY IF EXISTS "Allow updating applications" ON public.applications;
+CREATE POLICY "Allow updating applications"
+    ON public.applications
+    FOR UPDATE
+    TO public, anon, authenticated
+    USING (true);
+
+-- Refresh PostgREST schema cache immediately
+NOTIFY pgrst, 'reload schema';
 
 -- ==============================================================================
 -- STORAGE BUCKET CONFIGURATION (Optional for Cloud Storage)

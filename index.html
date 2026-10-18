@@ -2745,6 +2745,9 @@
         <div class="admin-tabs">
           <button class="admin-tab-btn active" data-pane="pane-add-member">Induct Member</button>
           <button class="admin-tab-btn" data-pane="pane-manage-members">Manage &amp; Delete</button>
+          <button class="admin-tab-btn" data-pane="pane-applications" id="tab-applications">
+            Applications <span id="applications-count-badge" style="background: var(--color-gold); color: #0A0A0A; font-weight: 600; padding: 2px 7px; border-radius: 10px; font-size: 10px; margin-left: 6px; display: none;">0</span>
+          </button>
           <button class="admin-tab-btn" data-pane="pane-supabase-config">Supabase Settings</button>
         </div>
 
@@ -2864,6 +2867,21 @@
             </div>
           </div>
 
+          <!-- Pane 3: Candidate Applications -->
+          <div class="admin-pane" id="pane-applications">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px;">
+              <p style="color: var(--color-mid-grey); font-size: 13px; margin: 0;">
+                Candidate invitation requests received via the admission portal.
+              </p>
+              <button type="button" class="admin-row-delete-btn" id="refresh-apps-btn" style="color: var(--color-gold); border-color: rgba(196, 167, 125, 0.4);">
+                Refresh List
+              </button>
+            </div>
+            <div id="admin-applications-list" style="display: flex; flex-direction: column; gap: 14px;">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
           <!-- Pane 3: Supabase Settings -->
           <div class="admin-pane" id="pane-supabase-config">
             <div style="background: rgba(196, 167, 125, 0.08); border-left: 3px solid var(--color-gold); padding: 1rem; margin-bottom: 1.5rem; font-size: 12px; line-height: 1.6; color: var(--color-warm-grey);">
@@ -2971,6 +2989,8 @@
       insertMember, 
       deleteMember, 
       submitApplication, 
+      getApplications,
+      deleteApplication,
       uploadAvatar,
       DEFAULT_ADMIN_PIN 
     } from './supabase-client.js';
@@ -3520,6 +3540,7 @@
           if (authGate) authGate.style.display = 'none';
           if (adminWorkspace) adminWorkspace.style.display = 'flex';
           renderAdminMembersList();
+          renderAdminApplicationsList();
           renderMembers();
           showToast('Registrar Console Unlocked. Admin mode activated.');
         } else {
@@ -3545,6 +3566,9 @@
           btn.classList.add('active');
           const targetPane = document.getElementById(btn.dataset.pane);
           if (targetPane) targetPane.classList.add('active');
+          if (btn.dataset.pane === 'pane-applications') {
+            renderAdminApplicationsList();
+          }
         });
       });
 
@@ -3587,6 +3611,118 @@
 
           membersListContainer.appendChild(row);
         });
+      }
+
+      // Render Candidate Applications in Admin Section
+      const appsListContainer = document.getElementById('admin-applications-list');
+      const appsCountBadge = document.getElementById('applications-count-badge');
+      const refreshAppsBtn = document.getElementById('refresh-apps-btn');
+
+      async function renderAdminApplicationsList() {
+        if (!appsListContainer) return;
+        appsListContainer.innerHTML = '<div style="color: var(--color-mid-grey); font-size: 13px; padding: 1rem 0;">Loading candidate requests...</div>';
+
+        try {
+          const apps = await getApplications();
+          if (appsCountBadge) {
+            appsCountBadge.textContent = apps.length;
+            appsCountBadge.style.display = apps.length > 0 ? 'inline-block' : 'none';
+          }
+
+          appsListContainer.innerHTML = '';
+          if (apps.length === 0) {
+            appsListContainer.innerHTML = `
+              <div style="text-align: center; padding: 3rem 1rem; color: var(--color-mid-grey); border: 1px dashed rgba(255,255,255,0.1); border-radius: 2px;">
+                <div style="font-size: 14px; color: var(--color-white); margin-bottom: 4px;">No Pending Applications</div>
+                <div style="font-size: 12px;">Submitted candidate requests will appear here in real time.</div>
+              </div>
+            `;
+            return;
+          }
+
+          apps.forEach(app => {
+            const card = document.createElement('div');
+            card.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(196, 167, 125, 0.25); padding: 1.25rem 1.5rem; border-radius: 2px; position: relative;';
+            
+            const dateStr = app.createdAt ? new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
+
+            card.innerHTML = `
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <div style="font-size: 16px; font-weight: 500; color: var(--color-white);">${app.fullName}</div>
+                  <div style="font-size: 13px; color: var(--color-gold); margin-top: 2px;">${app.role} &bull; ${app.organization}</div>
+                  <div style="font-size: 12px; color: var(--color-mid-grey); margin-top: 4px;">
+                    <span>${app.city}</span> &bull; 
+                    <a href="mailto:${app.email}" style="color: var(--color-white); text-decoration: underline;">${app.email}</a>
+                    ${app.linkedinUrl ? ` &bull; <a href="${app.linkedinUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--color-gold); text-decoration: underline;">LinkedIn &rarr;</a>` : ''}
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <span style="font-size: 11px; color: var(--color-mid-grey);">${dateStr}</span>
+                  <div style="margin-top: 6px;">
+                    <span class="cred-tag" style="background: rgba(196,167,125,0.15); border: 1px solid var(--color-gold); color: var(--color-gold);">${app.qualification || 'Candidate'}</span>
+                    ${app.honorsRank ? `<span class="cred-tag">${app.honorsRank}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: rgba(0,0,0,0.3); border-left: 2px solid var(--color-gold); padding: 0.85rem 1rem; margin: 1rem 0; font-size: 13px; font-style: italic; color: var(--color-warm-grey); line-height: 1.6;">
+                &ldquo;${app.whyJoin}&rdquo;
+              </div>
+
+              ${app.referral ? `<div style="font-size: 12px; color: var(--color-mid-grey); margin-bottom: 1rem;">Referred by member: <strong style="color: var(--color-white);">${app.referral}</strong></div>` : ''}
+
+              <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06);">
+                <button type="button" class="admin-btn induct-from-app-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 11px;">
+                  Induct As Member &rarr;
+                </button>
+                <button type="button" class="admin-row-delete-btn dismiss-app-btn" style="padding: 0.5rem 1rem;">
+                  Dismiss
+                </button>
+              </div>
+            `;
+
+            // Wire Induct Button to switch to Add Member and prefill
+            const inductBtn = card.querySelector('.induct-from-app-btn');
+            inductBtn.addEventListener('click', () => {
+              // Switch to Add Member tab
+              adminTabBtns.forEach(b => b.classList.remove('active'));
+              adminPanes.forEach(p => p.classList.remove('active'));
+              const addTab = document.querySelector('[data-pane="pane-add-member"]');
+              const addPane = document.getElementById('pane-add-member');
+              if (addTab) addTab.classList.add('active');
+              if (addPane) addPane.classList.add('active');
+
+              // Prefill fields
+              document.getElementById('new-member-name').value = app.fullName;
+              document.getElementById('new-member-org').value = app.organization;
+              document.getElementById('new-member-role').value = app.role;
+              document.getElementById('new-member-location').value = app.city;
+              document.getElementById('new-member-bio').value = `${app.role} at ${app.organization}. ${app.whyJoin}`;
+              document.getElementById('new-member-creds').value = [app.qualification, app.honorsRank].filter(Boolean).join(', ');
+              showToast(`Prefilled details for ${app.fullName}. Upload a portrait photograph to complete induction.`);
+            });
+
+            // Wire Dismiss Button
+            const dismissBtn = card.querySelector('.dismiss-app-btn');
+            dismissBtn.addEventListener('click', async () => {
+              if (confirm(`Dismiss application from ${app.fullName}?`)) {
+                await deleteApplication(app.id);
+                showToast(`Application from ${app.fullName} dismissed.`);
+                renderAdminApplicationsList();
+              }
+            });
+
+            appsListContainer.appendChild(card);
+          });
+        } catch (e) {
+          console.error('Error rendering applications:', e);
+          appsListContainer.innerHTML = `<div style="color: #ef4444; font-size: 13px;">Error loading applications: ${e.message}</div>`;
+        }
+      }
+
+      if (refreshAppsBtn) {
+        refreshAppsBtn.addEventListener('click', renderAdminApplicationsList);
       }
 
       // Avatar File Dropzone Handling

@@ -255,11 +255,29 @@ export async function insertMember(memberData) {
   };
 
   if (client) {
-    const { data, error } = await client
+    let { data, error } = await client
       .from('members')
       .insert([dbPayload])
       .select()
       .single();
+
+    // Gracefully handle case where Supabase table doesn't have avatar_url column yet
+    if (error && error.message && error.message.includes('avatar_url')) {
+      console.warn("Retrying member insertion without avatar_url due to schema cache mismatch:", error.message);
+      const safePayload = { ...dbPayload };
+      delete safePayload.avatar_url;
+
+      const retryRes = await client
+        .from('members')
+        .insert([safePayload])
+        .select()
+        .single();
+
+      if (!retryRes.error && retryRes.data) {
+        return retryRes.data;
+      }
+      error = retryRes.error;
+    }
 
     if (error) {
       throw new Error(`Database error: ${error.message}`);
@@ -304,11 +322,10 @@ export async function deleteMember(memberId) {
 
 // Submit Application Form to Supabase
 export async function submitApplication(appData) {
-  const client = getSupabaseClient();
   const dbPayload = {
     full_name: appData.fullName,
     email: appData.email,
-    linkedin_url: appData.linkedinUrl,
+    linkedin_url: appData.linkedinUrl || null,
     role: appData.role,
     organization: appData.organization,
     qualification: appData.qualification,
@@ -319,25 +336,118 @@ export async function submitApplication(appData) {
     status: 'pending'
   };
 
+  // Always save a local copy so application is NEVER lost
+  try {
+    const existing = JSON.parse(localStorage.getItem('HF_APPLICATIONS') || '[]');
+    existing.unshift({
+      ...dbPayload,
+      id: 'local_app_' + Date.now(),
+      created_at: new Date().toISOString()
+    });
+    localStorage.setItem('HF_APPLICATIONS', JSON.stringify(existing));
+  } catch (e) {}
+
+  const client = getSupabaseClient();
   if (client) {
+    // Perform insert without forcing .select().single() to prevent RLS SELECT failures
     const { data, error } = await client
       .from('applications')
-      .insert([dbPayload])
-      .select()
-      .single();
+      .insert([dbPayload]);
 
     if (error) {
-      throw new Error(`Application submission error: ${error.message}`);
+      console.warn('Supabase application submission error:', error.message);
+      throw new Error(`Database error: ${error.message}`);
     }
     return { success: true, data };
   } else {
-    // Fallback store locally
-    const existing = JSON.parse(localStorage.getItem('HF_APPLICATIONS') || '[]');
-    existing.push({ ...dbPayload, id: 'app_' + Date.now(), created_at: new Date().toISOString() });
-    localStorage.setItem('HF_APPLICATIONS', JSON.stringify(existing));
     return { success: true, localOnly: true };
   }
 }
+
+// Fetch all Candidate Applications for the Admin Section
+export async function getApplications() {
+  const client = getSupabaseClient();
+  let list = [];
+
+  if (client) {
+    try {
+      const { data, error } = await client
+        .from('applications')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && Array.isArray(data)) {
+        list = data.map(row => ({
+          id: row.id,
+          fullName: row.full_name,
+          email: row.email,
+          linkedinUrl: row.linkedin_url,
+          role: row.role,
+          organization: row.organization,
+          qualification: row.qualification,
+          honorsRank: row.honors_rank,
+          city: row.city,
+          whyJoin: row.why_join,
+          referral: row.referral,
+          status: row.status || 'pending',
+          createdAt: row.created_at
+        }));
+      } else {
+        console.warn('Supabase fetch applications notice:', error?.message);
+      }
+    } catch (err) {
+      console.warn('Exception fetching applications from Supabase:', err);
+    }
+  }
+
+  // Merge any locally stored applications
+  try {
+    const local = JSON.parse(localStorage.getItem('HF_APPLICATIONS') || '[]');
+    const existingIds = new Set(list.map(a => a.id));
+    for (const item of local) {
+      if (!existingIds.has(item.id)) {
+        list.push({
+          id: item.id,
+          fullName: item.full_name,
+          email: item.email,
+          linkedinUrl: item.linkedin_url,
+          role: item.role,
+          organization: item.organization,
+          qualification: item.qualification,
+          honorsRank: item.honors_rank,
+          city: item.city,
+          whyJoin: item.why_join,
+          referral: item.referral,
+          status: item.status || 'pending',
+          createdAt: item.created_at
+        });
+      }
+    }
+  } catch (e) {}
+
+  return list;
+}
+
+// Delete an Application (Admin dismiss)
+export async function deleteApplication(appId) {
+  const client = getSupabaseClient();
+  if (client && !appId.startsWith('local_app_')) {
+    try {
+      await client.from('applications').delete().eq('id', appId);
+    } catch (e) {
+      console.warn('Error deleting from Supabase:', e);
+    }
+  }
+
+  try {
+    const local = JSON.parse(localStorage.getItem('HF_APPLICATIONS') || '[]');
+    const filtered = local.filter(a => a.id !== appId);
+    localStorage.setItem('HF_APPLICATIONS', JSON.stringify(filtered));
+  } catch (e) {}
+
+  return true;
+}
+
 
 // Upload Avatar Image to Supabase Storage (with client-side optimization and dataURL fallback)
 export async function uploadAvatar(file) {
