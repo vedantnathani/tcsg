@@ -20,9 +20,10 @@ export function getSupabaseConfig() {
 }
 
 export function saveSupabaseConfig(url, anonKey, adminPin) {
-  if (url) localStorage.setItem(CONFIG_KEY_URL, url.trim());
-  if (anonKey) localStorage.setItem(CONFIG_KEY_KEY, anonKey.trim());
-  if (adminPin) localStorage.setItem(CONFIG_KEY_PIN, adminPin.trim());
+  if (url !== undefined) localStorage.setItem(CONFIG_KEY_URL, url.trim());
+  if (anonKey !== undefined) localStorage.setItem(CONFIG_KEY_KEY, anonKey.trim());
+  if (adminPin !== undefined) localStorage.setItem(CONFIG_KEY_PIN, adminPin.trim());
+  supabaseInstance = null;
 }
 
 // Initial fallback members in case Supabase is not yet populated
@@ -320,8 +321,93 @@ export async function deleteMember(memberId) {
   }
 }
 
-// Submit Application Form to Supabase
+// Invalidate cached Supabase client instance
+export function resetSupabaseClient() {
+  supabaseInstance = null;
+  return getSupabaseClient();
+}
+
+// SQL Fix script for instant copy-pasting into Supabase SQL Editor
+export function getApplicationsSqlFix() {
+  return `-- ==============================================================================
+-- HIGH FINANCE GUILD — APPLICATIONS TABLE & RLS FIX SCRIPT
+-- Paste and run this directly in your Supabase SQL Editor
+-- ==============================================================================
+
+-- 1. Create applications table if it does not exist
+CREATE TABLE IF NOT EXISTS public.applications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    full_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    linkedin_url TEXT,
+    role TEXT NOT NULL,
+    organization TEXT NOT NULL,
+    qualification TEXT NOT NULL,
+    honors_rank TEXT,
+    city TEXT NOT NULL,
+    why_join TEXT NOT NULL,
+    referral TEXT,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'under_review', 'accepted', 'declined')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- 2. Ensure indexes
+CREATE INDEX IF NOT EXISTS idx_applications_created ON public.applications (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_applications_email ON public.applications (email);
+
+-- 3. Enable Row-Level Security
+ALTER TABLE public.applications ENABLE ROW LEVEL SECURITY;
+
+-- 4. Open INSERT to everyone (public & anonymous applicants)
+DROP POLICY IF EXISTS "Public can submit applications" ON public.applications;
+CREATE POLICY "Public can submit applications"
+    ON public.applications
+    FOR INSERT
+    TO public, anon, authenticated
+    WITH CHECK (true);
+
+-- 5. Open SELECT to read applications in Admin Registry
+DROP POLICY IF EXISTS "Allow viewing applications" ON public.applications;
+CREATE POLICY "Allow viewing applications"
+    ON public.applications
+    FOR SELECT
+    TO public, anon, authenticated
+    USING (true);
+
+-- 6. Open DELETE to dismiss applications in Admin Registry
+DROP POLICY IF EXISTS "Allow deleting applications" ON public.applications;
+CREATE POLICY "Allow deleting applications"
+    ON public.applications
+    FOR DELETE
+    TO public, anon, authenticated
+    USING (true);
+
+-- 7. Reload PostgREST schema cache immediately
+NOTIFY pgrst, 'reload schema';`;
+}
+
+// Submit Application Form to Supabase with comprehensive trace
 export async function submitApplication(appData) {
+  const cfg = getSupabaseConfig();
+  const trace = {
+    timestamp: new Date().toISOString(),
+    hasSupabaseUrl: Boolean(cfg.url),
+    supabaseUrl: cfg.url ? (cfg.url.length > 35 ? cfg.url.substring(0, 35) + '...' : cfg.url) : 'NOT CONFIGURED',
+    fullSupabaseUrl: cfg.url || '',
+    hasAnonKey: Boolean(cfg.anonKey),
+    clientInitialized: false,
+    localSaved: false,
+    supabaseSuccess: false,
+    httpStatus: null,
+    error: null,
+    payloadSummary: {
+      fullName: appData.fullName,
+      email: appData.email,
+      role: appData.role,
+      organization: appData.organization
+    }
+  };
+
   const dbPayload = {
     full_name: appData.fullName,
     email: appData.email,
@@ -336,7 +422,7 @@ export async function submitApplication(appData) {
     status: 'pending'
   };
 
-  // Always save a local copy so application is NEVER lost
+  // Always save a local copy so candidate application is NEVER lost
   try {
     const existing = JSON.parse(localStorage.getItem('HF_APPLICATIONS') || '[]');
     existing.unshift({
@@ -345,29 +431,216 @@ export async function submitApplication(appData) {
       created_at: new Date().toISOString()
     });
     localStorage.setItem('HF_APPLICATIONS', JSON.stringify(existing));
-  } catch (e) {}
+    trace.localSaved = true;
+  } catch (e) {
+    console.warn('Local storage backup warning:', e);
+  }
 
   const client = getSupabaseClient();
-  if (client) {
-    // Perform insert without forcing .select().single() to prevent RLS SELECT failures
-    const { data, error } = await client
+  if (!client) {
+    trace.error = {
+      code: 'CONFIG_MISSING',
+      message: 'Supabase URL or Anon Public Key is not configured on this browser.',
+      details: 'No SUPABASE_URL found in localStorage or window.ENV_SUPABASE_URL.',
+      hint: 'Your application has been safely saved to Local Storage on this device. To connect to Supabase Cloud, enter credentials in the Admin Console (GUILD2026) -> Supabase Settings.',
+      sqlFix: null
+    };
+    return { success: false, localOnly: true, trace, error: trace.error };
+  }
+
+  trace.clientInitialized = true;
+  try {
+    const res = await client
       .from('applications')
       .insert([dbPayload]);
 
-    if (error) {
-      console.warn('Supabase application submission error:', error.message);
-      throw new Error(`Database error: ${error.message}`);
+    if (res.error) {
+      const err = res.error;
+      let hint = err.hint || '';
+      let sqlFix = null;
+
+      if (err.code === '42501' || (err.message && err.message.toLowerCase().includes('row-level security'))) {
+        hint = 'PostgreSQL Row-Level Security (RLS) is blocking anonymous inserts into public.applications.';
+        sqlFix = `ALTER TABLE public.applications ENABLE ROW LEVEL SECURITY;\nDROP POLICY IF EXISTS "Public can submit applications" ON public.applications;\nCREATE POLICY "Public can submit applications" ON public.applications FOR INSERT TO anon, authenticated, public WITH CHECK (true);\nNOTIFY pgrst, 'reload schema';`;
+      } else if (err.code === '42P01' || (err.message && err.message.includes('relation') && err.message.includes('does not exist'))) {
+        hint = 'The table "public.applications" does not exist in your Supabase database.';
+        sqlFix = getApplicationsSqlFix();
+      } else if (err.code === '42703' || (err.message && err.message.includes('column'))) {
+        hint = 'Schema cache mismatch. The columns in the database do not match PostgREST cache.';
+        sqlFix = `NOTIFY pgrst, 'reload schema';`;
+      }
+
+      trace.error = {
+        code: err.code || 'POSTGREST_ERROR',
+        message: err.message || 'Database error occurred during insert',
+        details: err.details || '',
+        hint,
+        sqlFix
+      };
+      trace.httpStatus = res.status || 400;
+      console.error('Supabase application submission error trace:', trace);
+      return { success: false, localOnly: true, error: trace.error, trace };
     }
-    return { success: true, data };
-  } else {
-    return { success: true, localOnly: true };
+
+    trace.supabaseSuccess = true;
+    trace.httpStatus = res.status || 201;
+    return { success: true, localOnly: false, data: res.data, trace };
+  } catch (err) {
+    trace.error = {
+      code: 'NETWORK_OR_EXCEPTION',
+      message: err.message || String(err),
+      details: err.stack || '',
+      hint: 'Network failure or Supabase client threw an unhandled exception.',
+      sqlFix: null
+    };
+    console.error('Supabase application submission exception:', trace.error);
+    return { success: false, localOnly: true, error: trace.error, trace };
   }
 }
+
+// Live Database Diagnostic Health Check
+export async function diagnoseDatabase() {
+  const cfg = getSupabaseConfig();
+  const report = {
+    sdkLoaded: typeof window.supabase !== 'undefined',
+    urlConfigured: Boolean(cfg.url),
+    url: cfg.url || 'Not configured',
+    anonKeyConfigured: Boolean(cfg.anonKey),
+    membersCheck: { ok: false, count: 0, hasAvatarCol: false, error: null },
+    applicationsCheck: { ok: false, count: 0, rlsBlocked: false, tableMissing: false, error: null },
+    storageCheck: { ok: false, error: null },
+    localStorageAppsCount: 0,
+    overallStatus: 'CHECKING'
+  };
+
+  // Local storage count
+  try {
+    const local = JSON.parse(localStorage.getItem('HF_APPLICATIONS') || '[]');
+    report.localStorageAppsCount = local.length;
+  } catch (e) {}
+
+  const client = getSupabaseClient();
+  if (!client) {
+    report.overallStatus = 'CONFIG_MISSING';
+    return report;
+  }
+
+  // 1. Probe members table
+  try {
+    const { data, error, count } = await client
+      .from('members')
+      .select('id, name, avatar_url', { count: 'exact', head: false })
+      .limit(5);
+
+    if (error) {
+      report.membersCheck.error = `${error.code ? '[' + error.code + '] ' : ''}${error.message}`;
+    } else {
+      report.membersCheck.ok = true;
+      report.membersCheck.count = count !== null ? count : (data ? data.length : 0);
+      report.membersCheck.hasAvatarCol = true;
+    }
+  } catch (err) {
+    report.membersCheck.error = err.message;
+  }
+
+  // 2. Probe applications table
+  try {
+    const { data, error, count } = await client
+      .from('applications')
+      .select('id, full_name, created_at', { count: 'exact', head: false })
+      .limit(5);
+
+    if (error) {
+      report.applicationsCheck.error = `${error.code ? '[' + error.code + '] ' : ''}${error.message}`;
+      if (error.code === '42501' || (error.message && error.message.toLowerCase().includes('row-level security'))) {
+        report.applicationsCheck.rlsBlocked = true;
+      }
+      if (error.code === '42P01' || (error.message && error.message.includes('relation') && error.message.includes('does not exist'))) {
+        report.applicationsCheck.tableMissing = true;
+      }
+    } else {
+      report.applicationsCheck.ok = true;
+      report.applicationsCheck.count = count !== null ? count : (data ? data.length : 0);
+    }
+  } catch (err) {
+    report.applicationsCheck.error = err.message;
+  }
+
+  // 3. Probe storage avatars bucket
+  try {
+    const { data, error } = await client.storage.from('avatars').list('', { limit: 1 });
+    if (error) {
+      report.storageCheck.error = error.message;
+    } else {
+      report.storageCheck.ok = true;
+    }
+  } catch (err) {
+    report.storageCheck.error = err.message;
+  }
+
+  if (report.applicationsCheck.tableMissing) {
+    report.overallStatus = 'APPLICATIONS_TABLE_MISSING';
+  } else if (report.applicationsCheck.rlsBlocked) {
+    report.overallStatus = 'RLS_BLOCKED';
+  } else if (report.membersCheck.ok && report.applicationsCheck.ok) {
+    report.overallStatus = 'OPERATIONAL';
+  } else {
+    report.overallStatus = 'PARTIAL_ERROR';
+  }
+
+  return report;
+}
+
+// Sync Local Cached Applications to Supabase Cloud
+export async function syncLocalApplicationsToSupabase() {
+  const client = getSupabaseClient();
+  if (!client) {
+    throw new Error('Supabase client not initialized. Please configure Project URL and Anon Key first.');
+  }
+
+  const localRaw = localStorage.getItem('HF_APPLICATIONS');
+  const localList = localRaw ? JSON.parse(localRaw) : [];
+  if (localList.length === 0) {
+    return { syncedCount: 0, total: 0, errors: [] };
+  }
+
+  let syncedCount = 0;
+  const errors = [];
+
+  for (const item of localList) {
+    const dbPayload = {
+      full_name: item.full_name || item.fullName,
+      email: item.email,
+      linkedin_url: item.linkedin_url || item.linkedinUrl || null,
+      role: item.role,
+      organization: item.organization,
+      qualification: item.qualification,
+      honors_rank: item.honors_rank || item.honorsRank || null,
+      city: item.city,
+      why_join: item.why_join || item.whyJoin,
+      referral: item.referral || null,
+      status: item.status || 'pending'
+    };
+
+    const { error } = await client.from('applications').insert([dbPayload]);
+    if (error) {
+      errors.push(`${item.email || 'Application'}: [${error.code || 'ERR'}] ${error.message}`);
+    } else {
+      syncedCount++;
+    }
+  }
+
+  return { syncedCount, total: localList.length, errors };
+}
+
 
 // Fetch all Candidate Applications for the Admin Section
 export async function getApplications() {
   const client = getSupabaseClient();
-  let list = [];
+  const list = [];
+  list.supabaseError = null;
+  list.supabaseCount = 0;
+  list.localCount = 0;
 
   if (client) {
     try {
@@ -376,47 +649,61 @@ export async function getApplications() {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!error && Array.isArray(data)) {
-        list = data.map(row => ({
-          id: row.id,
-          fullName: row.full_name,
-          email: row.email,
-          linkedinUrl: row.linkedin_url,
-          role: row.role,
-          organization: row.organization,
-          qualification: row.qualification,
-          honorsRank: row.honors_rank,
-          city: row.city,
-          whyJoin: row.why_join,
-          referral: row.referral,
-          status: row.status || 'pending',
-          createdAt: row.created_at
-        }));
-      } else {
-        console.warn('Supabase fetch applications notice:', error?.message);
+      if (error) {
+        list.supabaseError = {
+          code: error.code || 'UNKNOWN',
+          message: error.message,
+          hint: error.hint || ''
+        };
+        console.warn('Supabase fetch applications notice:', error.message);
+      } else if (Array.isArray(data)) {
+        list.supabaseCount = data.length;
+        data.forEach(row => {
+          list.push({
+            id: row.id,
+            source: 'supabase',
+            fullName: row.full_name,
+            email: row.email,
+            linkedinUrl: row.linkedin_url,
+            role: row.role,
+            organization: row.organization,
+            qualification: row.qualification,
+            honorsRank: row.honors_rank,
+            city: row.city,
+            whyJoin: row.why_join,
+            referral: row.referral,
+            status: row.status || 'pending',
+            createdAt: row.created_at
+          });
+        });
       }
     } catch (err) {
+      list.supabaseError = { code: 'EXCEPTION', message: err.message };
       console.warn('Exception fetching applications from Supabase:', err);
     }
+  } else {
+    list.supabaseError = { code: 'CONFIG_MISSING', message: 'Supabase URL/Key not configured in this browser.' };
   }
 
   // Merge any locally stored applications
   try {
     const local = JSON.parse(localStorage.getItem('HF_APPLICATIONS') || '[]');
+    list.localCount = local.length;
     const existingIds = new Set(list.map(a => a.id));
     for (const item of local) {
       if (!existingIds.has(item.id)) {
         list.push({
           id: item.id,
-          fullName: item.full_name,
+          source: 'local',
+          fullName: item.full_name || item.fullName,
           email: item.email,
-          linkedinUrl: item.linkedin_url,
+          linkedinUrl: item.linkedin_url || item.linkedinUrl,
           role: item.role,
           organization: item.organization,
           qualification: item.qualification,
-          honorsRank: item.honors_rank,
+          honorsRank: item.honors_rank || item.honorsRank,
           city: item.city,
-          whyJoin: item.why_join,
+          whyJoin: item.why_join || item.whyJoin,
           referral: item.referral,
           status: item.status || 'pending',
           createdAt: item.created_at
