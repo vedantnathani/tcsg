@@ -587,6 +587,133 @@
     }
 
     /* ==========================================================================
+       INSTITUTIONAL LOGO RIBBON — "The Ecosystem"
+       Firms where fellows and founders operate
+       ========================================================================== */
+    .institutional-ribbon {
+      background: var(--color-white);
+      border-top: 1px solid rgba(10, 10, 10, 0.08);
+      border-bottom: 1px solid rgba(10, 10, 10, 0.08);
+      padding: 3.25rem 0 3rem;
+      position: relative;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .ribbon-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 0 1.5rem;
+    }
+
+    .ribbon-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-mid-grey);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .ribbon-eyebrow::before,
+    .ribbon-eyebrow::after {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: rgba(10, 10, 10, 0.14);
+    }
+
+    .ribbon-marquee-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+    }
+
+    .ribbon-track {
+      display: flex;
+      align-items: center;
+      gap: 4.5rem;
+      width: max-content;
+      animation: ribbonMarquee 42s linear infinite;
+      will-change: transform;
+    }
+
+    .ribbon-marquee-wrapper:hover .ribbon-track {
+      animation-play-state: paused;
+    }
+
+    .ribbon-item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      opacity: 0.65;
+      filter: grayscale(100%);
+      transition: opacity 0.3s var(--ease-luxe), filter 0.3s var(--ease-luxe), transform 0.3s var(--ease-luxe);
+      cursor: pointer;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .ribbon-item:hover {
+      opacity: 1;
+      filter: grayscale(0%);
+      transform: translateY(-2px);
+    }
+
+    .ribbon-logo {
+      height: 36px;
+      width: auto;
+      display: block;
+    }
+
+    @keyframes ribbonMarquee {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(-50%, 0, 0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ribbon-track {
+        animation: none;
+        overflow-x: auto;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 2.5rem;
+      }
+      .ribbon-marquee-wrapper {
+        mask-image: none;
+        -webkit-mask-image: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .institutional-ribbon {
+        padding: 2.5rem 0 2.25rem;
+      }
+      .ribbon-track {
+        gap: 2.75rem;
+        animation-duration: 30s;
+      }
+      .ribbon-logo {
+        height: 30px;
+      }
+      .ribbon-header {
+        margin-bottom: 1.5rem;
+      }
+    }
+
+    /* ==========================================================================
        MEMBERS — "The Gallery"
        ========================================================================== */
     .members-section {
@@ -2485,6 +2612,248 @@
               <div class="stat-num" data-target="12" data-suffix="">0</div>
               <div class="stat-label">Cities</div>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         INSTITUTIONAL ECOSYSTEM — "The Firms"
+         Where Fellows and Founders Operate
+         ======================================================================= -->
+    <section class="institutional-ribbon" id="institutions" aria-label="Institutions Represented">
+      <div class="ribbon-header">
+        <span class="ribbon-eyebrow">Where Our Fellows &amp; Founders Operate</span>
+      </div>
+
+      <div class="ribbon-marquee-wrapper">
+        <div class="ribbon-track">
+          <!-- Track Set 1 -->
+          <div class="ribbon-item" title="Motilal Oswal — Real Estate Private Equity">
+            <svg class="ribbon-logo" viewBox="0 0 220 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4, 4)">
+                <rect x="0" y="0" width="36" height="36" rx="7" fill="#0A0A0A" />
+                <path d="M9 27V13L15 21L21 13V27" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="27" cy="20" r="4.5" stroke="#FFFFFF" stroke-width="2.4"/>
+              </g>
+              <text x="50" y="22" font-family="'Inter', sans-serif" font-size="14" font-weight="800" letter-spacing="0.08em" fill="#0A0A0A">MOTILAL OSWAL</text>
+              <text x="50.5" y="33" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" letter-spacing="0.22em" fill="#666666">FINANCIAL SERVICES</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" title="KNAV — Mergers, Acquisitions & Advisory">
+            <svg class="ribbon-logo" viewBox="0 0 170 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <text x="4" y="24" font-family="'Inter', sans-serif" font-size="21" font-weight="900" letter-spacing="0.14em" fill="#0A0A0A">KNAV</text>
+              <circle cx="98" cy="12" r="3" fill="#C4A77D"/>
+              <text x="5" y="34" font-family="'Inter', sans-serif" font-size="6.8" font-weight="600" letter-spacing="0.2em" fill="#777777">ADVISORY &bull; TAX &bull; ASSURANCE</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" title="Axis Capital — Institutional M&A and Markets">
+            <svg class="ribbon-logo" viewBox="0 0 185 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(2, 6)">
+                <polygon points="16,0 32,32 23,32 16,18 9,32 0,32" fill="#97144D"/>
+                <polygon points="16,6 25,24 19,24 16,18" fill="#FFFFFF"/>
+              </g>
+              <text x="44" y="22" font-family="'Inter', sans-serif" font-size="14.5" font-weight="800" letter-spacing="0.1em" fill="#0A0A0A">AXIS CAPITAL</text>
+              <text x="44.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.22em" fill="#777777">INVESTMENT BANKING</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" title="Grant Thornton — Financial & Strategic Advisory">
+            <svg class="ribbon-logo" viewBox="0 0 210 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(6, 6)">
+                <circle cx="16" cy="16" r="14" stroke="#4F2D7F" stroke-width="3" stroke-linecap="round" stroke-dasharray="28 8"/>
+                <circle cx="16" cy="16" r="8" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="14 5"/>
+              </g>
+              <text x="46" y="21" font-family="'Inter', sans-serif" font-size="14" font-weight="700" letter-spacing="0.04em" fill="#0A0A0A">Grant Thornton</text>
+              <text x="46.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.18em" fill="#777777">ADVISORY &bull; TAX</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" title="Kotak Mahindra Capital — Investment Banking">
+            <svg class="ribbon-logo" viewBox="0 0 220 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4, 7)">
+                <rect x="0" y="0" width="30" height="30" rx="15" fill="#003874"/>
+                <path d="M9 15C9 12 11.5 10 14 10C17 10 19 13 21 16C23 19 25 20 27 20" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M21 15C21 18 18.5 20 16 20C13 20 11 17 9 14" stroke="#ED1C24" stroke-width="2.2" stroke-linecap="round"/>
+              </g>
+              <text x="42" y="21" font-family="'Inter', sans-serif" font-size="14" font-weight="800" letter-spacing="0.04em" fill="#0A0A0A">kotak</text>
+              <text x="86" y="21" font-family="'Inter', sans-serif" font-size="12" font-weight="400" fill="#666666">Mahindra</text>
+              <text x="42.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.22em" fill="#777777">CAPITAL COMPANY</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" title="WestBridge Capital — Growth Equity">
+            <svg class="ribbon-logo" viewBox="0 0 210 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4, 8)">
+                <path d="M2 26V8L14 2L26 8V26" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 26V14C8 10.7 10.7 8 14 8C17.3 8 20 10.7 20 14V26" stroke="#C4A77D" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="2" y1="26" x2="26" y2="26" stroke="#0A0A0A" stroke-width="2.2"/>
+              </g>
+              <text x="40" y="21" font-family="'Inter', sans-serif" font-size="13.5" font-weight="800" letter-spacing="0.14em" fill="#0A0A0A">WESTBRIDGE</text>
+              <text x="40.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.28em" fill="#777777">CAPITAL PARTNERS</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" title="Everstone Capital — Buyout & Alternative Assets">
+            <svg class="ribbon-logo" viewBox="0 0 195 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4, 8)">
+                <polygon points="14,2 26,9 26,21 14,28 2,21 2,9" stroke="#0A0A0A" stroke-width="2" fill="none"/>
+                <polyline points="14,2 14,28" stroke="#0A0A0A" stroke-width="1.5"/>
+                <polyline points="2,9 14,15 26,9" stroke="#0A0A0A" stroke-width="1.5"/>
+                <polyline points="2,21 14,15 26,21" stroke="#0A0A0A" stroke-width="1.5"/>
+              </g>
+              <text x="38" y="22" font-family="'Inter', sans-serif" font-size="14.5" font-weight="800" letter-spacing="0.12em" fill="#0A0A0A">EVERSTONE</text>
+              <text x="38.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.25em" fill="#777777">PRIVATE EQUITY</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" title="Kora Capital — Special Situations & Structured Credit">
+            <svg class="ribbon-logo" viewBox="0 0 170 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(6, 8)">
+                <polygon points="13,0 16,10 26,13 16,16 13,26 10,16 0,13 10,10" fill="#0A0A0A"/>
+                <circle cx="13" cy="13" r="2.5" fill="#C4A77D"/>
+              </g>
+              <text x="38" y="22" font-family="'Inter', sans-serif" font-size="14.5" font-weight="800" letter-spacing="0.18em" fill="#0A0A0A">KORA</text>
+              <text x="38.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.28em" fill="#777777">CAPITAL MANAGEMENT</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" title="ChrysCapital — Private Equity">
+            <svg class="ribbon-logo" viewBox="0 0 190 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(6, 8)">
+                <circle cx="11" cy="13" r="10" stroke="#0A0A0A" stroke-width="2.2" fill="none"/>
+                <circle cx="17" cy="13" r="10" stroke="#C4A77D" stroke-width="2.2" fill="none"/>
+              </g>
+              <text x="38" y="22" font-family="'Inter', sans-serif" font-size="13.5" font-weight="800" letter-spacing="0.14em" fill="#0A0A0A">CHRYSCAPITAL</text>
+              <text x="38.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.25em" fill="#777777">PRIVATE EQUITY</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" title="Avendus Capital — Investment Banking & Wealth">
+            <svg class="ribbon-logo" viewBox="0 0 185 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(6, 9)">
+                <polygon points="0,24 12,0 24,24 16,24 12,12 8,24" fill="#0A0A0A"/>
+                <polygon points="12,14 15,24 9,24" fill="#C4A77D"/>
+              </g>
+              <text x="38" y="22" font-family="'Inter', sans-serif" font-size="14.5" font-weight="800" letter-spacing="0.14em" fill="#0A0A0A">AVENDUS</text>
+              <text x="38.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.28em" fill="#777777">CAPITAL &bull; WEALTH</text>
+            </svg>
+          </div>
+
+          <!-- Track Set 2 (Seamless Infinite Duplicate) -->
+          <div class="ribbon-item" aria-hidden="true" title="Motilal Oswal — Real Estate Private Equity">
+            <svg class="ribbon-logo" viewBox="0 0 220 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4, 4)">
+                <rect x="0" y="0" width="36" height="36" rx="7" fill="#0A0A0A" />
+                <path d="M9 27V13L15 21L21 13V27" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="27" cy="20" r="4.5" stroke="#FFFFFF" stroke-width="2.4"/>
+              </g>
+              <text x="50" y="22" font-family="'Inter', sans-serif" font-size="14" font-weight="800" letter-spacing="0.08em" fill="#0A0A0A">MOTILAL OSWAL</text>
+              <text x="50.5" y="33" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" letter-spacing="0.22em" fill="#666666">FINANCIAL SERVICES</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" aria-hidden="true" title="KNAV — Mergers, Acquisitions & Advisory">
+            <svg class="ribbon-logo" viewBox="0 0 170 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <text x="4" y="24" font-family="'Inter', sans-serif" font-size="21" font-weight="900" letter-spacing="0.14em" fill="#0A0A0A">KNAV</text>
+              <circle cx="98" cy="12" r="3" fill="#C4A77D"/>
+              <text x="5" y="34" font-family="'Inter', sans-serif" font-size="6.8" font-weight="600" letter-spacing="0.2em" fill="#777777">ADVISORY &bull; TAX &bull; ASSURANCE</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" aria-hidden="true" title="Axis Capital — Institutional M&A and Markets">
+            <svg class="ribbon-logo" viewBox="0 0 185 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(2, 6)">
+                <polygon points="16,0 32,32 23,32 16,18 9,32 0,32" fill="#97144D"/>
+                <polygon points="16,6 25,24 19,24 16,18" fill="#FFFFFF"/>
+              </g>
+              <text x="44" y="22" font-family="'Inter', sans-serif" font-size="14.5" font-weight="800" letter-spacing="0.1em" fill="#0A0A0A">AXIS CAPITAL</text>
+              <text x="44.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.22em" fill="#777777">INVESTMENT BANKING</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" aria-hidden="true" title="Grant Thornton — Financial & Strategic Advisory">
+            <svg class="ribbon-logo" viewBox="0 0 210 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(6, 6)">
+                <circle cx="16" cy="16" r="14" stroke="#4F2D7F" stroke-width="3" stroke-linecap="round" stroke-dasharray="28 8"/>
+                <circle cx="16" cy="16" r="8" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="14 5"/>
+              </g>
+              <text x="46" y="21" font-family="'Inter', sans-serif" font-size="14" font-weight="700" letter-spacing="0.04em" fill="#0A0A0A">Grant Thornton</text>
+              <text x="46.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.18em" fill="#777777">ADVISORY &bull; TAX</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" aria-hidden="true" title="Kotak Mahindra Capital — Investment Banking">
+            <svg class="ribbon-logo" viewBox="0 0 220 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4, 7)">
+                <rect x="0" y="0" width="30" height="30" rx="15" fill="#003874"/>
+                <path d="M9 15C9 12 11.5 10 14 10C17 10 19 13 21 16C23 19 25 20 27 20" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M21 15C21 18 18.5 20 16 20C13 20 11 17 9 14" stroke="#ED1C24" stroke-width="2.2" stroke-linecap="round"/>
+              </g>
+              <text x="42" y="21" font-family="'Inter', sans-serif" font-size="14" font-weight="800" letter-spacing="0.04em" fill="#0A0A0A">kotak</text>
+              <text x="86" y="21" font-family="'Inter', sans-serif" font-size="12" font-weight="400" fill="#666666">Mahindra</text>
+              <text x="42.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.22em" fill="#777777">CAPITAL COMPANY</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" aria-hidden="true" title="WestBridge Capital — Growth Equity">
+            <svg class="ribbon-logo" viewBox="0 0 210 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4, 8)">
+                <path d="M2 26V8L14 2L26 8V26" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 26V14C8 10.7 10.7 8 14 8C17.3 8 20 10.7 20 14V26" stroke="#C4A77D" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="2" y1="26" x2="26" y2="26" stroke="#0A0A0A" stroke-width="2.2"/>
+              </g>
+              <text x="40" y="21" font-family="'Inter', sans-serif" font-size="13.5" font-weight="800" letter-spacing="0.14em" fill="#0A0A0A">WESTBRIDGE</text>
+              <text x="40.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.28em" fill="#777777">CAPITAL PARTNERS</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" aria-hidden="true" title="Everstone Capital — Buyout & Alternative Assets">
+            <svg class="ribbon-logo" viewBox="0 0 195 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(4, 8)">
+                <polygon points="14,2 26,9 26,21 14,28 2,21 2,9" stroke="#0A0A0A" stroke-width="2" fill="none"/>
+                <polyline points="14,2 14,28" stroke="#0A0A0A" stroke-width="1.5"/>
+                <polyline points="2,9 14,15 26,9" stroke="#0A0A0A" stroke-width="1.5"/>
+                <polyline points="2,21 14,15 26,21" stroke="#0A0A0A" stroke-width="1.5"/>
+              </g>
+              <text x="38" y="22" font-family="'Inter', sans-serif" font-size="14.5" font-weight="800" letter-spacing="0.12em" fill="#0A0A0A">EVERSTONE</text>
+              <text x="38.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.25em" fill="#777777">PRIVATE EQUITY</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" aria-hidden="true" title="Kora Capital — Special Situations & Structured Credit">
+            <svg class="ribbon-logo" viewBox="0 0 170 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(6, 8)">
+                <polygon points="13,0 16,10 26,13 16,16 13,26 10,16 0,13 10,10" fill="#0A0A0A"/>
+                <circle cx="13" cy="13" r="2.5" fill="#C4A77D"/>
+              </g>
+              <text x="38" y="22" font-family="'Inter', sans-serif" font-size="14.5" font-weight="800" letter-spacing="0.18em" fill="#0A0A0A">KORA</text>
+              <text x="38.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.28em" fill="#777777">CAPITAL MANAGEMENT</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" aria-hidden="true" title="ChrysCapital — Private Equity">
+            <svg class="ribbon-logo" viewBox="0 0 190 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(6, 8)">
+                <circle cx="11" cy="13" r="10" stroke="#0A0A0A" stroke-width="2.2" fill="none"/>
+                <circle cx="17" cy="13" r="10" stroke="#C4A77D" stroke-width="2.2" fill="none"/>
+              </g>
+              <text x="38" y="22" font-family="'Inter', sans-serif" font-size="13.5" font-weight="800" letter-spacing="0.14em" fill="#0A0A0A">CHRYSCAPITAL</text>
+              <text x="38.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.25em" fill="#777777">PRIVATE EQUITY</text>
+            </svg>
+          </div>
+
+          <div class="ribbon-item" aria-hidden="true" title="Avendus Capital — Investment Banking & Wealth">
+            <svg class="ribbon-logo" viewBox="0 0 185 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(6, 9)">
+                <polygon points="0,24 12,0 24,24 16,24 12,12 8,24" fill="#0A0A0A"/>
+                <polygon points="12,14 15,24 9,24" fill="#C4A77D"/>
+              </g>
+              <text x="38" y="22" font-family="'Inter', sans-serif" font-size="14.5" font-weight="800" letter-spacing="0.14em" fill="#0A0A0A">AVENDUS</text>
+              <text x="38.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.28em" fill="#777777">CAPITAL &bull; WEALTH</text>
+            </svg>
           </div>
         </div>
       </div>
