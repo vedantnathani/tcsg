@@ -28,5 +28,9 @@ A comprehensive 6-pillar visual and ergonomic audit was conducted following the 
 - **Problem**: On narrow mobile screens (<400px), directory filter tabs wrapped onto multiple irregular lines.
 - **Fix**: Enabled touch-scrollable horizontal tabs (`overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch;`) and full-width search input on mobile.
 
-### 4. Verified Viewport Fit
-Both the golden motto, headline, subline, CTA button, and the infinite institutional logos marquee fit comfortably above the fold on mobile and desktop without any vertical scrolling required on initial landing.
+### 4. Mobile 100dvh Hero Viewport Lock (Resolved)
+- **Problem**: On mobile phones, `min-height: -webkit-fill-available;` collapsed the hero section to intrinsic content height (~340px) or `100svh` under-filled the active browser viewport, causing the top border and off-white background of `#guild` ("The Guild") to peek in at the bottom of the landing screen.
+- **Fix**: Replaced `-webkit-fill-available` and `svh` with `height: 100dvh; min-height: 100dvh;` (with `100vh` fallback) on `.hero-section`, and set `height: 100%` on `html`. This locks the hero landing page to exactly 100% of the visible phone screen, completely hiding `#guild` below the fold until the user scrolls.
+
+### 5. Verified Viewport Fit
+Both the golden motto, headline, subline, CTA button, and the infinite institutional logos marquee fit comfortably above the fold on mobile and desktop without any vertical scrolling required on initial landing, and zero part of `#guild` peeks into the landing screen.

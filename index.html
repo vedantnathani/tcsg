@@ -50,6 +50,7 @@
       -moz-osx-font-smoothing: grayscale;
       background-color: var(--color-white);
       color: var(--color-black);
+      height: 100%;
     }
 
     body {
@@ -2169,10 +2170,15 @@
         display: block;
       }
       .hero-section {
-        padding: calc(60px + 1.25rem) 1.25rem 0.85rem 1.25rem;
-        min-height: 100svh;
-        min-height: -webkit-fill-available;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: calc(56px + 1.25rem) 1.25rem 0.85rem 1.25rem;
         justify-content: space-between;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
       }
       .hero-watermark {
         width: 300px;
@@ -2264,6 +2270,17 @@
       }
       .filter-tab-btn {
         white-space: nowrap;
+      }
+      .narrative-section,
+      .members-section,
+      .founders-section,
+      .manifesto-section,
+      .values-section,
+      .invitation-section {
+        padding: 4.5rem 0;
+      }
+      .directory-header {
+        margin-bottom: 2rem;
       }
       .members-grid {
         grid-template-columns: 1fr;
