@@ -372,12 +372,12 @@
        HERO — "The Threshold"
        ========================================================================== */
     .hero-section {
-      min-height: 100vh;
+      min-height: calc(100vh - 120px);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      padding: 12vh 4rem 4rem 4rem;
+      padding: 10vh 4rem 2rem 4rem;
       background-color: var(--color-white);
       overflow: hidden;
     }
@@ -592,9 +592,8 @@
        ========================================================================== */
     .institutional-ribbon {
       background: var(--color-white);
-      border-top: 1px solid rgba(10, 10, 10, 0.08);
-      border-bottom: 1px solid rgba(10, 10, 10, 0.08);
-      padding: 3.25rem 0 3rem;
+      border: none;
+      padding: 1.25rem 0 2rem;
       position: relative;
       overflow: hidden;
       z-index: 5;
@@ -602,7 +601,7 @@
 
     .ribbon-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.25rem;
       padding: 0 1.5rem;
     }
 
@@ -613,18 +612,7 @@
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--color-mid-grey);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.85rem;
-    }
-
-    .ribbon-eyebrow::before,
-    .ribbon-eyebrow::after {
-      content: '';
       display: inline-block;
-      width: 28px;
-      height: 1px;
-      background: rgba(10, 10, 10, 0.14);
     }
 
     .ribbon-marquee-wrapper {
@@ -2566,58 +2554,6 @@
     </section>
 
     <!-- =======================================================================
-         THE GUILD — "The Narrative"
-         ======================================================================= -->
-    <section class="narrative-section" id="guild">
-      <div class="container">
-        <div class="narrative-grid">
-          <div>
-            <span class="plaque-label">The Guild</span>
-            <!-- Second usage of the metallic accent: period after 'network.' -->
-            <h2 class="narrative-headline">
-              Not a network<span class="accent-dot">.</span><br>
-              A circle of peers.
-            </h2>
-          </div>
-
-          <div class="narrative-content">
-            <p class="narrative-p">
-              The modern finance landscape is inundated with noise, transactional alliances, and superficial forums. The Capital &amp; Strategy Guild was forged around a contrasting conviction: the most consequential breakthroughs in capital, strategic advisory, and institutional growth happen when high-caliber practitioners deliberate behind closed doors.
-            </p>
-
-            <p class="narrative-p">
-              We gather proven leaders—chartered accountants at the vanguard of financial architecture, private equity allocators, M&amp;A strategists, and founding partners who operate with rare discipline and compounding depth.
-            </p>
-
-            <blockquote class="editorial-pullquote">
-              &ldquo;The quality of your circle shapes the quality of your thinking.&rdquo;
-            </blockquote>
-
-            <p class="narrative-p">
-              Here, status is acknowledged without presumption, and intellectual rigor replaces posturing. This is not an audience. It is an intentional assembly where minds sharpen one another.
-            </p>
-          </div>
-
-          <!-- Counter Statistics Bar -->
-          <div class="stats-bar" id="stats-counter-bar">
-            <div class="stat-item">
-              <div class="stat-num" data-target="120" data-suffix="+">0</div>
-              <div class="stat-label">Members</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-num" data-target="40" data-suffix="+">0</div>
-              <div class="stat-label">Firms Represented</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-num" data-target="12" data-suffix="">0</div>
-              <div class="stat-label">Cities</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =======================================================================
          INSTITUTIONAL ECOSYSTEM — "The Firms"
          Where Fellows and Founders Operate
          ======================================================================= -->
@@ -2854,6 +2790,59 @@
               <text x="38" y="22" font-family="'Inter', sans-serif" font-size="14.5" font-weight="800" letter-spacing="0.14em" fill="#0A0A0A">AVENDUS</text>
               <text x="38.5" y="32" font-family="'Inter', sans-serif" font-size="7" font-weight="600" letter-spacing="0.28em" fill="#777777">CAPITAL &bull; WEALTH</text>
             </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =======================================================================
+         THE GUILD — "The Narrative"
+         ======================================================================= -->
+    <section class="narrative-section" id="guild">
+      <div class="container">
+        <div class="narrative-grid">
+          <div>
+            <span class="plaque-label">The Guild</span>
+            <!-- Second usage of the metallic accent: period after 'network.' -->
+            <h2 class="narrative-headline">
+              Not a network<span class="accent-dot">.</span><br>
+              A circle of peers.
+            </h2>
+          </div>
+
+          <div class="narrative-content">
+            <p class="narrative-p">
+              The modern finance landscape is inundated with noise, transactional alliances, and superficial forums. The Capital &amp; Strategy Guild was forged around a contrasting conviction: the most consequential breakthroughs in capital, strategic advisory, and institutional growth happen when high-caliber practitioners deliberate behind closed doors.
+            </p>
+
+            <p class="narrative-p">
+              We gather proven leaders—chartered accountants at the vanguard of financial architecture, private equity allocators, M&amp;A strategists, and founding partners who operate with rare discipline and compounding depth.
+            </p>
+
+            <blockquote class="editorial-pullquote">
+              &ldquo;The quality of your circle shapes the quality of your thinking.&rdquo;
+            </blockquote>
+
+            <p class="narrative-p">
+              Here, status is acknowledged without presumption, and intellectual rigor replaces posturing. This is not an audience. It is an intentional assembly where minds sharpen one another.
+            </p>
+          </div>
+
+          <!-- Counter Statistics Bar -->
+          <div class="stats-bar" id="stats-counter-bar">
+            <div class="stat-item">
+              <div class="stat-num" data-target="120" data-suffix="+">0</div>
+              <div class="stat-label">Members</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" data-target="40" data-suffix="+">0</div>
+              <div class="stat-label">Firms Represented</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" data-target="12" data-suffix="">0</div>
+              <div class="stat-label">Cities</div>
+            </div>
           </div>
         </div>
       </div>
